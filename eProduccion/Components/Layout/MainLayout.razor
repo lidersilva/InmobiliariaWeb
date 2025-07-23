@@ -1,23 +1,65 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Cargando...</span>
         </div>
+    </div>
+    <!-- Spinner End -->
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    <!-- Sidebar -->
+    <NavMenu />
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+            <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+            </a>
+            <a href="#" class="sidebar-toggler flex-shrink-0">
+                <i class="fa fa-bars"></i>
+            </a>
+            <div class="navbar-nav align-items-center ms-auto">
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <span class="d-none d-lg-inline-flex fw-bold">Nombre Usuario</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                        <a href="#" class="dropdown-item">Cerrar sesi&oacute;n</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+        <!-- Contenido dinámico -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
+                @Body
+            </div>
+        </div>
+        <!-- Contenido dinámico -->
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light rounded-top p-4">
+                <div class="row">
+                    <div class="col-12 col-sm-6 text-center text-sm-start">
+                        NOMBRE_BD
+                    </div>
+                    <div class="col-12 col-sm-6 text-center text-sm-end">
+                        Powered by EXXIS PY | Versi&oacute;n 1.0.0.0
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
