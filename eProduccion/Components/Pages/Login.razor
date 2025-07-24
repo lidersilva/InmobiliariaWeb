@@ -2,8 +2,12 @@
 @layout Components.Layout.EmptyLayout
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Web
+@using eProduccion.Data
+@using eProduccion.Models
 @rendermode InteractiveServer
+@inject ConnectionService ConnectionService
 @inject NavigationManager NavigationManager
+@inject UserSession UserSession
 
 <div class="container-xxl position-relative bg-white d-flex p-0">
     <!-- Sign In Start -->
@@ -15,6 +19,13 @@
                         <h3 class="text-primary">eProducción</h3>
                     </div>
                     <div class="form-floating mb-3">
+                        <select class="form-select" @bind="BaseDatos">
+                            <option value="ASTSA" selected>ASTSA</option>
+                            <option value="NEGOCIOS_QA">NEGOCIOS_QA</option>
+                        </select>
+                        <label>Base de Datos</label>
+                    </div>
+                    <div class="form-floating mb-3">
                         <input type="text" @bind="Usuario" class="form-control" placeholder="Usuario">
                         <label>Usuario</label>
                     </div>
@@ -23,6 +34,14 @@
                         <label>Contrase&ncaron;a</label>
                     </div>
                     <button class="btn btn-primary py-3 w-100 mb-4" @onclick="IniciarSesion">Login</button>
+
+                    @if (!string.IsNullOrEmpty(mensajeError))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @mensajeError
+                        </div>
+                    }
+
                 </div>
             </div>
         </div>
@@ -33,16 +52,21 @@
 @code {
     private string Usuario = "";
     private string Password = "";
+    private string BaseDatos = "";
+    private string mensajeError = "";
 
     private async Task IniciarSesion()
     {
-        if (Usuario == "admin" && Password == "123")
+        mensajeError = "";
+
+        try
         {
+            await Task.Run(() => ConnectionService.ConnectSAP(Usuario, Password, BaseDatos));
             NavigationManager.NavigateTo("/home");
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("Error Login");
+            mensajeError = ex.Message;
         }
     }
 }

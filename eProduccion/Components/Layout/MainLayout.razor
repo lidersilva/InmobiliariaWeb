@@ -1,15 +1,21 @@
 ﻿@inherits LayoutComponentBase
+@using eProduccion.Data
+@using eProduccion.Models
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ConnectionService ConnectionService
+@inject NavigationManager NavigationManager
+@inject UserSession UserSession
+@inject ProtectedSessionStorage SessionStorage
 
 <div class="container-xxl position-relative bg-white d-flex p-0">
     <!-- Spinner Start -->
-    <div id="spinner"
+    @* <div id="spinner"
          class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Cargando...</span>
         </div>
-    </div>
+    </div> *@
     <!-- Spinner End -->
-
     <!-- Sidebar -->
     <NavMenu />
 
@@ -26,16 +32,15 @@
             <div class="navbar-nav align-items-center ms-auto">
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <span class="d-none d-lg-inline-flex fw-bold">Nombre Usuario</span>
+                        <span class="d-none d-lg-inline-flex fw-bold">@UserSession.UserName</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                        <a href="#" class="dropdown-item">Cerrar sesi&oacute;n</a>
+                        <a href="#" class="dropdown-item" @onclick="CerrarSesion">Cerrar sesi&oacute;n</a>
                     </div>
                 </div>
             </div>
         </nav>
         <!-- Navbar End -->
-
         <!-- Contenido dinámico -->
         <div class="container-fluid pt-4 px-4">
             <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
@@ -43,13 +48,12 @@
             </div>
         </div>
         <!-- Contenido dinámico -->
-
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded-top p-4">
                 <div class="row">
                     <div class="col-12 col-sm-6 text-center text-sm-start">
-                        NOMBRE_BD
+                        @UserSession.DataBase
                     </div>
                     <div class="col-12 col-sm-6 text-center text-sm-end">
                         Powered by EXXIS PY | Versi&oacute;n 1.0.0.0
@@ -63,3 +67,30 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
+
+@code {
+    private bool _navegacionHecha = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_navegacionHecha)
+        {
+            // Si no existe sesión se redirige al Login
+            if (UserSession.SapSession == null)
+            {
+                _navegacionHecha = true;
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
+        }
+    }
+
+    private async Task CerrarSesion()
+    {
+        // Cerrar sesión SAP
+        ConnectionService.DisconnectSAP();
+        // Limpiar sesión
+        UserSession.Clear();
+        // Redirigir al Login
+        NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+}
