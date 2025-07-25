@@ -19,6 +19,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddScoped<ProtectedSessionStorage>();
 
 var app = builder.Build();
 

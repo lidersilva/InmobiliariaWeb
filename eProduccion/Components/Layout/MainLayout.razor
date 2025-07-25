@@ -1,85 +1,103 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using eProduccion.Data
 @using eProduccion.Models
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ConnectionService ConnectionService
 @inject NavigationManager NavigationManager
+@inject ConnectionService ConnectionService
 @inject UserSession UserSession
-@inject ProtectedSessionStorage SessionStorage
+@inject ProtectedLocalStorage SessionStorage
 
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <!-- Spinner Start -->
-    @* <div id="spinner"
-         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Cargando...</span>
-        </div>
-    </div> *@
-    <!-- Spinner End -->
-    <!-- Sidebar -->
-    <NavMenu />
 
-    <!-- Content Start -->
-    <div class="content">
-        <!-- Navbar Start -->
-        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-            <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-            </a>
-            <a href="#" class="sidebar-toggler flex-shrink-0">
-                <i class="fa fa-bars"></i>
-            </a>
-            <div class="navbar-nav align-items-center ms-auto">
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <span class="d-none d-lg-inline-flex fw-bold">@UserSession.UserName</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                        <a href="#" class="dropdown-item" @onclick="CerrarSesion">Cerrar sesi&oacute;n</a>
+    @if (!sesionVerificada)
+    {
+        <!-- Spinner Start -->
+        <div id="spinner"
+             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Cargando...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+    }
+    else
+    {
+        <NavMenu />
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <span class="d-none d-lg-inline-flex fw-bold">@UserSession.UserName</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item" @onclick="CerrarSesion">Cerrar sesi&oacute;n</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Navbar End -->
+            <!-- Contenido dinámico -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
+                    @Body
+                </div>
+            </div>
+            <!-- Contenido dinámico -->
+            <!-- Footer Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            @UserSession.DataBase
+                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">
+                            Powered by EXXIS PY | Versi&oacute;n 1.0.0.0
+                        </div>
                     </div>
                 </div>
             </div>
-        </nav>
-        <!-- Navbar End -->
-        <!-- Contenido dinámico -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
-                @Body
-            </div>
+            <!-- Footer End -->
         </div>
-        <!-- Contenido dinámico -->
-        <!-- Footer Start -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="bg-light rounded-top p-4">
-                <div class="row">
-                    <div class="col-12 col-sm-6 text-center text-sm-start">
-                        @UserSession.DataBase
-                    </div>
-                    <div class="col-12 col-sm-6 text-center text-sm-end">
-                        Powered by EXXIS PY | Versi&oacute;n 1.0.0.0
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
-    </div>
-    <!-- Content End -->
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Content End -->
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Sidebar -->
+    }
 </div>
 
 @code {
-    private bool _navegacionHecha = false;
+    private bool _initialized = false;
+    private bool sesionVerificada = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !_navegacionHecha)
+        if (firstRender && !_initialized)
         {
-            // Si no existe sesión se redirige al Login
-            if (UserSession.SapSession == null)
+            _initialized = true;
+
+            var userResult = await SessionStorage.GetAsync<string>("UserName");
+            var dbResult = await SessionStorage.GetAsync<string>("DataBase");
+
+            if (userResult.Success && dbResult.Success)
             {
-                _navegacionHecha = true;
-                NavigationManager.NavigateTo("/login", forceLoad: true);
+                UserSession.UserName = userResult.Value;
+                UserSession.DataBase = dbResult.Value;
+                sesionVerificada = true;
+                StateHasChanged();
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
             }
         }
     }
@@ -89,8 +107,10 @@
         // Cerrar sesión SAP
         ConnectionService.DisconnectSAP();
         // Limpiar sesión
+        await SessionStorage.DeleteAsync("UserName");
+        await SessionStorage.DeleteAsync("DataBase");
         UserSession.Clear();
         // Redirigir al Login
-        NavigationManager.NavigateTo("/", forceLoad: true);
+        NavigationManager.NavigateTo("/");
     }
 }
