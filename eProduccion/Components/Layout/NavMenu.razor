@@ -1,4 +1,7 @@
-﻿<!-- Sidebar Start -->
+﻿@using eProduccion.Components.Dialogs
+@inject IDialogService DialogService
+
+<!-- Sidebar Start -->
 <div class="sidebar pe-4 pb-3">
     <nav class="navbar bg-light navbar-light">
         <a NavLink="#" class="navbar-brand mx-4 mb-3">
@@ -10,10 +13,19 @@
                     <i class="fa fa-cogs me-2"></i>Configuraci&oacute;n
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a NavLink="#" class="dropdown-item">Crear estructura</a>
+                    <a class="dropdown-item" @onclick="AbrirModalEstructura">Crear estructura</a>
                 </div>
             </div>
         </div>
     </nav>
 </div>
 <!-- Sidebar End -->
+
+@code {
+    private async Task AbrirModalEstructura()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.ShowAsync<EstructuraDialog>("Generar estructura", options);
+    }
+}

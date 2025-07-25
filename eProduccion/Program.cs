@@ -1,6 +1,8 @@
 using eProduccion.Components;
 using eProduccion.Extensions;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using MudBlazor;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,16 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddMudServices(
+    config =>
+    {
+        config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+        config.SnackbarConfiguration.VisibleStateDuration = 10000;
+        config.SnackbarConfiguration.HideTransitionDuration = 250;
+        config.SnackbarConfiguration.ShowTransitionDuration = 250;
+        config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+        config.SnackbarConfiguration.RequireInteraction = false;
+    });
 
 var app = builder.Build();
 

@@ -10,6 +10,7 @@ namespace eProduccion.Extensions
         {
             services.AddScoped<ConnectionService>();
             services.AddScoped<UserSession>();
+            services.AddScoped<EstructuraService>();
 
             return services;
         }

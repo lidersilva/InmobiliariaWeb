@@ -1,0 +1,32 @@
+﻿@using eProduccion.Data
+@inject ISnackbar Snackbar
+@inject EstructuraService EstructuraService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Generar estructura</MudText>
+    </TitleContent>
+    <DialogContent>
+        Presione el bot&oacute;n <b>Generar</b> para iniciar con la generaci&oacute;n de estructura del sistema.
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Generar</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private async Task Submit()
+    {
+        await EstructuraService.GenerarEstructura();
+
+        Snackbar.Add("Estructura generada correctamente.", Severity.Success);
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
