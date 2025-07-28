@@ -3,7 +3,6 @@ using eProduccion.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Data;
 using System.Data.Odbc;
 using System.Net;
 
@@ -25,6 +24,8 @@ namespace eProduccion.Data
 
         public static string UserDB;
         public static string PassDB;
+
+        public string DataBase => _userSession.DataBase;
 
         public ConnectionService(UserSession userSession)
         {
