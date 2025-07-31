@@ -1,6 +1,9 @@
-﻿using RestSharp;
+﻿using eProduccion.Models;
+using RestSharp;
 using System.Data.Odbc;
-using eProduccion.Models;
+using static eProduccion.Models.Consts;
+using static eProduccion.Models.UserFieldsMD;
+using static eProduccion.Models.UserObjectsMD;
 
 namespace eProduccion.Data
 {
@@ -15,9 +18,92 @@ namespace eProduccion.Data
 
         public async Task GenerarEstructura()
         {
-            await Task.Delay(100);
+            #region Crear tablas
+            new List<UserTablesMD>
+            {
+                new () { TableName = "EEP_PERM", Descr = "EEP Maestro de permisos", ObjectType = 1 },
+                new () { TableName = "EEP_ROLU", Descr = "EEP Roles_Usuarios", ObjectType = 1 },
+                new () { TableName = "EEP_ROLC", Descr = "EEP Maestro de roles", ObjectType = 1 },
+                new () { TableName = "EEP_ROLD", Descr = "EEP Roles_Permisos", ObjectType = 2 },
+                new () { TableName = "EEP_PARAM", Descr = "EEP Parametrización", ObjectType = 3 },
+            }.ForEach(AgregarTablas);
+            #endregion
 
-            Console.WriteLine($"BD: {_connectionService.DataBase}");
+            #region Crear campos
+            var valoresValidosVacios = new List<ValidValuesMD>();// Lista vacía
+            new List<UserFieldsMD>
+            {
+                // Gestión de Roles y Permisos
+                new () { Name = "DESC", Type = TipoCampo.Alpha, Size = 100, Description = "Descripción", SubType = SubTipoCampo.None, TableName = "@EEP_PERM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "USER", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario", SubType = SubTipoCampo.None, TableName = "@EEP_ROLU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ROLID", Type = TipoCampo.Alpha, Size = 10, Description = "Rol", SubType = SubTipoCampo.None, TableName = "@EEP_ROLU", LinkedTable = "EEP_ROLC", DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ACTI", Type = TipoCampo.Alpha, Size = 1, Description = "Activo", SubType = SubTipoCampo.None, TableName = "@EEP_ROLC", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "PERM", Type = TipoCampo.Alpha, Size = 1, Description = "Código de Permiso", SubType = SubTipoCampo.None, TableName = "@EEP_ROLD", LinkedTable = "EEP_PERM", DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+            }.ForEach(AgregarCampos);
+            #endregion
+
+            #region Crear UDOS
+            new List<UserObjectsMD>
+            {
+                new ()
+                {
+                    Code = "EEP_PERM", Name = "EEP Maestro Permisos", TableName = "EEP_PERM", ObjectType = TipoObjeto.DatoMaestro, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tYES, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PERM", ColumnAlias = "Code", ColumnDescription = "Código" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PERM", ColumnAlias = "Name", ColumnDescription = "Nombre" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PERM", ColumnAlias = "U_DESC", ColumnDescription = "Descripción" }
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PERM", FormColumnAlias = "Code", FormColumnDescription = "Código" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PERM", FormColumnAlias = "Name", FormColumnDescription = "Nombre" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PERM", FormColumnAlias = "U_DESC", FormColumnDescription = "Descripción" }
+                    ]
+                },
+                new ()
+                {
+                    Code = "EEP_ROLU", Name = "EEP RolesUsuarios", TableName = "EEP_ROLU", ObjectType = TipoObjeto.DatoMaestro, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tYES, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "Code", ColumnDescription = "Código" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "Name", ColumnDescription = "Descripción" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "U_USER", ColumnDescription = "Usuario" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "U_ROLID", ColumnDescription = "Rol" }
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "Code", FormColumnDescription = "Código" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "Name", FormColumnDescription = "Descripción" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "U_USER", FormColumnDescription = "Usuario" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "U_ROLID", FormColumnDescription = "Rol" }
+                    ]
+                },
+                new ()
+                {
+                    Code = "EEP_ROLC", Name = "EEP Maestro Roles", TableName = "EEP_ROLC", ObjectType = TipoObjeto.DatoMaestro, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tYES, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
+                    ChildTables =
+                    [
+                        new UserChildTablesMD() { Code = "EEP_ROLC", SonNumber = "1", TableName = "EEP_ROLD", ObjectName = "EEP_ROLD" }
+                    ],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLC", ColumnAlias = "Code", ColumnDescription = "Código Rol" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLC", ColumnAlias = "Name", ColumnDescription = "Nombre Rol" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_ROLC", ColumnAlias = "U_ACTI", ColumnDescription = "Activo" }
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "Code", FormColumnDescription = "Código Rol" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "Name", FormColumnDescription = "Nombre Rol" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "U_ACTI", FormColumnDescription = "Activo" }
+                    ]
+                },
+            }.ForEach(AgregarObjetos);
+            #endregion
         }
 
         public void AgregarTablas(UserTablesMD userTablesMD)
@@ -111,7 +197,7 @@ namespace eProduccion.Data
 
                 switch (masterData.TableName)
                 {
-                    case "EP_PERM":
+                    case "EEP_PERM":
                         body = new
                         {
                             Code = masterData.Code,
@@ -120,7 +206,7 @@ namespace eProduccion.Data
                         };
                         break;
 
-                    case "EP_ROLC":
+                    case "EEP_ROLC":
                         body = new
                         {
                             Code = masterData.Code,

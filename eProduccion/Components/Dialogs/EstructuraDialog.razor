@@ -21,11 +21,18 @@
 
     private async Task Submit()
     {
-        await EstructuraService.GenerarEstructura();
+        try
+        {
+            await EstructuraService.GenerarEstructura();
 
-        Snackbar.Add("Estructura generada correctamente.", Severity.Success);
+            Snackbar.Add("Estructura generada correctamente.", Severity.Success);
 
-        MudDialog.Close(DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
     }
 
     private void Cancel() => MudDialog.Cancel();
