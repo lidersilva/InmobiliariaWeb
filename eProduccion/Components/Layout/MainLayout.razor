@@ -1,7 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Reflection
 @using eProduccion.Data
 @using eProduccion.Models
+@inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 @inject ConnectionService ConnectionService
 @inject UserSession UserSession
@@ -41,7 +43,7 @@
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
+                <a href="#" class="sidebar-toggler flex-shrink-0" @onclick:preventDefault>
                     <i class="fa fa-bars"></i>
                 </a>
                 <div class="navbar-nav align-items-center ms-auto">
@@ -71,7 +73,7 @@
                             @UserSession.DataBase
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Powered by EXXIS PY | Versi&oacute;n 1.0.0.0
+                            Powered by EXXIS PY | @Assembly.GetExecutingAssembly().GetName().Version.ToString()
                         </div>
                     </div>
                 </div>
@@ -94,6 +96,7 @@
         if (firstRender && !_initialized)
         {
             _initialized = true;
+            await JS.InvokeVoidAsync("initializeSidebarToggle");
 
             var userResult = await SessionStorage.GetAsync<string>("UserName");
             var dbResult = await SessionStorage.GetAsync<string>("DataBase");

@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @layout Components.Layout.EmptyLayout
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Reflection
 @using System.Text.Json;
 @using eProduccion.Models
 @using eProduccion.Data
@@ -36,6 +37,8 @@
                         <label>Contrase&ncaron;a</label>
                     </div>
                     <button class="btn btn-primary py-3 w-100 mb-4" @onclick="IniciarSesion">Login</button>
+
+                    <p class="text-muted text-center">Versi&oacute;n @Assembly.GetExecutingAssembly().GetName().Version.ToString()</p>
 
                     @if (!string.IsNullOrEmpty(mensajeError))
                     {
