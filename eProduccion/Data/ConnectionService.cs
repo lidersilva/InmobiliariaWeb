@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Data.Odbc;
 using System.Net;
+using eProduccion.Data.GestionUsuarios;
 
 namespace eProduccion.Data
 {
@@ -13,6 +14,8 @@ namespace eProduccion.Data
         public OdbcConnection OdbcConn;
         public static NumberFormat NumberFormat;
         private readonly UserSession _userSession;
+        private readonly UsuarioSistemaService _usuarioSistemaService;
+        private readonly IServiceProvider _serviceProvider;
 
         public static string Integration;
         public static string SQLType;
@@ -20,16 +23,20 @@ namespace eProduccion.Data
         public static string Server;
         public static string Host;
         public static string Port;
-        public static int SessionTimeout;
-
         public static string UserDB;
         public static string PassDB;
+        public static string UserNameSL;
+        public static string PassSecureSL;
+        public static int SessionTimeout;
 
+        public string UserName => _userSession.UserName;
+        public string PassSecure => _userSession.PassSecure;
         public string DataBase => _userSession.DataBase;
 
-        public ConnectionService(UserSession userSession)
+        public ConnectionService(UserSession userSession, IServiceProvider serviceProvider)
         {
             _userSession = userSession;
+            _serviceProvider = serviceProvider;
         }
 
         public void GetAppSettings()
@@ -51,10 +58,13 @@ namespace eProduccion.Data
             Host = appSettings["AppSettings:host"];
             Port = appSettings["AppSettings:port"];
             SessionTimeout = int.Parse(appSettings["AppSettings:sessiontimeout"]);
+            UserNameSL = Encryption.DecryptString(appSettings["UserSettings:userSL"]);
+            PassSecureSL = Encryption.DecryptString(appSettings["UserSettings:passwordSL"]);
 
             UserDB = GetUserDB();
             PassDB = GetPassDB();
             _userSession.CompanyName = GetCompanyName();
+            //Permisos = GetPermisos(UserName);
         }
 
         public void GetNumberFormat()
@@ -167,6 +177,9 @@ namespace eProduccion.Data
             GetSessionSL();
 
             VerifyODBC();
+
+            var usuarioSistema = _serviceProvider.GetRequiredService<UsuarioSistemaService>();
+            usuarioSistema.VerificarUsuarioExistente();
         }
 
         public void GetSessionSL()
@@ -184,8 +197,8 @@ namespace eProduccion.Data
                 var body = new
                 {
                     CompanyDB = _userSession.DataBase,
-                    UserName = _userSession.UserName,
-                    Password = Encryption.DecryptString(_userSession.PassSecure),
+                    UserName = UserNameSL,
+                    Password = PassSecureSL,
                     SessionTimeout = SessionTimeout,
                     Language = 25
                 };
