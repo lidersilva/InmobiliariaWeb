@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @layout Components.Layout.EmptyLayout
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Text.Json;
+@using eProduccion.Models
 @using eProduccion.Data
 @inject NavigationManager NavigationManager
 @inject ProtectedLocalStorage SessionStorage
@@ -18,8 +20,10 @@
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" @bind="BaseDatos">
-                            <option value="ASTSA" selected>ASTSA</option>
-                            <option value="NEGOCIOS_QA">NEGOCIOS_QA</option>
+                            @foreach (var db in BaseDatosJson)
+                            {
+                                <option value="@db.NombreBaseDatos">@db.NombreBaseDatos</option>
+                            }
                         </select>
                         <label>Base de Datos</label>
                     </div>
@@ -48,10 +52,31 @@
 </div>
 
 @code {
+    private List<BaseDatos> BaseDatosJson = new();
     private string Usuario = "";
     private string Password = "";
     private string BaseDatos = "";
     private string mensajeError = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "databases.json");
+            var json = await File.ReadAllTextAsync(ruta);
+            var datos = JsonSerializer.Deserialize<List<BaseDatos>>(json);
+
+            if (datos is not null)
+            {
+                BaseDatosJson = datos;
+                BaseDatos = BaseDatosJson.FirstOrDefault()?.NombreBaseDatos ?? "";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error cargando bases de datos: {ex.Message}";
+        }
+    }
 
     private async Task IniciarSesion()
     {

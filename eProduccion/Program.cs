@@ -1,6 +1,5 @@
 using eProduccion.Components;
 using eProduccion.Extensions;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -21,7 +20,6 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddMudServices(
     config =>
     {

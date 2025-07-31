@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using eProduccion.Data;
-using eProduccion.Models;
+﻿using eProduccion.Data;
 using eProduccion.Data.GestionUsuarios;
+using eProduccion.Models;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace eProduccion.Extensions
 {
@@ -9,6 +9,8 @@ namespace eProduccion.Extensions
     {
         public static IServiceCollection AddAppServices(this IServiceCollection services)
         {
+            services.AddScoped<ProtectedSessionStorage>();
+
             services.AddScoped<ConnectionService>();
             services.AddScoped<UserSession>();
             services.AddScoped<EstructuraService>();
