@@ -1,5 +1,6 @@
 ﻿@using eProduccion.Components.Dialogs
 @inject IDialogService DialogService
+@inject NavigationManager NavigationManager
 
 <!-- Sidebar Start -->
 <div class="sidebar pe-4 pb-3">
@@ -10,22 +11,38 @@
         <div class="navbar-nav w-100">
             <div class="nav-item dropdown">
                 <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fa fa-users me-2"></i>Gesti&oacute;n de Accesos
+                </a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    <a class="dropdown-item">Usuarios</a>
+                    <a class="dropdown-item">Roles</a>
+                    <a class="dropdown-item">Usuarios Roles</a>
+                    <a class='dropdown-item' @onclick='() => Navegar("/permisos")'>Permisos</a>
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-cogs me-2"></i>Configuraci&oacute;n
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
                     <a class="dropdown-item" @onclick="AbrirModalEstructura">Crear estructura</a>
+                    <a class="dropdown-item">Parametrizaci&oacute;n</a>
                 </div>
             </div>
         </div>
     </nav>
 </div>
 <!-- Sidebar End -->
-
 @code {
     private async Task AbrirModalEstructura()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         await DialogService.ShowAsync<EstructuraDialog>("Generar estructura", options);
+    }
+
+    private void Navegar(string ruta)
+    {
+        NavigationManager.NavigateTo(ruta);
     }
 }

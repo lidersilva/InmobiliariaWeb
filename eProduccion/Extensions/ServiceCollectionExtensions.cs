@@ -1,4 +1,5 @@
 ﻿using eProduccion.Data;
+using eProduccion.Data.GestionAccesos;
 using eProduccion.Data.GestionUsuarios;
 using eProduccion.Models;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -17,6 +18,7 @@ namespace eProduccion.Extensions
 
             // Gestión Usuarios
             services.AddScoped<UsuarioSistemaService>();
+            services.AddScoped<PermisoService>();
 
             return services;
         }

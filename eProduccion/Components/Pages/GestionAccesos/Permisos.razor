@@ -1,0 +1,46 @@
+﻿@page "/permisos"
+@using eProduccion.Models
+@using eProduccion.Data.GestionAccesos
+@inject ISnackbar Snackbar
+@inject PermisoService PermisoService
+
+<PageTitle>eProducci&oacute;n | Permisos</PageTitle>
+
+<MudGrid>
+    <MudItem md="6">
+        <MudPaper Style="height: calc(100vh - 120px); overflow-y: auto;" Class="pa-2">
+            <MudList T="Permiso" @bind-SelectedValue="PermisoSeleccionado" SelectionMode="@SelectionMode" Color="@Color.Info">
+                <MudListSubheader>Permisos</MudListSubheader>
+                @foreach (var i in permisos)
+                {
+                    <MudListItem Text="@i.Nombre" Value="@i" />
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem md="6">
+        <MudPaper Class="pa-4">
+            <MudListSubheader>Descripción</MudListSubheader>
+            <MudText>@PermisoSeleccionado?.Descripcion</MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private Permiso[]? permisos;
+    private Permiso? PermisoSeleccionado;
+    private SelectionMode SelectionMode = SelectionMode.SingleSelection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            permisos = await PermisoService.ObtenerPermisos();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+}

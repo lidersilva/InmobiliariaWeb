@@ -104,6 +104,20 @@ namespace eProduccion.Data
                 },
             }.ForEach(AgregarObjetos);
             #endregion
+
+            #region Agregar registros
+            new List<MasterData>
+            {
+                // Permisos
+                new () { TableName = "EEP_PERM", Code = "01", Name = "Menú Gestión de Accesos", Descripcion = "Acceso a la gestión de Usuarios, Roles y Permisos" },
+                new () { TableName = "EEP_PERM", Code = "02", Name = "Generar Estructura", Descripcion = "Generación de estructura del sistema" },
+                new () { TableName = "EEP_PERM", Code = "04", Name = "Parametrización", Descripcion = "Parametrización del sistema" },
+
+                // Roles
+                new MasterData() { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },
+                new MasterData() { TableName = "EEP_ROLC", Code = "02", Name = "Usuario", Activo = YesNo.Yes },
+            }.ForEach(AgregarDatosMaestros);
+            #endregion
         }
 
         public void AgregarTablas(UserTablesMD userTablesMD)
