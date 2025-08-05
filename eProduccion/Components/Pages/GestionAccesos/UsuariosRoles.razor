@@ -1,0 +1,103 @@
+﻿@page "/usuariosroles"
+@using eProduccion.Models
+@using eProduccion.Data.GestionAccesos
+@inject ISnackbar Snackbar
+@inject UsuarioRolService UsuarioRolService
+
+<PageTitle>eProducción | Usuarios Roles</PageTitle>
+
+<MudGrid>
+    <MudItem md="6">
+        <MudPaper Style="height: calc(100vh - 120px); overflow-y: auto;" Class="pa-2">
+            <MudList T="string"
+                     SelectedValue="UsuarioSeleccionado"
+                     SelectedValueChanged="ObtenerRolesPorUsuario"
+                     SelectionMode="@SelectionMode"
+                     Color="@Color.Info">
+                <MudListSubheader>Usuarios</MudListSubheader>
+                @foreach (var i in usuarios)
+                {
+                    <MudListItem Text="@i.CodigoUsuario" />
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem md="6">
+        <MudPaper Class="pa-4">
+            <MudListSubheader>Roles</MudListSubheader>
+            @if (UsuarioSeleccionado != "")
+            {
+                @foreach (var i in usuarioRoles)
+                {
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" checked="@i.Checked" @onchange="e => OnCheckboxChanged(i, (bool)e.Value)">
+                        <label class="form-check-label">@i.Rol</label>
+                    </div>
+                }
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private Usuario[]? usuarios;
+    private UsuarioRol[]? usuarioRoles;
+    private string UsuarioSeleccionado = "";
+    private SelectionMode SelectionMode = SelectionMode.SingleSelection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            usuarios = await UsuarioRolService.ObtenerUsuarios();
+            //usuarioRoles = await UsuarioRolService.ObtenerRolesSegunUsuario();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ObtenerRolesPorUsuario(string usuario)
+    {
+        try
+        {
+            UsuarioSeleccionado = usuario;
+            usuarioRoles = await UsuarioRolService.ObtenerRolesSegunUsuario(usuario);
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+
+    private async Task OnCheckboxChanged(UsuarioRol rol, bool isChecked)
+    {
+        try
+        {
+            rol.Checked = isChecked;
+            Console.WriteLine($"Rol cambiado: {rol.Rol} - Nuevo estado: {rol.Checked}");
+            StateHasChanged();
+
+            if (isChecked)
+            {
+                // POST
+                await UsuarioRolService.GuardarRolUsuario(rol, UsuarioSeleccionado);
+
+                Snackbar.Add($"Rol guardado correctamente", Severity.Success);
+            }
+            else
+            {
+                // DELETE
+                await UsuarioRolService.EliminarRolUsuario(rol, UsuarioSeleccionado);
+
+                Snackbar.Add($"Rol eliminado correctamente", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+}

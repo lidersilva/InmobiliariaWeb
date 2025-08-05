@@ -19,6 +19,7 @@ namespace eProduccion.Extensions
             // Gestión Usuarios
             services.AddScoped<UsuarioSistemaService>();
             services.AddScoped<PermisoService>();
+            services.AddScoped<UsuarioRolService>();
 
             return services;
         }
