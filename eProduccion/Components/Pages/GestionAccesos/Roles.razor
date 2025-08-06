@@ -1,0 +1,142 @@
+﻿@page "/roles"
+@using eProduccion.Models
+@using eProduccion.Data.GestionAccesos
+@inject ISnackbar Snackbar
+@inject RolService RolService
+
+<PageTitle>eProducción | Roles</PageTitle>
+
+<MudGrid>
+    <MudItem md="6">
+        <MudPaper Style="height: calc(100vh - 120px); overflow-y: auto;" Class="pa-4">
+            <MudList T="Rol"
+                     SelectedValue="RolSeleccionado"
+                     SelectedValueChanged="ObtenerPermisosPorRol"
+                     SelectionMode="@SelectionMode"
+                     Color="@Color.Info">
+                <MudStack Row Justify="MudBlazor.Justify.SpaceBetween" AlignItems="MudBlazor.AlignItems.Center" Class="pb-4">
+                    <MudText Typo="Typo.subtitle2" Class="font-weight-medium" Style="color: rgba(0,0,0,0.5372549019607843)">Roles</MudText>
+                    <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle">
+                        Agregar
+                    </MudButton>
+                </MudStack>
+                @foreach (var i in roles)
+                {
+                    <MudListItem Value="@i">
+                        <div class="d-flex justify-space-between align-center w-100">
+                            <MudText>@i.Descripcion</MudText>
+                            <MudStack Row Spacing="1">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" />
+                            </MudStack>
+                        </div>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem md="6">
+        <MudPaper Class="pa-4">
+            <MudStack Row Justify="MudBlazor.Justify.SpaceBetween" AlignItems="MudBlazor.AlignItems.Center" Class="pb-4">
+                <MudText Typo="Typo.subtitle2" Class="font-weight-medium" Style="color: rgba(0,0,0,0.5372549019607843)">Permisos</MudText>
+                <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Disabled="@(RolSeleccionado == null)" OnClick="GuardarPermisosPorRol">
+                    Guardar
+                </MudButton>
+            </MudStack>
+            @if (RolSeleccionado is not null)
+            {
+                @foreach (var i in permisos)
+                {
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" checked="@i.Checked" @onchange="e => OnCheckboxChanged(i, (bool)e.Value)">
+                        <label class="form-check-label">@i.Descripcion</label>
+                    </div>
+                }
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private Rol[]? roles;
+    private Permiso[]? permisos;
+    private Rol RolSeleccionado;
+    private SelectionMode SelectionMode = SelectionMode.SingleSelection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            roles = await RolService.ObtenerRoles();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ObtenerPermisosPorRol(Rol rol)
+    {
+        try
+        {
+            RolSeleccionado = rol;
+            permisos = await RolService.ObtenerPermisosSegunRol(rol.Codigo);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OnCheckboxChanged(Permiso permiso, bool isChecked)
+    {
+        try
+        {
+            permiso.Checked = isChecked;
+            StateHasChanged();
+
+            if (isChecked)
+            {
+                permiso.Checked = true;
+            }
+            else
+            {
+                permiso.Checked = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task GuardarPermisosPorRol()
+    {
+        try
+        {
+            var permisosRol = new Rol();
+            var permisosRolDetalle = new List<RolDetalle>();
+
+            permisosRol.Codigo = RolSeleccionado.Codigo;
+            permisosRol.Descripcion = RolSeleccionado.Descripcion;
+            permisosRol.Activo = "Y";
+            foreach (var i in permisos.Where(x => x.Checked == true))
+            {
+                var detalle = new RolDetalle();
+                detalle.Code = RolSeleccionado.Codigo;
+                detalle.U_PERM = i.Codigo;
+                permisosRolDetalle.Add(detalle);
+            }
+            permisosRol.RolDetalle = permisosRolDetalle;
+
+            await RolService.GuardarPermisosSegunRol(permisosRol);
+
+            Snackbar.Add($"Permisos asignados al Rol correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+}

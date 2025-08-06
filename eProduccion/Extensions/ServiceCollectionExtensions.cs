@@ -20,6 +20,7 @@ namespace eProduccion.Extensions
             services.AddScoped<UsuarioSistemaService>();
             services.AddScoped<PermisoService>();
             services.AddScoped<UsuarioRolService>();
+            services.AddScoped<RolService>();
 
             return services;
         }
