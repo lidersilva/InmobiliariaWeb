@@ -1,0 +1,43 @@
+﻿@using eProduccion.Data.GestionAccesos
+@inject ISnackbar Snackbar
+@inject RolService RolService
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="@DescripcionRol" Label="Rol" Variant="Variant.Text"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Guardar</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Accion { get; set; }
+    [Parameter]
+    public string Codigo { get; set; }
+    [Parameter]
+    public string DescripcionRol { get; set; }
+
+    private async Task Submit()
+    {
+        try
+        {
+            await RolService.GuardarEditarRol(Accion, Codigo, DescripcionRol);
+
+            Snackbar.Add("Rol guardado correctamente.", Severity.Success);
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -1,6 +1,8 @@
 ﻿@page "/roles"
+@using eProduccion.Components.Dialogs
 @using eProduccion.Models
 @using eProduccion.Data.GestionAccesos
+@inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject RolService RolService
 
@@ -16,9 +18,7 @@
                      Color="@Color.Info">
                 <MudStack Row Justify="MudBlazor.Justify.SpaceBetween" AlignItems="MudBlazor.AlignItems.Center" Class="pb-4">
                     <MudText Typo="Typo.subtitle2" Class="font-weight-medium" Style="color: rgba(0,0,0,0.5372549019607843)">Roles</MudText>
-                    <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle">
-                        Agregar
-                    </MudButton>
+                    <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle" @onclick='() => AbrirModalRol("Crear")'>Agregar</MudButton>
                 </MudStack>
                 @foreach (var i in roles)
                 {
@@ -26,7 +26,7 @@
                         <div class="d-flex justify-space-between align-center w-100">
                             <MudText>@i.Descripcion</MudText>
                             <MudStack Row Spacing="1">
-                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" @onclick='() => AbrirModalRol("Editar", i)' />
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" />
                             </MudStack>
                         </div>
@@ -40,9 +40,7 @@
         <MudPaper Class="pa-4">
             <MudStack Row Justify="MudBlazor.Justify.SpaceBetween" AlignItems="MudBlazor.AlignItems.Center" Class="pb-4">
                 <MudText Typo="Typo.subtitle2" Class="font-weight-medium" Style="color: rgba(0,0,0,0.5372549019607843)">Permisos</MudText>
-                <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Disabled="@(RolSeleccionado == null)" OnClick="GuardarPermisosPorRol">
-                    Guardar
-                </MudButton>
+                <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Disabled="@(RolSeleccionado == null)" OnClick="GuardarPermisosPorRol">Guardar</MudButton>
             </MudStack>
             @if (RolSeleccionado is not null)
             {
@@ -137,6 +135,33 @@
         catch (Exception ex)
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalRol(string accion, Rol rol = null)
+    {
+        var titulo = accion == "Crear" ? "Agregar Rol" : "Editar Rol";
+
+        var parameters = new DialogParameters
+        {
+            { "Accion", accion },
+            { "Codigo", accion == "Crear" ? "" : rol.Codigo },
+            { "DescripcionRol", accion == "Crear" ? "" : rol.Descripcion }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<RolDialog>(titulo, parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            roles = await RolService.ObtenerRoles();
+
+            if (accion == "Editar" && rol is not null && rol.Codigo == RolSeleccionado?.Codigo)
+                await ObtenerPermisosPorRol(rol);
+
+            StateHasChanged();
         }
     }
 }

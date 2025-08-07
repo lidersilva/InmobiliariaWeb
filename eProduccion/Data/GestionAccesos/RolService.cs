@@ -1,12 +1,14 @@
 ﻿using eProduccion.Models;
+using eProduccion.Utility;
 using RestSharp;
 using System.Data.Odbc;
 
 namespace eProduccion.Data.GestionAccesos
 {
-    public class RolService(ConnectionService connectionService)
+    public class RolService(ConnectionService connectionService, DbHelper dbHelper)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly DbHelper _dbHelper = dbHelper;
 
         public Task<Rol[]> ObtenerRoles()
         {
@@ -77,6 +79,26 @@ namespace eProduccion.Data.GestionAccesos
             };
 
             _connectionService.SetEntitySL(method, entity, body, true);
+        }
+
+        public async Task GuardarEditarRol(string accion, string codigo, string rol)
+        {
+            codigo = accion == "Crear" ? _dbHelper.ObtenerSiguienteCodigo("@EEP_ROLC") : codigo;
+
+            var method = accion == "Crear" ? Method.Post : Method.Patch;
+            var entity = accion == "Crear" ? $"EEP_ROLC" : $"EEP_ROLC('{codigo}')";
+
+            // Se crea diccionario para seleccionar qué campos incorporar al JSON
+            var body = new Dictionary<string, object>();
+
+            if (accion == "Crear")
+            {
+                body["Code"] = codigo;
+                body["U_ACTI"] = "Y";
+            }
+            body["Name"] = rol;
+
+            _connectionService.SetEntitySL(method, entity, body);
         }
     }
 }
