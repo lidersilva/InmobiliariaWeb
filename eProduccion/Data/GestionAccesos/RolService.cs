@@ -100,5 +100,15 @@ namespace eProduccion.Data.GestionAccesos
 
             _connectionService.SetEntitySL(method, entity, body);
         }
+
+        public async Task EliminarRol(string codigo)
+        {
+            var method = Method.Delete;
+            var entity = $"EEP_ROLC('{codigo}')";
+
+            var body = new { };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
     }
 }

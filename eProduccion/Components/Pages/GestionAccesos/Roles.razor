@@ -27,7 +27,7 @@
                             <MudText>@i.Descripcion</MudText>
                             <MudStack Row Spacing="1">
                                 <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" @onclick='() => AbrirModalRol("Editar", i)' />
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" @onclick='() => AbrirModalEliminarRol(i)' />
                             </MudStack>
                         </div>
                     </MudListItem>
@@ -162,6 +162,35 @@
                 await ObtenerPermisosPorRol(rol);
 
             StateHasChanged();
+        }
+    }
+
+    private async Task AbrirModalEliminarRol(Rol rol)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MensajeEliminar", $"¿Está seguro de querer eliminar el Rol {rol.Descripcion}?" }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<EliminarDialog>("Eliminar Rol", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                await RolService.EliminarRol(rol.Codigo);
+                Snackbar.Add($"Rol eliminado correctamente", Severity.Success);
+                roles = await RolService.ObtenerRoles();
+                RolSeleccionado = null;
+                permisos = null;
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
         }
     }
 }
