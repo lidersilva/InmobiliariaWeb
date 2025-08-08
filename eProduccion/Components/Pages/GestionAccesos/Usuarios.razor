@@ -9,7 +9,7 @@
 <PageTitle>eProducci&oacute;n | Usuarios</PageTitle>
 
 <div class="p-4">
-    <MudButton Variant="Variant.Outlined" Color="Color.Primary">Nuevo usuario</MudButton>
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" @onclick='() => AbrirModalUsuario("Crear")'>Nuevo usuario</MudButton>
     <MudTable Items="@usuarios" Filter="FiltrarTabla" @bind-SelectedItem="usuarioSeleccionado">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Usuarios</MudText>
@@ -35,7 +35,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Password" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" />
                 </MudTooltip>
                 <MudTooltip Text="Editar">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalUsuario("Editar", context)' />
                 </MudTooltip>
                 <MudTooltip Text="Eliminar">
                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" @onclick='() => AbrirModalEliminarUsuario(context)' />
@@ -62,6 +62,29 @@
         catch (Exception ex)
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalUsuario(string accion, Usuario usuario = null)
+    {
+        var titulo = accion == "Crear" ? "Agregar Usuario" : "Editar Usuario";
+
+        var parameters = new DialogParameters
+        {
+            { "Accion", accion },
+            { "_Usuario", accion == "Crear" ? null : usuario },
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<UsuarioDialog>(titulo, parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            usuarios = await UsuarioSistemaService.ObtenerUsuarios();
+
+            StateHasChanged();
         }
     }
 

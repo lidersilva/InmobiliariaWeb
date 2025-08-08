@@ -1,0 +1,72 @@
+﻿@using eProduccion.Models
+@using eProduccion.Data.GestionAccesos
+@inject ISnackbar Snackbar
+@inject UsuarioSistemaService UsuarioSistemaService
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="@_Usuario.CodigoUsuario" Label="C&oacute;digo" Disabled="@(Accion == "Editar")" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" Class="mb-2"></MudTextField>
+        <MudTextField @bind-Value="@_Usuario.NombreUsuario" Label="Nombre usuario" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" Class="mb-2"></MudTextField>
+        <MudTextField @bind-Value="@_Usuario.Email" Label="E-Mail" Variant="Variant.Text" Class="mb-2"></MudTextField>
+        @if (Accion == "Crear")
+        {
+            <MudTextField @bind-Value="@_Usuario.Password" Label="Contraseña" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" InputType="InputType.Password" Class="mb-2"></MudTextField>
+            <MudTextField @bind-Value="@_Usuario.NewPassword" Label="Confirmar contraseña" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" InputType="InputType.Password" Class="mb-2"></MudTextField>
+        }
+        else
+        {
+            <MudSwitch T="bool" @bind-Checked="EstadoUsuario" Color="Color.Primary" Label="@(EstadoUsuario ? "Activo" : "Inactivo")" Class="mb-2" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Guardar</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Accion { get; set; }
+    [Parameter]
+    public Usuario _Usuario { get; set; }
+
+    private bool EstadoUsuario
+    {
+        get => string.Equals(_Usuario?.Estado, "Y", StringComparison.OrdinalIgnoreCase);
+        set => _Usuario.Estado = value ? "Y" : "N";
+    }
+
+    protected override void OnInitialized()
+    {
+        if (_Usuario == null)
+            _Usuario = new Usuario();
+    }
+
+    private async Task Submit()
+    {
+        try
+        {
+            if (Accion == "Crear")
+            {
+                await UsuarioSistemaService.GuardarUsuario(_Usuario);
+            }
+            else
+            {
+                await UsuarioSistemaService.EditarUsuario(_Usuario);
+            }
+
+            Snackbar.Add("Usuario guardado correctamente.", Severity.Success);
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

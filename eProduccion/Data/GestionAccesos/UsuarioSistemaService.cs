@@ -152,13 +152,12 @@ namespace eProduccion.Data.GestionAccesos
             return Task.FromResult(list.ToArray());
         }
 
-        public string GuardarUsuario(Usuario usuario)
+        public async Task GuardarUsuario(Usuario usuario)
         {
-            var strrespuesta = "";
             var existeusuario = ExisteUsuario(usuario.CodigoUsuario);
             if (existeusuario)
             {
-                strrespuesta = "El usuario " + usuario.CodigoUsuario + " ya existe";
+                throw new Exception($"El código de usuario {usuario.CodigoUsuario} ya existe");
             }
             else
             {
@@ -179,9 +178,7 @@ namespace eProduccion.Data.GestionAccesos
                 };
 
                 _connectionService.SetEntitySL(method, entity, body);
-                strrespuesta = "Usuario creado exitosamente";
             }
-            return strrespuesta;
         }
 
         public void CambiarPassUsuario(Usuario usuario)
@@ -221,7 +218,7 @@ namespace eProduccion.Data.GestionAccesos
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public void EditarUsuario(Usuario usuario)
+        public async Task EditarUsuario(Usuario usuario)
         {
             var method = Method.Patch;
             var entity = $"U_EEP_USUA({usuario.Code})";
