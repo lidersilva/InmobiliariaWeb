@@ -49,14 +49,17 @@
     {
         try
         {
+            var error = ValidarUsuario();
+            if (error != null)
+            {
+                Snackbar.Add(error, Severity.Warning);
+                return;
+            }
+
             if (Accion == "Crear")
-            {
                 await UsuarioSistemaService.GuardarUsuario(_Usuario);
-            }
             else
-            {
                 await UsuarioSistemaService.EditarUsuario(_Usuario);
-            }
 
             Snackbar.Add("Usuario guardado correctamente.", Severity.Success);
 
@@ -69,4 +72,16 @@
     }
 
     private void Cancel() => MudDialog.Cancel();
+
+    private string? ValidarUsuario()
+    {
+        if (string.IsNullOrWhiteSpace(_Usuario.CodigoUsuario) || string.IsNullOrWhiteSpace(_Usuario.NombreUsuario) ||
+                (Accion == "Crear" && string.IsNullOrWhiteSpace(_Usuario.Password)) || (Accion == "Crear" && string.IsNullOrWhiteSpace(_Usuario.NewPassword)))
+            return "Es necesario completar los campos obligatorios";
+
+        if (Accion == "Crear" && _Usuario.Password != _Usuario.NewPassword)
+            return "Las contraseñas no coinciden. Verifique";
+
+        return null;
+    }
 }
