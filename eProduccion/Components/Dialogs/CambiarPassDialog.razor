@@ -1,0 +1,61 @@
+﻿@using eProduccion.Models
+@using eProduccion.Data.GestionAccesos
+@inject ISnackbar Snackbar
+@inject UsuarioSistemaService UsuarioSistemaService
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Cambiar contraseña del usuario <b>@_Usuario.CodigoUsuario - @_Usuario.NombreUsuario</b></MudText>
+        <MudTextField @bind-Value="@_Usuario.Password" Label="Contraseña" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" InputType="InputType.Password" Class="mb-2"></MudTextField>
+        <MudTextField @bind-Value="@_Usuario.NewPassword" Label="Confirmar contraseña" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" InputType="InputType.Password" Class="mb-2"></MudTextField>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Warning" OnClick="Submit">Cambiar contraseña</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Usuario _Usuario { get; set; }
+
+    private async Task Submit()
+    {
+        try
+        {
+            var error = ValidarUsuario();
+            if (error != null)
+            {
+                Snackbar.Add(error, Severity.Warning);
+                return;
+            }
+
+            await UsuarioSistemaService.CambiarPassUsuario(_Usuario);
+
+            Snackbar.Add("Contraseña guardada correctamente.", Severity.Success);
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private string? ValidarUsuario()
+    {
+        if (string.IsNullOrWhiteSpace(_Usuario.Password) || string.IsNullOrWhiteSpace(_Usuario.NewPassword))
+            return "Es necesario completar los campos obligatorios";
+
+        if (_Usuario.Password != _Usuario.NewPassword)
+            return "Las contraseñas no coinciden. Verifique";
+
+        return null;
+    }
+}

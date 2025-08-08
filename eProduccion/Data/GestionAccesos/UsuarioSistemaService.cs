@@ -181,7 +181,7 @@ namespace eProduccion.Data.GestionAccesos
             }
         }
 
-        public void CambiarPassUsuario(Usuario usuario)
+        public async Task CambiarPassUsuario(Usuario usuario)
         {
             var method = Method.Patch;
             var entity = $"U_EEP_USUA({usuario.Code})";

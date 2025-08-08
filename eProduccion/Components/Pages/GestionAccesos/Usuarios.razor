@@ -32,7 +32,7 @@
             </MudTd>
             <MudTd DataLabel="Acciones">
                 <MudTooltip Text="Cambiar contraseña">
-                    <MudIconButton Icon="@Icons.Material.Filled.Password" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Password" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalCambiarPass(context)' />
                 </MudTooltip>
                 <MudTooltip Text="Editar">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalUsuario("Editar", context)' />
@@ -63,6 +63,18 @@
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
+    }
+
+    private async Task AbrirModalCambiarPass(Usuario usuario)
+    {
+        var parameters = new DialogParameters
+        {
+            { "_Usuario", usuario },
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.ShowAsync<CambiarPassDialog>("Cambiar contraseña", parameters, options);
     }
 
     private async Task AbrirModalUsuario(string accion, Usuario usuario = null)
