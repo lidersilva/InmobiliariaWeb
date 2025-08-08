@@ -2,7 +2,7 @@
 {
     public class Usuario
     {
-        public int Id { get; set; }
+        public int Code { get; set; }
         public string? CodigoUsuario { get; set; }
         public string? NombreUsuario { get; set; }
         public string? Email { get; set; }

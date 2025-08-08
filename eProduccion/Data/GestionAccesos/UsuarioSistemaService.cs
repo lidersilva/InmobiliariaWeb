@@ -4,7 +4,7 @@ using eProduccion.Models;
 using eProduccion.Utility;
 using static eProduccion.Models.UserFieldsMD;
 
-namespace eProduccion.Data.GestionUsuarios
+namespace eProduccion.Data.GestionAccesos
 {
     public class UsuarioSistemaService
     {
@@ -124,11 +124,11 @@ namespace eProduccion.Data.GestionUsuarios
                 throw new Exception("Credenciales incorrectas. Verifique.");
         }
 
-        public List<Usuario> ObtenerUsuarios()
+        public Task<Usuario[]> ObtenerUsuarios()
         {
             var list = new List<Usuario>();
 
-            var query = $"SELECT \"Code\", \"U_CODE\", \"Name\", \"U_MAIL\", \"U_ACTI\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" WHERE \"U_CODE\"!='EXXIS' ORDER BY \"U_CODE\" ";
+            var query = $"SELECT \"Code\", \"U_CODE\", \"Name\", \"U_MAIL\", \"U_ACTI\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" WHERE \"U_CODE\"!='EEP_ADMIN' ORDER BY \"U_CODE\" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -137,7 +137,7 @@ namespace eProduccion.Data.GestionUsuarios
             {
                 var che = new Usuario
                 {
-                    Id = int.Parse(reader["Code"].ToString()),
+                    Code = int.Parse(reader["Code"].ToString()),
                     CodigoUsuario = reader["U_CODE"].ToString(),
                     NombreUsuario = reader["Name"].ToString(),
                     Email = reader["U_MAIL"].ToString(),
@@ -149,7 +149,7 @@ namespace eProduccion.Data.GestionUsuarios
 
             _connectionService.DisconnectODBC();
 
-            return list;
+            return Task.FromResult(list.ToArray());
         }
 
         public string GuardarUsuario(Usuario usuario)
@@ -187,7 +187,7 @@ namespace eProduccion.Data.GestionUsuarios
         public void CambiarPassUsuario(Usuario usuario)
         {
             var method = Method.Patch;
-            var entity = $"U_EEP_USUA({usuario.Id})";
+            var entity = $"U_EEP_USUA({usuario.Code})";
             var fechaActual = DateTime.Now;
 
             var body = new
@@ -224,7 +224,7 @@ namespace eProduccion.Data.GestionUsuarios
         public void EditarUsuario(Usuario usuario)
         {
             var method = Method.Patch;
-            var entity = $"U_EEP_USUA({usuario.Id})";
+            var entity = $"U_EEP_USUA({usuario.Code})";
             var fechaActual = DateTime.Now;
 
             var body = new
@@ -239,10 +239,10 @@ namespace eProduccion.Data.GestionUsuarios
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public void EliminarUsuario(Usuario usuario)
+        public async Task EliminarUsuario(int code)
         {
             var method = Method.Delete;
-            var entity = $"U_EEP_USUA({usuario.Id})";
+            var entity = $"U_EEP_USUA({code})";
 
             var body = new { };
 

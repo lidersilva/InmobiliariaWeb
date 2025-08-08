@@ -1,0 +1,108 @@
+﻿@page "/usuarios"
+@using eProduccion.Components.Dialogs
+@using eProduccion.Models
+@using eProduccion.Data.GestionAccesos
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject UsuarioSistemaService UsuarioSistemaService
+
+<PageTitle>eProducci&oacute;n | Usuarios</PageTitle>
+
+<div class="p-4">
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary">Nuevo usuario</MudButton>
+    <MudTable Items="@usuarios" Filter="FiltrarTabla" @bind-SelectedItem="usuarioSeleccionado">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Usuarios</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>C&oacute;digo</MudTh>
+            <MudTh>Usuario</MudTh>
+            <MudTh>E-Mail</MudTh>
+            <MudTh>Estado</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Código">@context.CodigoUsuario</MudTd>
+            <MudTd DataLabel="Usuario">@context.NombreUsuario</MudTd>
+            <MudTd DataLabel="E-Mail">@context.Email</MudTd>
+            <MudTd DataLabel="Estado">
+                <MudChip T="string" Color="@(context.Estado == "Y" ? Color.Info : Color.Warning)" Style="color:white;" Size="Size.Small">@(context.Estado == "Y" ? "Activo" : "Inactivo")</MudChip>
+            </MudTd>
+            <MudTd DataLabel="Acciones">
+                <MudTooltip Text="Cambiar contraseña">
+                    <MudIconButton Icon="@Icons.Material.Filled.Password" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" />
+                </MudTooltip>
+                <MudTooltip Text="Editar">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" />
+                </MudTooltip>
+                <MudTooltip Text="Eliminar">
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" @onclick='() => AbrirModalEliminarUsuario(context)' />
+                </MudTooltip>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+        </PagerContent>
+    </MudTable>
+</div>
+
+@code {
+    private Usuario[]? usuarios;
+    private Usuario? usuarioSeleccionado;
+    private string textoBusqueda = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            usuarios = await UsuarioSistemaService.ObtenerUsuarios();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalEliminarUsuario(Usuario usuario)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MensajeEliminar", $"¿Está seguro de querer eliminar el usuario {usuario.CodigoUsuario} - {usuario.NombreUsuario}?" }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<EliminarDialog>("Eliminar Usuario", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                await UsuarioSistemaService.EliminarUsuario(usuario.Code);
+                Snackbar.Add($"Usuario eliminado correctamente", Severity.Success);
+                usuarios = await UsuarioSistemaService.ObtenerUsuarios();
+                usuarioSeleccionado = null;
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private bool FiltrarTabla(Usuario element) => AplicarFiltroTabla(element, textoBusqueda);
+
+    private bool AplicarFiltroTabla(Usuario usuario, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        return (usuario.CodigoUsuario.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            || (!string.IsNullOrEmpty(usuario.NombreUsuario) && usuario.NombreUsuario.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            || (!string.IsNullOrEmpty(usuario.Email) && usuario.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            || (!string.IsNullOrEmpty(usuario.Estado) && usuario.Estado.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+    }
+}
