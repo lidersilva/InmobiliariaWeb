@@ -1,5 +1,6 @@
 ﻿using eProduccion.Data;
 using eProduccion.Data.GestionAccesos;
+using eProduccion.Data.Produccion;
 using eProduccion.Models;
 using eProduccion.Utility;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -21,6 +22,9 @@ namespace eProduccion.Extensions
             services.AddScoped<PermisoService>();
             services.AddScoped<UsuarioRolService>();
             services.AddScoped<RolService>();
+
+            // Producción
+            services.AddScoped<PlanificacionOTService>();
 
             // Utility
             services.AddScoped<DbHelper>();

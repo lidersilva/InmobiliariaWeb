@@ -1,0 +1,122 @@
+﻿@page "/planificacionot"
+@using eProduccion.Components.Dialogs
+@using eProduccion.Models
+@using eProduccion.Data.Produccion
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject PlanificacionOTService PlanificacionOTService
+
+<PageTitle>eProducci&oacute;n | Planificaci&oacute;n OT</PageTitle>
+
+<div class="p-4">
+    <MudTable Items="@listaOV" Filter="FiltrarTabla" @bind-SelectedItem="ovSeleccionada">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Planificación OT</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Fecha OV</MudTh>
+            <MudTh>Serie</MudTh>
+            <MudTh>DocNum OV</MudTh>
+            <MudTh>Código</MudTh>
+            <MudTh>Artículo</MudTh>
+            <MudTh>Cantidad OV</MudTh>
+            <MudTh>Cant. a solicitar</MudTh>
+            <MudTh>Cant. disponible</MudTh>
+            <MudTh>Cant. solicitada</MudTh>
+            <MudTh>Estado</MudTh>
+            <MudTh>Fecha OT</MudTh>
+            <MudTh>Cant. producida</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Fecha OV">@context.FechaOV.ToString("dd/MM/yyyy")</MudTd>
+            <MudTd DataLabel="Serie">@context.Serie</MudTd>
+            <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
+            <MudTd DataLabel="Código">@context.CodArticulo</MudTd>
+            <MudTd DataLabel="Artículo">@context.Articulo</MudTd>
+            <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
+            <MudTd DataLabel="Cant. a solicitar">0</MudTd>
+            <MudTd DataLabel="Cant. disponible">0</MudTd>
+            <MudTd DataLabel="Cant. solicitada">0</MudTd>
+            <MudTd DataLabel="Estado">@context.EstadoOT</MudTd>
+            <MudTd DataLabel="Fecha OT">@context.FechaOT.ToString("dd/MM/yyyy")</MudTd>
+            <MudTd DataLabel="Cant. producida">@context.CantProducida</MudTd>
+            <MudTd DataLabel="Acciones">
+                <MudTooltip Text="Cancelar">
+                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                </MudTooltip>
+                <MudTooltip Text="Finalizar">
+                    <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                </MudTooltip>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+        </PagerContent>
+    </MudTable>
+    <div class="d-flex justify-end mt-4">
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary">Iniciar</MudButton>
+    </div>
+</div>
+
+@code {
+    private PlanificacionOT[] listaOV = Array.Empty<PlanificacionOT>();
+    private PlanificacionOT ovSeleccionada;
+    private string textoBusqueda = "";
+
+    protected override void OnInitialized()
+    {
+        listaOV = new[]
+        {
+        new PlanificacionOT
+        {
+            Code = 1,
+            DocNumOV = 1001,
+            EstadoOT = "Abierto",
+            FechaOV = DateTime.Today.AddDays(-2),
+            CodArticulo = "A001",
+            Articulo = "Producto A",
+            CantidadOV = 120,
+            FechaOT = DateTime.Today,
+            HoraOT = DateTime.Now,
+            UsuarioOT = "admin",
+            CantProducida = 40,
+            Serie = "S1"
+        },
+        new PlanificacionOT
+        {
+            Code = 2,
+            DocNumOV = 1002,
+            EstadoOT = "En Proceso",
+            FechaOV = DateTime.Today.AddDays(-1),
+            CodArticulo = "B002",
+            Articulo = "Producto B",
+            CantidadOV = 80,
+            FechaOT = DateTime.Today,
+            HoraOT = DateTime.Now,
+            UsuarioOT = "admin",
+            CantProducida = 60,
+            Serie = "S2"
+        }
+    };
+    }
+
+    private bool FiltrarTabla(PlanificacionOT item) => AplicarFiltroTabla(item, textoBusqueda);
+
+    private bool AplicarFiltroTabla(PlanificacionOT item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        return
+            item.FechaOV.ToString("dd/MM/yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrEmpty(item.Serie) && item.Serie.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            item.DocNumOV.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrEmpty(item.CodArticulo) && item.CodArticulo.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrEmpty(item.Articulo) && item.Articulo.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrEmpty(item.EstadoOT) && item.EstadoOT.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            item.FechaOT.ToString("dd/MM/yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase);
+    }
+}
