@@ -1,0 +1,28 @@
+﻿@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        @MensajeCancelar
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Warning" OnClick="Submit">@TextoBoton</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string MensajeCancelar { get; set; }
+    [Parameter]
+    public string TextoBoton { get; set; }
+
+    private async Task Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

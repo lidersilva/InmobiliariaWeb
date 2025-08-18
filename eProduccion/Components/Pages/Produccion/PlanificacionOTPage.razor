@@ -55,10 +55,10 @@
                         <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
                             <div style="display: flex; gap: 0.5rem; align-items: center; white-space: nowrap;">
                                 <MudTooltip Text="Cancelar">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" @onclick='() => AbrirModalCancelarOT(context)' />
                                 </MudTooltip>
                                 <MudTooltip Text="Finalizar">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalFinalizarOT(context)' />
                                 </MudTooltip>
                             </div>
                         </MudTd>
@@ -110,6 +110,58 @@
         catch (Exception ex)
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalCancelarOT(PlanificacionOT ovSeleccionada)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MensajeCancelar", $"¿Está seguro de querer cancelar esta Orden?" },
+            { "TextoBoton", "Cancelar OT" }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<CancelarDialog>("Cancelar OT", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task AbrirModalFinalizarOT(PlanificacionOT ovSeleccionada)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MensajeFinalizar", $"¿Está seguro de querer dar por finalizado este pedido?" },
+            { "TextoBoton", "Finalizar OT" }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<FinalizarDialog>("Finalizar OT", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
         }
     }
 
