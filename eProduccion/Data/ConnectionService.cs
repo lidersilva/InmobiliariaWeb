@@ -430,13 +430,12 @@ namespace eProduccion.Data
             restRequest.CookieContainer.Add(new Cookie("B1SESSION", _userSession.SapSession.B1Session) { Domain = target.Host });
             restRequest.CookieContainer.Add(new Cookie("CompanyDB", _userSession.SapSession.CompanyDB) { Domain = target.Host });
             restRequest.AddHeader("Accept", "application/json;odata=minimalmetadata;charset=utf8");
-            restRequest.AddHeader("Content-Type", $"multipart/mixed;boundary=Batch_BoundaryPPW");
+            restRequest.AddHeader("Content-Type", $"multipart/mixed;boundary=Batch_Boundary_EEP");
 
             if (body != null)
             {
-                restRequest.RequestFormat = DataFormat.Json;
-                string bodyToString = Convert.ToString(body);
-                restRequest.AddParameter("text/plain", bodyToString);
+                string bodyToString = body.ToString().Replace("\n", "\r\n");
+                restRequest.AddStringBody(bodyToString, DataFormat.None);
             }
 
             restResponse = restClient.Execute(restRequest);

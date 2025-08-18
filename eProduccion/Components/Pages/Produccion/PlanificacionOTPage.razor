@@ -12,7 +12,7 @@
     <div class="col-12">
         <div class="p-4">
             <div class="table-responsive">
-                <MudTable Items="@listaOV" MultiSelection="true" Filter="FiltrarTabla" @bind-SelectedItem="ovSeleccionada" Class="w-100" SelectOnRowClick="false">
+                <MudTable Items="@listaOV" MultiSelection="true" Filter="FiltrarTabla" @bind-SelectedItems="filasSeleccionadas" Class="w-100" SelectOnRowClick="false">
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">Planificación OT</MudText>
                         <MudSpacer />
@@ -41,11 +41,15 @@
                         <MudTd DataLabel="Artículo" Class="text-nowrap">@context.Articulo</MudTd>
                         <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
                         <MudTd DataLabel="Cant. a solicitar">
-                            <MudNumericField T="double" @bind-Value="@context.CantSolicitada" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                            <MudNumericField T="double" @bind-Value="@context.CantSolicitar" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                         </MudTd>
-                        <MudTd DataLabel="Cant. disponible">0</MudTd>
-                        <MudTd DataLabel="Cant. solicitada">0</MudTd>
-                        <MudTd DataLabel="Estado">@context.EstadoOT</MudTd>
+                        <MudTd DataLabel="Cant. disponible">@context.CantDisponible</MudTd>
+                        <MudTd DataLabel="Cant. solicitada">@context.CantSolicitada</MudTd>
+                        <MudTd DataLabel="Estado">
+                            <MudChip T="string" Color="@DefinirColorEstado(context.EstadoOT)" Variant="Variant.Filled" Label="true">
+                                @context.EstadoOT
+                            </MudChip>
+                        </MudTd>
                         <MudTd DataLabel="Fecha OT">@(context.FechaOT?.ToString("dd/MM/yyyy") ?? "")</MudTd>
                         <MudTd DataLabel="Cant. producida">@context.CantProducida</MudTd>
                         <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
@@ -64,23 +68,61 @@
                     </PagerContent>
                 </MudTable>
             </div>
+            <MudText>@filasSeleccionadas?.Count filas seleccionadas</MudText>
             <div class="d-flex justify-end mt-4">
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary">Iniciar</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" @onclick="IniciarOT" Disabled="@(!filasSeleccionadas.Any())">Iniciar</MudButton>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-    private PlanificacionOT[] listaOV = Array.Empty<PlanificacionOT>();
-    private PlanificacionOT ovSeleccionada;
+    private PlanificacionOT[]? listaOV;
+    private HashSet<PlanificacionOT> filasSeleccionadas = new HashSet<PlanificacionOT>();
     private string textoBusqueda = "";
 
     protected override async Task OnInitializedAsync()
     {
-        await PlanificacionOTService.EjecutarSP_INSERT_PLANIFICACION_OT();
+        try
+        {
+            await PlanificacionOTService.EjecutarSP_INSERT_PLANIFICACION_OT();
 
-        listaOV = await PlanificacionOTService.ObtenerOV();
+            listaOV = await PlanificacionOTService.ObtenerOV();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task IniciarOT()
+    {
+        try
+        {
+            await PlanificacionOTService.GenerarOT(filasSeleccionadas.ToList());
+
+            listaOV = await PlanificacionOTService.ObtenerOV();
+
+            StateHasChanged();
+
+            Snackbar.Add($"Órdenes de trabajo creadas correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private Color DefinirColorEstado(string estado)
+    {
+        return estado switch
+        {
+            "Pendiente" => Color.Default,
+            "En proceso" => Color.Info,
+            "Finalizado" => Color.Success,
+            "Anulado" => Color.Dark,
+            _ => Color.Transparent
+        };
     }
 
     private bool FiltrarTabla(PlanificacionOT item) => AplicarFiltroTabla(item, textoBusqueda);

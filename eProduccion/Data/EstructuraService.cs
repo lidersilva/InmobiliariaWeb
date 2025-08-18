@@ -54,6 +54,7 @@ namespace eProduccion.Data
                 new () { Name = "HORAOT", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio OT", SubType = SubTipoCampo.Time, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 50, Description = "Usuario inicio OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "LINENUMOV", Type = TipoCampo.Numeric, Size = 11, Description = "Línea detalle OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTSOLICITADA", Type = TipoCampo.Float, Size = 10, Description = "Cantidad solicitada", SubType = SubTipoCampo.Quantity, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
             }.ForEach(AgregarCampos);
             #endregion
 

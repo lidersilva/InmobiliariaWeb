@@ -14,6 +14,8 @@
         public string UsuarioOT { get; set; }
         public double CantProducida { get; set; }
         public string Serie { get; set; }
+        public double CantSolicitar { get; set; }
         public double CantSolicitada { get; set; }
+        public double CantDisponible { get; set; }
     }
 }
