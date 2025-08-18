@@ -1,0 +1,30 @@
+CREATE PROCEDURE SP_INSERT_PLANIFICACION_OT()
+AS
+BEGIN
+
+INSERT INTO "@EEP_PLANI_OT"("Code", "Name", "U_DOCENTRYOV", "U_DOCNUMOV", "U_SERIE", "U_FECHAOV", "U_CODARTICULO", 
+"U_CANTIDADOV", "U_CODCLIENTE", "U_ESTADO", "U_LINENUMOV")
+SELECT 
+((SELECT IFNULL(MAX("Code"), 0) FROM "@EEP_PLANI_OT") + (ROW_NUMBER() OVER (ORDER BY T0."DocEntry"))) AS "Code", 
+((SELECT IFNULL(MAX("Code"), 0) FROM "@EEP_PLANI_OT") + (ROW_NUMBER() OVER (ORDER BY T0."DocEntry"))) AS "Name",
+T0."DocEntry",
+T0."DocNum", 
+T0."Series", 
+T0."DocDate", 
+T1."ItemCode", 
+T1."Quantity", 
+T0."CardCode", 
+'Pendiente' AS "Estado",
+T1."LineNum"
+FROM ORDR T0
+JOIN RDR1 T1 ON T0."DocEntry"=T1."DocEntry"
+WHERE T0."CANCELED"='N'
+AND T0."DocStatus"='O'
+AND T0."DocEntry" NOT IN(
+	SELECT "U_DOCENTRYOV" 
+	FROM "@EEP_PLANI_OT" 
+	WHERE "U_DOCENTRYOV"=T0."DocEntry" 
+	AND "U_LINENUMOV"=T1."LineNum" 
+	AND "U_ESTADO"<>'Anulado');
+
+END;

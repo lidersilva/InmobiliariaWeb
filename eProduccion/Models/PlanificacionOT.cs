@@ -9,10 +9,11 @@
         public string CodArticulo { get; set; }
         public string Articulo { get; set; }
         public double CantidadOV { get; set; }
-        public DateTime FechaOT { get; set; }
+        public DateTime? FechaOT { get; set; }
         public DateTime HoraOT { get; set; }
         public string UsuarioOT { get; set; }
         public double CantProducida { get; set; }
         public string Serie { get; set; }
+        public double CantSolicitada { get; set; }
     }
 }

@@ -8,56 +8,66 @@
 
 <PageTitle>eProducci&oacute;n | Planificaci&oacute;n OT</PageTitle>
 
-<div class="p-4">
-    <MudTable Items="@listaOV" Filter="FiltrarTabla" @bind-SelectedItem="ovSeleccionada">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Planificación OT</MudText>
-            <MudSpacer />
-            <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Fecha OV</MudTh>
-            <MudTh>Serie</MudTh>
-            <MudTh>DocNum OV</MudTh>
-            <MudTh>Código</MudTh>
-            <MudTh>Artículo</MudTh>
-            <MudTh>Cantidad OV</MudTh>
-            <MudTh>Cant. a solicitar</MudTh>
-            <MudTh>Cant. disponible</MudTh>
-            <MudTh>Cant. solicitada</MudTh>
-            <MudTh>Estado</MudTh>
-            <MudTh>Fecha OT</MudTh>
-            <MudTh>Cant. producida</MudTh>
-            <MudTh>Acciones</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Fecha OV">@context.FechaOV.ToString("dd/MM/yyyy")</MudTd>
-            <MudTd DataLabel="Serie">@context.Serie</MudTd>
-            <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
-            <MudTd DataLabel="Código">@context.CodArticulo</MudTd>
-            <MudTd DataLabel="Artículo">@context.Articulo</MudTd>
-            <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
-            <MudTd DataLabel="Cant. a solicitar">0</MudTd>
-            <MudTd DataLabel="Cant. disponible">0</MudTd>
-            <MudTd DataLabel="Cant. solicitada">0</MudTd>
-            <MudTd DataLabel="Estado">@context.EstadoOT</MudTd>
-            <MudTd DataLabel="Fecha OT">@context.FechaOT.ToString("dd/MM/yyyy")</MudTd>
-            <MudTd DataLabel="Cant. producida">@context.CantProducida</MudTd>
-            <MudTd DataLabel="Acciones">
-                <MudTooltip Text="Cancelar">
-                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" Class="mr-2" />
-                </MudTooltip>
-                <MudTooltip Text="Finalizar">
-                    <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
-                </MudTooltip>
-            </MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
-        </PagerContent>
-    </MudTable>
-    <div class="d-flex justify-end mt-4">
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary">Iniciar</MudButton>
+<div class="row">
+    <div class="col-12">
+        <div class="p-4">
+            <div class="table-responsive">
+                <MudTable Items="@listaOV" MultiSelection="true" Filter="FiltrarTabla" @bind-SelectedItem="ovSeleccionada" Class="w-100" SelectOnRowClick="false">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Planificación OT</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Fecha OV</MudTh>
+                        <MudTh>Serie</MudTh>
+                        <MudTh>DocNum OV</MudTh>
+                        <MudTh>Código</MudTh>
+                        <MudTh>Artículo</MudTh>
+                        <MudTh>Cantidad OV</MudTh>
+                        <MudTh Class="text-nowrap">Cant. a solicitar</MudTh>
+                        <MudTh>Cant. disponible</MudTh>
+                        <MudTh>Cant. solicitada</MudTh>
+                        <MudTh>Estado</MudTh>
+                        <MudTh>Fecha OT</MudTh>
+                        <MudTh>Cant. producida</MudTh>
+                        <MudTh>Acciones</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Fecha OV">@context.FechaOV.ToString("dd/MM/yyyy")</MudTd>
+                        <MudTd DataLabel="Serie">@context.Serie</MudTd>
+                        <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
+                        <MudTd DataLabel="Código">@context.CodArticulo</MudTd>
+                        <MudTd DataLabel="Artículo" Class="text-nowrap">@context.Articulo</MudTd>
+                        <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
+                        <MudTd DataLabel="Cant. a solicitar">
+                            <MudNumericField T="double" @bind-Value="@context.CantSolicitada" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                        </MudTd>
+                        <MudTd DataLabel="Cant. disponible">0</MudTd>
+                        <MudTd DataLabel="Cant. solicitada">0</MudTd>
+                        <MudTd DataLabel="Estado">@context.EstadoOT</MudTd>
+                        <MudTd DataLabel="Fecha OT">@(context.FechaOT?.ToString("dd/MM/yyyy") ?? "")</MudTd>
+                        <MudTd DataLabel="Cant. producida">@context.CantProducida</MudTd>
+                        <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                            <div style="display: flex; gap: 0.5rem; align-items: center; white-space: nowrap;">
+                                <MudTooltip Text="Cancelar">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" />
+                                </MudTooltip>
+                                <MudTooltip Text="Finalizar">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                                </MudTooltip>
+                            </div>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+                    </PagerContent>
+                </MudTable>
+            </div>
+            <div class="d-flex justify-end mt-4">
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary">Iniciar</MudButton>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -66,41 +76,11 @@
     private PlanificacionOT ovSeleccionada;
     private string textoBusqueda = "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        listaOV = new[]
-        {
-        new PlanificacionOT
-        {
-            Code = 1,
-            DocNumOV = 1001,
-            EstadoOT = "Abierto",
-            FechaOV = DateTime.Today.AddDays(-2),
-            CodArticulo = "A001",
-            Articulo = "Producto A",
-            CantidadOV = 120,
-            FechaOT = DateTime.Today,
-            HoraOT = DateTime.Now,
-            UsuarioOT = "admin",
-            CantProducida = 40,
-            Serie = "S1"
-        },
-        new PlanificacionOT
-        {
-            Code = 2,
-            DocNumOV = 1002,
-            EstadoOT = "En Proceso",
-            FechaOV = DateTime.Today.AddDays(-1),
-            CodArticulo = "B002",
-            Articulo = "Producto B",
-            CantidadOV = 80,
-            FechaOT = DateTime.Today,
-            HoraOT = DateTime.Now,
-            UsuarioOT = "admin",
-            CantProducida = 60,
-            Serie = "S2"
-        }
-    };
+        await PlanificacionOTService.EjecutarSP_INSERT_PLANIFICACION_OT();
+
+        listaOV = await PlanificacionOTService.ObtenerOV();
     }
 
     private bool FiltrarTabla(PlanificacionOT item) => AplicarFiltroTabla(item, textoBusqueda);
@@ -117,6 +97,6 @@
             (!string.IsNullOrEmpty(item.CodArticulo) && item.CodArticulo.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
             (!string.IsNullOrEmpty(item.Articulo) && item.Articulo.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
             (!string.IsNullOrEmpty(item.EstadoOT) && item.EstadoOT.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
-            item.FechaOT.ToString("dd/MM/yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase);
+            (item.FechaOT?.ToString("dd/MM/yyyy") ?? "").Contains(searchString, StringComparison.OrdinalIgnoreCase);
     }
 }

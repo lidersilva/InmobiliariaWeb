@@ -133,6 +133,13 @@ namespace eProduccion.Data
                 new MasterData() { TableName = "EEP_ROLC", Code = "02", Name = "Usuario", Activo = YesNo.Yes },
             }.ForEach(AgregarDatosMaestros);
             #endregion
+
+            #region Crear SP
+            new List<UserQuerysMD>
+            {
+                new () { Procedure = "SP_INSERT_PLANIFICACION_OT" },
+            }.ForEach(AgregarProcedimientos);
+            #endregion
         }
 
         public void AgregarTablas(UserTablesMD userTablesMD)
