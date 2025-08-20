@@ -66,6 +66,27 @@ namespace eProduccion.Data.Configuracion
             return Task.FromResult(list.ToArray());
         }
 
+        public List<SerieDetalle> ObtenerSeriesParametrizacion()
+        {
+            var list = new List<SerieDetalle>();
+
+            var query = $"SELECT \"U_CODSERIE\" FROM \"{_connectionService.DataBase}\".\"@EEP_PARSERIE_DET\" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new SerieDetalle();
+                che.CodigoSerie = int.Parse(reader["U_CODSERIE"].ToString());
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return list;
+        }
+
         public async Task GuardarParametrizacion(Parametrizacion parametrizacion)
         {
             var method = parametrizacion.DocEntry == null

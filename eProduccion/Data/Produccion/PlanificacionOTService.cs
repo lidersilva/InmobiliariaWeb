@@ -1,4 +1,5 @@
-﻿using eProduccion.Models;
+﻿using eProduccion.Data.Configuracion;
+using eProduccion.Models;
 using eProduccion.Utility;
 using RestSharp;
 using System.Data;
@@ -7,9 +8,10 @@ using System.Text;
 
 namespace eProduccion.Data.Produccion
 {
-    public class PlanificacionOTService(ConnectionService connectionService)
+    public class PlanificacionOTService(ConnectionService connectionService, ParametrizacionService parametrizacionService)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly ParametrizacionService _parametrizacionService = parametrizacionService;
 
         public async Task EjecutarSP_INSERT_PLANIFICACION_OT()
         {
@@ -26,6 +28,8 @@ namespace eProduccion.Data.Produccion
         public Task<PlanificacionOT[]> ObtenerOV()
         {
             var list = new List<PlanificacionOT>();
+            var seriesParametrizacion = _parametrizacionService.ObtenerSeriesParametrizacion();
+            var listaSeriesParametrizacion = string.Join(", ", seriesParametrizacion.Select(x => x.CodigoSerie));
 
             var query = $"SELECT \n" +
                 $"TP.\"Code\", \n" +
@@ -40,6 +44,10 @@ namespace eProduccion.Data.Produccion
                 $"FROM \"{_connectionService.DataBase}\".\"@EEP_PLANI_OT\" TP \n" +
                 $"JOIN \"{_connectionService.DataBase}\".NNM1 TS ON TP.\"U_CODSERIE\"=TS.\"Series\" \n" +
                 $"JOIN \"{_connectionService.DataBase}\".OITM TA ON TP.\"U_CODARTICULO\"=TA.\"ItemCode\" \n" +
+                $"JOIN \"{_connectionService.DataBase}\".ORDR TO ON TP.\"U_DOCENTRYOV\"=TO.\"DocEntry\" \n" +
+                $"JOIN \"{_connectionService.DataBase}\".OITT TM ON TP.\"U_CODARTICULO\"=TM.\"Code\" \n" +
+                $"WHERE TO.\"CANCELED\"='N' \n" +
+                $"AND TP.\"U_CODSERIE\" IN ({listaSeriesParametrizacion}) \n" +
                 $"ORDER BY TP.\"U_DOCENTRYOV\" DESC \n";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
