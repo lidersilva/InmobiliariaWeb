@@ -35,11 +35,13 @@
                             </MudTooltip>
                         </MudTd>
                     </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
-                    </PagerContent>
                 </MudTable>
             </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="d-flex justify-end mt-4">
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GuardarParametrizacion">Guardar parametrización</MudButton>
         </div>
     </div>
 </div>
@@ -76,5 +78,23 @@
     private void EliminarSerie(SerieDetalle serie)
     {
         parametrizacion.SerieDetalle.Remove(serie);
+    }
+
+    private async Task GuardarParametrizacion()
+    {
+        try
+        {
+            await ParametrizacionService.GuardarParametrizacion(parametrizacion);
+
+            Snackbar.Add($"Parametrización guardada correctamente", Severity.Success);
+
+            parametrizacion = await ParametrizacionService.ObtenerParametrizacion();
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
     }
 }

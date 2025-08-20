@@ -26,7 +26,7 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_ROLC", Descr = "EEP Maestro de roles", ObjectType = 1 },
                 new () { TableName = "EEP_ROLD", Descr = "EEP Roles_Permisos", ObjectType = 2 },
                 new () { TableName = "EEP_PARAM", Descr = "EEP Parametrización", ObjectType = 3 },
-                new () {TableName = "EEP_PARSERIE_DET", Descr = "EEP Param. series det.", ObjectType = 3},
+                new () {TableName = "EEP_PARSERIE_DET", Descr = "EEP Param. series det.", ObjectType = 4},
                 new () { TableName = "EEP_PLANI_OT", Descr = "EEP Planificación OT", ObjectType = 5 },
             }.ForEach(AgregarTablas);
             #endregion
@@ -121,6 +121,23 @@ namespace eProduccion.Data
                         new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "Code", FormColumnDescription = "Código Rol" },
                         new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "Name", FormColumnDescription = "Nombre Rol" },
                         new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "U_ACTI", FormColumnDescription = "Activo" }
+                    ]
+                },
+                new ()
+                {
+                    Code = "EEP_PARAM", Name = "EEP Parametrización", TableName = "EEP_PARAM", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
+                    ChildTables =
+                    [
+                        new UserChildTablesMD() { Code = "EEP_PARAM", SonNumber = "1", TableName = "EEP_PARSERIE_DET", ObjectName = "EEP_PARSERIE_DET" }
+                    ],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PARAM", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PARAM", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
                     ]
                 },
             }.ForEach(AgregarObjetos);

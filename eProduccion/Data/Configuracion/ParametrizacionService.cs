@@ -1,4 +1,5 @@
 ﻿using eProduccion.Models;
+using RestSharp;
 using System.Data.Odbc;
 
 namespace eProduccion.Data.Configuracion
@@ -10,19 +11,33 @@ namespace eProduccion.Data.Configuracion
         public async Task<Parametrizacion> ObtenerParametrizacion()
         {
             var parametrizacion = new Parametrizacion();
+            var listSeriesDet = new List<SerieDetalle>();
+            bool banderaCabecera = true;
 
-            var query = $"SELECT * " +
+            var query = $"SELECT \n" +
+                $"TP.\"DocEntry\", \n" +
+                $"TDS.\"LineId\", \n" +
+                $"TDS.\"U_CODSERIE\", \n" +
+                $"TDS.\"U_SERIE\" " +
                 $"FROM \"{_connectionService.DataBase}\".\"@EEP_PARAM\" TP \n" +
-                $"JOIN \"{_connectionService.DataBase}\".\"@EEP_PARSERIE_DET\" TDS ON TP.\"DocEntry\"=TDS.\"DocEntry\" ";
+                $"LEFT JOIN \"{_connectionService.DataBase}\".\"@EEP_PARSERIE_DET\" TDS ON TP.\"DocEntry\"=TDS.\"DocEntry\" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
 
             while (reader.Read())
             {
-                var che = new Parametrizacion();
+                if (banderaCabecera)
+                    parametrizacion.DocEntry = int.Parse(reader["DocEntry"].ToString());
 
+                var serieDet = new SerieDetalle();
+                serieDet.LineId = int.Parse(reader["LineId"].ToString());
+                serieDet.CodigoSerie = int.Parse(reader["U_CODSERIE"].ToString());
+                serieDet.Serie = reader["U_SERIE"].ToString();
+                listSeriesDet.Add(serieDet);
             }
+
+            parametrizacion.SerieDetalle = listSeriesDet;
 
             _connectionService.DisconnectODBC();
 
@@ -49,6 +64,34 @@ namespace eProduccion.Data.Configuracion
             _connectionService.DisconnectODBC();
 
             return Task.FromResult(list.ToArray());
+        }
+
+        public async Task GuardarParametrizacion(Parametrizacion parametrizacion)
+        {
+            var method = parametrizacion.DocEntry == null
+                    ? Method.Post : Method.Patch;
+
+            var entity = method == Method.Post
+                ? $"EEP_PARAM" : $"EEP_PARAM({parametrizacion.DocEntry})";
+
+            var listSeriesDet = new List<dynamic>();
+            foreach (var item in parametrizacion.SerieDetalle)
+            {
+                var bodyDet = new
+                {
+                    U_CODSERIE = item.CodigoSerie,
+                    U_SERIE = item.Serie,
+                };
+
+                listSeriesDet.Add(bodyDet);
+            }
+
+            var body = new
+            {
+                EEP_PARSERIE_DETCollection = listSeriesDet
+            };
+
+            _connectionService.SetEntitySL(method, entity, body, true);
         }
     }
 }
