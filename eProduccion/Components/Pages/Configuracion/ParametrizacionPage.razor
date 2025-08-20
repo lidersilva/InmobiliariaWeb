@@ -1,0 +1,80 @@
+﻿@page "/parametrizacion"
+@using eProduccion.Models
+@using eProduccion.Data.Configuracion
+@inject ISnackbar Snackbar
+@inject ParametrizacionService ParametrizacionService
+
+<PageTitle>eProducci&oacute;n | Parametrizaci&oacute;n</PageTitle>
+
+<div class="row">
+    <div class="col-5">
+        <div class="p-4">
+            <div class="table-responsive">
+                <MudTable Items="@parametrizacion.SerieDetalle" Dense="true" Class="w-100">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Series para OV</MudText>
+                        <MudSpacer />
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@AgregarSerie">Agregar serie</MudButton>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Serie</MudTh>
+                        <MudTh>Acción</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Serie">
+                            <MudSelect T="int" @bind-Value="@context.CodigoSerie" Dense="true" Margin="Margin.Dense" Class="mud-width-full">
+                                @foreach (var i in series)
+                                {
+                                    <MudSelectItem Value="@i.CodigoSerie">@i.Descripcion</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTd>
+                        <MudTd DataLabel="Acción">
+                            <MudTooltip Text="Eliminar serie">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" OnClick="@(() => EliminarSerie(context))" />
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+                    </PagerContent>
+                </MudTable>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Parametrizacion parametrizacion = new();
+    private Serie[]? series;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            parametrizacion = await ParametrizacionService.ObtenerParametrizacion() ?? new Parametrizacion();
+            parametrizacion.SerieDetalle ??= new List<SerieDetalle>();
+
+            series = await ParametrizacionService.ObtenerSeriesOV();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void AgregarSerie()
+    {
+        var serieDefecto = series?.FirstOrDefault();
+        parametrizacion.SerieDetalle.Add(new SerieDetalle
+        {
+            CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
+            Serie = serieDefecto?.Descripcion ?? string.Empty
+        });
+    }
+
+    private void EliminarSerie(SerieDetalle serie)
+    {
+        parametrizacion.SerieDetalle.Remove(serie);
+    }
+}

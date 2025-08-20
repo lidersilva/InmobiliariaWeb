@@ -38,7 +38,7 @@ namespace eProduccion.Data.Produccion
                 $"TP.\"U_ESTADO\", \n" +
                 $"TP.\"U_CANTSOLICITADA\" \n" +
                 $"FROM \"{_connectionService.DataBase}\".\"@EEP_PLANI_OT\" TP \n" +
-                $"JOIN \"{_connectionService.DataBase}\".NNM1 TS ON TP.\"U_SERIE\"=TS.\"Series\" \n" +
+                $"JOIN \"{_connectionService.DataBase}\".NNM1 TS ON TP.\"U_CODSERIE\"=TS.\"Series\" \n" +
                 $"JOIN \"{_connectionService.DataBase}\".OITM TA ON TP.\"U_CODARTICULO\"=TA.\"ItemCode\" \n" +
                 $"ORDER BY TP.\"U_DOCENTRYOV\" DESC \n";
 

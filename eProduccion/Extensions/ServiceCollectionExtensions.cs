@@ -1,4 +1,5 @@
 ﻿using eProduccion.Data;
+using eProduccion.Data.Configuracion;
 using eProduccion.Data.GestionAccesos;
 using eProduccion.Data.Produccion;
 using eProduccion.Models;
@@ -22,6 +23,9 @@ namespace eProduccion.Extensions
             services.AddScoped<PermisoService>();
             services.AddScoped<UsuarioRolService>();
             services.AddScoped<RolService>();
+
+            // Configuración
+            services.AddScoped<ParametrizacionService>();
 
             // Producción
             services.AddScoped<PlanificacionOTService>();
