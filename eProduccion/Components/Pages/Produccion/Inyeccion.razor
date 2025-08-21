@@ -1,0 +1,43 @@
+﻿@page "/inyeccion"
+@using eProduccion.Components.Dialogs
+@using eProduccion.Models
+@using eProduccion.Data.Produccion
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject InyeccionService InyeccionService
+
+<PageTitle>eProducci&oacute;n | Inyecci&oacute;n</PageTitle>
+
+<div class="row">
+    <div class="col-12">
+        <div class="p-4">
+            <div class="table-responsive">
+                <MudTable Items="new List<object>()" Class="w-100">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Planificación OT</MudText>
+                        <MudSpacer />
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>OT</MudTh>
+                        <MudTh>Fecha OT</MudTh>
+                        <MudTh>Artículo OV</MudTh>
+                        <MudTh>Código I</MudTh>
+                        <MudTh>Artículo I</MudTh>
+                        <MudTh>Cantidad OT</MudTh>
+                        <MudTh>DocNum OV</MudTh>
+                        <MudTh>Serie OV</MudTh>
+                        <MudTh>Estado OT</MudTh>
+                        <MudTh>Acciones</MudTh>
+                    </HeaderContent>
+                    <PagerContent>
+                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+                    </PagerContent>
+                </MudTable>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}
