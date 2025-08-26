@@ -1,5 +1,5 @@
 ﻿@page "/inyeccion"
-@using eProduccion.Components.Dialogs
+@using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
@@ -15,7 +15,7 @@
             <div class="table-responsive">
                 <MudTable T="OTInyeccion" Items="@ordenesInyeccion" Filter="FiltrarTabla" @bind-SelectedItem="otSeleccionada">
                     <ToolBarContent>
-                        <MudText Typo="Typo.h6">Usuarios</MudText>
+                        <MudText Typo="Typo.h6">OT Inyección</MudText>
                         <MudSpacer />
                         <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
@@ -51,7 +51,7 @@
                         </MudTd>
                         <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
                             <MudTooltip Text="Cargar">
-                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalCargarInyeccion(context)' />
                             </MudTooltip>
                             <MudTooltip Text="Cancelar">
                                 <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" Class="mr-2" />
@@ -85,6 +85,18 @@
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
+    }
+
+    private async Task AbrirModalCargarInyeccion(OTInyeccion ordenInyeccion)
+    {
+        var parameters = new DialogParameters
+        {
+            { "OrdenInyeccion", ordenInyeccion },
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<InyeccionCargaDialog>("", parameters, options);
     }
 
     private bool FiltrarTabla(OTInyeccion item) => AplicarFiltroTabla(item, textoBusqueda);
