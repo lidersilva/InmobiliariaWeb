@@ -28,6 +28,8 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_PARAM", Descr = "EEP Parametrización", ObjectType = 3 },
                 new () {TableName = "EEP_PARSERIE_DET", Descr = "EEP Param. series det.", ObjectType = 4},
                 new () { TableName = "EEP_PLANI_OT", Descr = "EEP Planificación OT", ObjectType = 5 },
+                new () { TableName = "EEP_OT_INY_CAB", Descr = "EEP OT Inyección cab.", ObjectType = 3 },
+                new () {TableName = "EEP_OT_INY_DET", Descr = "EEP OT Inyección det.", ObjectType = 4},
             }.ForEach(AgregarTablas);
             #endregion
 
@@ -57,9 +59,49 @@ namespace eProduccion.Data
                 new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "FECHAOT", Type = TipoCampo.Date, Size = 10, Description = "Fecha inicio OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "HORAOT", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio OT", SubType = SubTipoCampo.Time, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-                new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 50, Description = "Usuario inicio OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario inicio OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "LINENUMOV", Type = TipoCampo.Numeric, Size = 11, Description = "Línea detalle OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CANTSOLICITADA", Type = TipoCampo.Float, Size = 10, Description = "Cantidad solicitada", SubType = SubTipoCampo.Quantity, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+
+                // OT Inyección
+                new () { Name = "FECHAOT", Type = TipoCampo.Date, Size = 10, Description = "Fecha OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CODARTICULO", Type = TipoCampo.Alpha, Size = 50, Description = "Código artículo OV", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTIDADOT", Type = TipoCampo.Float, Size = 10, Description = "Cantidad OT", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "DOCENTRYOV", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry OV", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ESTANTERIOR", Type = TipoCampo.Alpha, Size = 50, Description = "Estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario creador OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+
+                new () { Name = "NROCONTEN", Type = TipoCampo.Alpha, Size = 50, Description = "Nro. contenedor", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "NROMAQUI", Type = TipoCampo.Alpha, Size = 50, Description = "Nro. máquina", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "FECHAPROC", Type = TipoCampo.Date, Size = 10, Description = "Fecha", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 8, Description = "Hora fin trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno operador", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTAPROB", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades aprobadas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTRET", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades retenidas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTMERMA", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades rechazado reciclable", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTMERMAKG", Type = TipoCampo.Float, Size = 10, Description = "Peso rechazado reciclable (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOTIVOMERMA", Type = TipoCampo.Alpha, Size = 100, Description = "Motivo merma", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTMERMA2", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades rechazado no reciclable", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTMERMAKG2", Type = TipoCampo.Float, Size = 10, Description = "Peso rechazado no reciclable (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOTIVOMERMA2", Type = TipoCampo.Alpha, Size = 100, Description = "Motivo merma 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP1", Type = TipoCampo.Float, Size = 10, Description = "Peso colada (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP2", Type = TipoCampo.Float, Size = 10, Description = "Peso masacote (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP3", Type = TipoCampo.Float, Size = 10, Description = "Peso por ajustes de máq. (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP4", Type = TipoCampo.Float, Size = 10, Description = "Peso pieza (G)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP5", Type = TipoCampo.Numeric, Size = 11, Description = "Cavidades reales", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP6", Type = TipoCampo.Numeric, Size = 11, Description = "Cavidades operativas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP7", Type = TipoCampo.Float, Size = 10, Description = "Tiempo de ciclo real (S)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CCP8", Type = TipoCampo.Float, Size = 10, Description = "Tiempo de ciclo (S)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "LIBERADO", Type = TipoCampo.Alpha, Size = 1, Description = "Liberación de producción", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "DEENTRADA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry entrada", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "DESALIDA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry salida", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+
+
             }.ForEach(AgregarCampos);
             #endregion
 
@@ -138,6 +180,23 @@ namespace eProduccion.Data
                     FormColumns =
                     [
                         new UserColumnsMD_FormColumns() { Code = "EEP_PARAM", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
+                    ]
+                },
+                new ()
+                {
+                    Code = "EEP_OT_INY_CAB", Name = "EEP OT Inyección", TableName = "EEP_OT_INY_CAB", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
+                    ChildTables =
+                    [
+                        new UserChildTablesMD() { Code = "EEP_OT_INY_CAB", SonNumber = "1", TableName = "EEP_OT_INY_DET", ObjectName = "EEP_OT_INY_DET" }
+                    ],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_OT_INY_CAB", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_OT_INY_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
                     ]
                 },
             }.ForEach(AgregarObjetos);

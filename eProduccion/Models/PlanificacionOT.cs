@@ -4,6 +4,7 @@
     {
         public int Code { get; set; }
         public int DocNumOV { get; set; }
+        public int DocEntryOV { get; set; }
         public string EstadoOT { get; set; }
         public DateTime FechaOV { get; set; }
         public string CodArticulo { get; set; }

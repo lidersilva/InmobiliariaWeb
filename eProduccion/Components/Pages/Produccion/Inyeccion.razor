@@ -1,6 +1,7 @@
 ﻿@page "/inyeccion"
 @using eProduccion.Components.Dialogs
 @using eProduccion.Models
+@using eProduccion.Utility
 @using eProduccion.Data.Produccion
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -12,10 +13,11 @@
     <div class="col-12">
         <div class="p-4">
             <div class="table-responsive">
-                <MudTable Items="new List<object>()" Class="w-100">
+                <MudTable T="OTInyeccion" Items="@ordenesInyeccion" Filter="FiltrarTabla" @bind-SelectedItem="otSeleccionada">
                     <ToolBarContent>
-                        <MudText Typo="Typo.h6">Planificación OT</MudText>
+                        <MudText Typo="Typo.h6">Usuarios</MudText>
                         <MudSpacer />
+                        <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>OT</MudTh>
@@ -29,6 +31,36 @@
                         <MudTh>Estado OT</MudTh>
                         <MudTh>Acciones</MudTh>
                     </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="OT">@context.DocEntry</MudTd>
+                        <MudTd DataLabel="Fecha OT">@context.FechaOT.ToString("dd/MM/yyyy")</MudTd>
+                        <MudTd DataLabel="Código artículo OV">
+                            <MudTooltip Text="@context.ArticuloOV">
+                                @context.CodArticuloOV
+                            </MudTooltip>
+                        </MudTd>
+                        <MudTd DataLabel="Código artículo I">@context.CodArticuloI</MudTd>
+                        <MudTd DataLabel="Artículo I" Class="text-nowrap">@context.ArticuloI</MudTd>
+                        <MudTd DataLabel="Cantidad OT">@context.CantidadOT</MudTd>
+                        <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
+                        <MudTd DataLabel="Serie">@context.SerieOV</MudTd>
+                        <MudTd DataLabel="Estado">
+                            <MudChip T="string" Color="@PageHelper.DefinirColorEstado(context.EstadoOT)" Variant="Variant.Filled" Label="true">
+                                @context.EstadoOT
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                            <MudTooltip Text="Cargar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" />
+                            </MudTooltip>
+                            <MudTooltip Text="Cancelar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                            </MudTooltip>
+                            <MudTooltip Text="Finalizar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
                     <PagerContent>
                         <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
                     </PagerContent>
@@ -39,5 +71,40 @@
 </div>
 
 @code {
+    private OTInyeccion[]? ordenesInyeccion;
+    private OTInyeccion? otSeleccionada;
+    private string textoBusqueda = "";
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ordenesInyeccion = await InyeccionService.ObtenerOTInyeccion();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private bool FiltrarTabla(OTInyeccion item) => AplicarFiltroTabla(item, textoBusqueda);
+
+    private bool AplicarFiltroTabla(OTInyeccion item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        searchString = searchString.Trim().ToLower();
+
+        return
+            item.DocEntry.ToString().Contains(searchString) ||
+            item.FechaOT.ToString("dd/MM/yyyy").Contains(searchString) ||
+            (!string.IsNullOrWhiteSpace(item.CodArticuloOV) && item.CodArticuloOV.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.ArticuloOV) && item.ArticuloOV.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.CodArticuloI) && item.CodArticuloI.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.ArticuloI) && item.ArticuloI.ToLower().Contains(searchString)) ||
+            item.DocNumOV.ToString().Contains(searchString) ||
+            (!string.IsNullOrWhiteSpace(item.SerieOV) && item.SerieOV.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.EstadoOT) && item.EstadoOT.ToLower().Contains(searchString));
+    }
 }

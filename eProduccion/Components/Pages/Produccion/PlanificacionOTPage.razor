@@ -1,6 +1,7 @@
 ﻿@page "/planificacionot"
 @using eProduccion.Components.Dialogs
 @using eProduccion.Models
+@using eProduccion.Utility
 @using eProduccion.Data.Produccion
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -46,7 +47,7 @@
                         <MudTd DataLabel="Cant. disponible">@context.CantDisponible</MudTd>
                         <MudTd DataLabel="Cant. solicitada">@context.CantSolicitada</MudTd>
                         <MudTd DataLabel="Estado">
-                            <MudChip T="string" Color="@DefinirColorEstado(context.EstadoOT)" Variant="Variant.Filled" Label="true">
+                            <MudChip T="string" Color="@PageHelper.DefinirColorEstado(context.EstadoOT)" Variant="Variant.Filled" Label="true">
                                 @context.EstadoOT
                             </MudChip>
                         </MudTd>
@@ -163,18 +164,6 @@
                 Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
             }
         }
-    }
-
-    private Color DefinirColorEstado(string estado)
-    {
-        return estado switch
-        {
-            "Pendiente" => Color.Default,
-            "En proceso" => Color.Info,
-            "Finalizado" => Color.Success,
-            "Anulado" => Color.Dark,
-            _ => Color.Transparent
-        };
     }
 
     private bool FiltrarTabla(PlanificacionOT item) => AplicarFiltroTabla(item, textoBusqueda);

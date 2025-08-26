@@ -35,6 +35,7 @@ namespace eProduccion.Data.Produccion
                 $"TP.\"Code\", \n" +
                 $"TP.\"U_FECHAOV\", \n" +
                 $"TS.\"SeriesName\", \n" +
+                $"TP.\"U_DOCENTRYOV\", \n" +
                 $"TP.\"U_DOCNUMOV\", \n" +
                 $"TP.\"U_CODARTICULO\", \n" +
                 $"TA.\"ItemName\", \n" +
@@ -59,6 +60,7 @@ namespace eProduccion.Data.Produccion
                 che.Code = int.Parse(reader["Code"].ToString());
                 che.FechaOV = DateTime.Parse(reader["U_FECHAOV"].ToString());
                 che.Serie = reader["SeriesName"].ToString();
+                che.DocEntryOV = int.Parse(reader["U_DOCENTRYOV"].ToString());
                 che.DocNumOV = int.Parse(reader["U_DOCNUMOV"].ToString());
                 che.CodArticulo = reader["U_CODARTICULO"].ToString();
                 che.Articulo = reader["ItemName"].ToString();
@@ -85,6 +87,9 @@ namespace eProduccion.Data.Produccion
             bodyBatch.AppendLine("--Batch_Boundary_EEP");
             bodyBatch.AppendLine("content-type: multipart/mixed;boundary=changeset_EEP");
             bodyBatch.AppendLine();
+
+            // Generar OT para las diferentes estaciones según la lista de materiales
+            bodyBatch.AppendLine(GenerarOTSegunListaMateriales(listaOV));
 
             // Actualizar líneas iniciadas en EEP_PLANI_OT (Tabla planificación OT)
             bodyBatch.AppendLine(ActualizarLineaPlanificacion(listaOV));
@@ -121,6 +126,79 @@ namespace eProduccion.Data.Produccion
 
                 bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
                 bodyBatch.AppendLine();
+            }
+
+            return bodyBatch.ToString();
+        }
+
+        private List<ListaMateriales> ObtenerEtapasRuta(string codigoArticulo)
+        {
+            var list = new List<ListaMateriales>();
+
+            var query = $"SELECT \n" +
+                $"T1.\"Code\", \n" +
+                $"T0.\"U_CodAcabado\" \n" +
+                $"FROM \"{_connectionService.DataBase}\".ITT2 T0 \n" +
+                $"JOIN \"{_connectionService.DataBase}\".ORST T1 ON T0.\"StgEntry\"=T1.\"AbsEntry\" \n" +
+                $"WHERE T0.\"Father\"='{codigoArticulo}' \n" +
+                $"AND T1.\"Code\" = \n" +
+                $"(SELECT x1.\"Code\" \n" +
+                $"FROM \"{_connectionService.DataBase}\".ITT2 x0 \n" +
+                $"JOIN \"{_connectionService.DataBase}\".ORST x1 ON x0.\"StgEntry\"=x1.\"AbsEntry\" \n" +
+                $"WHERE x0.\"Father\"=T0.\"Father\" \n" +
+                $"AND x0.\"SeqNum\"=1 ) \n" +
+                $"ORDER BY T0.\"SeqNum\" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new ListaMateriales();
+                che.EtapaRuta = reader["Code"].ToString();
+                che.SubProducto = reader["U_CodAcabado"].ToString();
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return list;
+        }
+
+        private string GenerarOTSegunListaMateriales(List<PlanificacionOT> listaOV)
+        {
+            StringBuilder bodyBatch = new StringBuilder();
+
+
+            foreach (var i in listaOV)
+            {
+                var listaEtapasRuta = ObtenerEtapasRuta(i.CodArticulo);
+
+                foreach (var e in listaEtapasRuta)
+                {
+                    bodyBatch.AppendLine("--changeset_EEP");
+                    bodyBatch.AppendLine("content-type: application/http");
+                    bodyBatch.AppendLine("content-transfer-encoding:binary");
+                    bodyBatch.AppendLine();
+                    bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_INY_CAB");
+                    bodyBatch.AppendLine();
+
+                    var body = new
+                    {
+                        U_FECHAOT = DateTime.Now.ToString("yyyy-MM-dd"),
+                        U_CODARTICULO = i.CodArticulo,
+                        U_CODSUBART = e.SubProducto,
+                        U_CANTIDADOT = i.CantSolicitar,
+                        U_ESTADO = "Pendiente",
+                        U_DOCENTRYOV = i.DocEntryOV,
+                        U_ESTANTERIOR = "PLANIFICACION OT",
+                        U_CODEPLANIOT = i.Code,
+                        U_USEROT = _connectionService.UserName,
+                    };
+
+                    bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
+                    bodyBatch.AppendLine();
+                }
             }
 
             return bodyBatch.ToString();
