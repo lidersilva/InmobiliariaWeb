@@ -3,7 +3,7 @@
 @inject ISnackbar Snackbar
 @inject InyeccionService InyeccionService
 
-<MudDialog MaxWidth="MaxWidth.Large" FullWidth="true">
+<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6" Class="mb-0">Carga Inyección</MudText>
     </TitleContent>
@@ -39,18 +39,18 @@
                 <MudTh>Acciones</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Nro. contenedor">
+                <MudTd DataLabel="Nro. contenedor" Style="min-width: 110px;">
                     <MudTextField T="string" @bind-Value="@context.NroContenedor" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Nro. máquina">
+                <MudTd DataLabel="Nro. máquina" Style="min-width: 110px;">
                     <MudTextField T="string" @bind-Value="@context.NroMaquina" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Fecha">
-                    <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" />
+                <MudTd DataLabel="Fecha" Style="min-width: 200px;">
+                    <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" Disabled="@(context.LineId > 0)" />
                 </MudTd>
-                <MudTd DataLabel="Hora inicio"></MudTd>
-                <MudTd DataLabel="Hora fin"></MudTd>
-                <MudTd DataLabel="Turno">
+                <MudTd DataLabel="Hora inicio">@context.HoraInicio.ToString("HH:mm")</MudTd>
+                <MudTd DataLabel="Hora fin">@context.HoraFin.ToString("HH:mm")</MudTd>
+                <MudTd DataLabel="Turno" Style="min-width: 150px;">
                     <MudSelect T="string" @bind-Value="@context.Turno" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
                         <MudSelectItem Value="@("TM")">TM - Mañana</MudSelectItem>
                         <MudSelectItem Value="@("TT")">TT - Tarde</MudSelectItem>
@@ -61,51 +61,64 @@
                 <MudTd DataLabel="Cant. aprobadas">
                     <MudNumericField T="int" @bind-Value="@context.CantAprobadas" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Cant. retenidas">
+                <MudTd DataLabel="Cant. retenidas" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CantRetenidas" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Cant. rechazadas reciclables">
+                <MudTd DataLabel="Cant. rechazadas reciclables" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CantRechReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Peso rechazado reciclable">
+                <MudTd DataLabel="Peso rechazado reciclable" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoRechReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
                 <MudTd DataLabel="Motivo rechazado reciclable"></MudTd>
-                <MudTd DataLabel="Cant. rechazadas no reciclables">
+                <MudTd DataLabel="Cant. rechazadas no reciclables" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CantRechNoReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Peso rechazado no reciclable">
+                <MudTd DataLabel="Peso rechazado no reciclable" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoRechNoReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Motivo rechazado no reciclable"></MudTd>
-                <MudTd DataLabel="Peso colada (KG)">
+                <MudTd DataLabel="Motivo rechazado no reciclable" Style="min-width: 110px;"></MudTd>
+                <MudTd DataLabel="Peso colada (KG)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoColadaKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Peso masacote (KG)">
+                <MudTd DataLabel="Peso masacote (KG)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoMasacoteKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Peso por ajustes máq. (KG)">
+                <MudTd DataLabel="Peso por ajustes máq. (KG)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoAjusMaquinaKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Peso pieza (G)">
+                <MudTd DataLabel="Peso pieza (G)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoPiezaG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Cavidades reales">
+                <MudTd DataLabel="Cavidades reales" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CavidadReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Cavidades operativas">
+                <MudTd DataLabel="Cavidades operativas" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CavidadOperativa" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Tiempo ciclo real (S)">
+                <MudTd DataLabel="Tiempo ciclo real (S)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.TiempoCicloReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
-                    </MudTd>
-                <MudTd DataLabel="Tiempo ciclo (S)">
+                </MudTd>
+                <MudTd DataLabel="Tiempo ciclo (S)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.TiempoCiclo" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
                 <MudTd DataLabel="Liberado producción">@context.Liberado</MudTd>
                 <MudTd DataLabel="DocEntry entrada">@context.DocEntryEntrada</MudTd>
                 <MudTd DataLabel="DocEntry salida">@context.DocEntrySalida</MudTd>
-                <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;"></MudTd>
+                <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                    <MudTooltip Text="Inicio">
+                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => RegistrarInicio(context)' Disabled="@(context.LineId > 0)" />
+                    </MudTooltip>
+                    <MudTooltip Text="Parada">
+                        <MudIconButton Icon="@Icons.Material.Filled.PauseCircle" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" />
+                    </MudTooltip>
+                    <MudTooltip Text="Imprimir">
+                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" />
+                    </MudTooltip>
+                    <MudTooltip Text="Recibir">
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                    </MudTooltip>
+                </MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
@@ -124,19 +137,44 @@
     [Parameter]
     public OTInyeccion OrdenInyeccion { get; set; }
 
-    //private OTInyeccionDet[]? detallesInyeccion;
-
     List<OTInyeccionDet> detallesInyeccion = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Si no hay datos cargados, agregamos una línea vacía editable
-        if (detallesInyeccion.Count == 0)
+        try
         {
-            detallesInyeccion.Add(new OTInyeccionDet
+            detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+
+            // Si no hay datos cargados, se agrega una línea vacía editable
+            if (detallesInyeccion.Count == 0)
             {
-                Fecha = DateTime.Today,
-            });
+                detallesInyeccion.Add(new OTInyeccionDet
+                {
+                    Fecha = DateTime.Today,
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task RegistrarInicio(OTInyeccionDet detalleInyeccion)
+    {
+        try
+        {
+            await InyeccionService.RegistrarInicioInyeccion(OrdenInyeccion.DocEntry, detalleInyeccion);
+
+            detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+
+            StateHasChanged();
+
+            Snackbar.Add($"Línea iniciada correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
     }
 

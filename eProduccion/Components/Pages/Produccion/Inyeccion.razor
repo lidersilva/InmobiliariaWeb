@@ -94,7 +94,13 @@
             { "OrdenInyeccion", ordenInyeccion },
         };
 
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            FullWidth = true,
+            BackdropClick = false,
+        };
 
         var dialog = await DialogService.ShowAsync<InyeccionCargaDialog>("", parameters, options);
     }
