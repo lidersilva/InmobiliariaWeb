@@ -1,0 +1,85 @@
+﻿@using eProduccion.Data.Produccion
+@using eProduccion.Models
+@inject ISnackbar Snackbar
+@inject InyeccionService InyeccionService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Registro paradas</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTable T="Parada" Items="@paradas">
+            <HeaderContent>
+                <MudTh>Nro. máquina</MudTh>
+                <MudTh>Fecha</MudTh>
+                <MudTh>Tipo paro</MudTh>
+                <MudTh>Turno</MudTh>
+                <MudTh>Operario 1</MudTh>
+                <MudTh>Operario 2</MudTh>
+                <MudTh>Hora inicio</MudTh>
+                <MudTh>Hora fin</MudTh>
+                <MudTh>Acciones</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nro. máquina" Style="min-width: 110px;">
+                    <MudTextField T="string" @bind-Value="@context.NroMaquina" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Fecha" Style="min-width: 200px;">
+                    <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" Disabled="@(context.DocEntry > 0)" />
+                </MudTd>
+                <MudTd DataLabel="Tipo paro" Style="min-width: 110px;">
+                    <MudTextField T="string" @bind-Value="@context.TipoParada" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Turno" Style="min-width: 150px;">
+                    <MudSelect T="string" @bind-Value="@context.Turno" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
+                        <MudSelectItem Value="@("TM")">TM - Mañana</MudSelectItem>
+                        <MudSelectItem Value="@("TT")">TT - Tarde</MudSelectItem>
+                        <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
+                    </MudSelect>
+                </MudTd>
+                <MudTd DataLabel="Operario 1"></MudTd>
+                <MudTd DataLabel="Operario 2"></MudTd>
+                <MudTd DataLabel="Hora inicio"></MudTd>
+                <MudTd DataLabel="Hora fin"></MudTd>
+                <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;"></MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public OTInyeccionDet DetalleInyeccion { get; set; }
+
+    List<Parada> paradas = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Si no hay datos cargados, se agrega una línea vacía editable
+            if (paradas.Count == 0)
+            {
+                paradas.Add(new Parada
+                {
+                    Fecha = DateTime.Today,
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

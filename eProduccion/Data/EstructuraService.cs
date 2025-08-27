@@ -30,6 +30,7 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_PLANI_OT", Descr = "EEP Planificación OT", ObjectType = 5 },
                 new () { TableName = "EEP_OT_INY_CAB", Descr = "EEP OT Inyección cab.", ObjectType = 3 },
                 new () {TableName = "EEP_OT_INY_DET", Descr = "EEP OT Inyección det.", ObjectType = 4},
+                new () { TableName = "EEP_PARADAS", Descr = "EEP Registro paradas", ObjectType = 3 },
             }.ForEach(AgregarTablas);
             #endregion
 
@@ -100,6 +101,19 @@ namespace eProduccion.Data
                 new () { Name = "LIBERADO", Type = TipoCampo.Alpha, Size = 1, Description = "Liberación de producción", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "DEENTRADA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry entrada", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "DESALIDA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry salida", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+
+                // Registro paradas
+                new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación de trabajo", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OT", Type = TipoCampo.Numeric, Size = 11, Description = "Nro. OT", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "LINEIDOT", Type = TipoCampo.Numeric, Size = 11, Description = "LineId OT", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "FECHA", Type = TipoCampo.Date, Size = 10, Description = "Fecha registro", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "TIPOPARO", Type = TipoCampo.Alpha, Size = 50, Description = "Tipo parada", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OPERADOR1", Type = TipoCampo.Alpha, Size = 25, Description = "Operador 1", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OPERADOR2", Type = TipoCampo.Alpha, Size = 25, Description = "Operador 2", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio parada", SubType = SubTipoCampo.Time, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 8, Description = "Hora fin parada", SubType = SubTipoCampo.Time, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "NROMAQUI", Type = TipoCampo.Alpha, Size = 25, Description = "Nro. máquina", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
 
             }.ForEach(AgregarCampos);
@@ -197,6 +211,19 @@ namespace eProduccion.Data
                     FormColumns =
                     [
                         new UserColumnsMD_FormColumns() { Code = "EEP_OT_INY_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
+                    ]
+                },
+                new ()
+                {
+                    Code = "EEP_PARADAS", Name = "EEP Registro paradas", TableName = "EEP_PARADAS", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PARADAS", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PARADAS", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
                     ]
                 },
             }.ForEach(AgregarObjetos);
