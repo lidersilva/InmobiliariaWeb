@@ -103,7 +103,7 @@
                 <MudTd DataLabel="Tiempo ciclo real (S)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.TiempoCicloReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Liberado producción">@context.Liberado</MudTd>
+                <MudTd DataLabel="Liberado producción"><input type="checkbox" class="form-check-input" @bind="context.Liberado"></MudTd>
                 <MudTd DataLabel="DocNum entrada">@context.DocNumEntrada</MudTd>
                 <MudTd DataLabel="DocNum salida">@context.DocNumSalida</MudTd>
                 <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
@@ -120,7 +120,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
                     </MudTooltip>
                     <MudTooltip Text="Recibir">
-                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalFinalizar(context)' Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -216,6 +216,32 @@
         };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
+    }
+
+    private async Task AbrirModalFinalizar(OTInyeccionDet detalleInyeccion)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MensajeFinalizar", $"¿Está seguro de proceder a Recibir/Emitir artículos?. Esto generará procesos de Emisión, Recibos y Asientos contables en SAP B1." },
+            { "TextoBoton", "Recibir" }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<FinalizarDialog>("Recibir artículos", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
+        }
     }
 
     private void Cancel() => MudDialog.Cancel();

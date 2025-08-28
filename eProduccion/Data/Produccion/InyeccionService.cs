@@ -236,6 +236,7 @@ namespace eProduccion.Data.Produccion
                         U_CCP7 = detalleInyeccion.TiempoCicloReal,
                         U_CCP8 = detalleInyeccion.TiempoCiclo,
                         U_ESTADO = "Pendiente",
+                        U_LIBERADO = detalleInyeccion.Liberado ? "Y" : "N",
                     }
                 }
             };
