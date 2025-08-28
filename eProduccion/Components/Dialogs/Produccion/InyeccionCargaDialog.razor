@@ -32,11 +32,11 @@
                 <MudTh>Peso pieza (G)</MudTh>
                 <MudTh>Cavidades reales</MudTh>
                 <MudTh>Cavidades operativas</MudTh>
-                <MudTh>Tiempo ciclo real (S)</MudTh>
                 <MudTh>Tiempo ciclo (S)</MudTh>
+                <MudTh>Tiempo ciclo real (S)</MudTh>
                 <MudTh>Liberado producción</MudTh>
-                <MudTh>DocEntry entrada</MudTh>
-                <MudTh>DocEntry salida</MudTh>
+                <MudTh>DocNum entrada</MudTh>
+                <MudTh>DocNum salida</MudTh>
                 <MudTh>Acciones</MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -97,27 +97,30 @@
                 <MudTd DataLabel="Cavidades operativas" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CavidadOperativa" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Tiempo ciclo real (S)" Style="min-width: 110px;">
-                    <MudNumericField T="double" @bind-Value="@context.TiempoCicloReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
-                </MudTd>
                 <MudTd DataLabel="Tiempo ciclo (S)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.TiempoCiclo" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
+                <MudTd DataLabel="Tiempo ciclo real (S)" Style="min-width: 110px;">
+                    <MudNumericField T="double" @bind-Value="@context.TiempoCicloReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
                 <MudTd DataLabel="Liberado producción">@context.Liberado</MudTd>
-                <MudTd DataLabel="DocEntry entrada">@context.DocEntryEntrada</MudTd>
-                <MudTd DataLabel="DocEntry salida">@context.DocEntrySalida</MudTd>
+                <MudTd DataLabel="DocNum entrada">@context.DocNumEntrada</MudTd>
+                <MudTd DataLabel="DocNum salida">@context.DocNumSalida</MudTd>
                 <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                    <MudTooltip Text="Guardar">
+                        <MudIconButton Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Class="mr-2" @onclick='() => GuardarLineaInyeccion(context)' Disabled="@(context.EstadoLinea == "Iniciado" || context.EstadoLinea == "Finalizado")" />
+                    </MudTooltip>
                     <MudTooltip Text="Inicio">
-                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => RegistrarInicio(context)' Disabled="@(context.LineId > 0)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => RegistrarInicio(context)' Disabled="@(context.LineId == 0 || context.EstadoLinea != "Pendiente")" />
                     </MudTooltip>
                     <MudTooltip Text="Parada">
-                        <MudIconButton Icon="@Icons.Material.Filled.PauseCircle" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalParada(context)' />
+                        <MudIconButton Icon="@Icons.Material.Filled.PauseCircle" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalParada(context)' Disabled="@(context.EstadoLinea != "Iniciado")" />
                     </MudTooltip>
                     <MudTooltip Text="Imprimir">
-                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
                     </MudTooltip>
                     <MudTooltip Text="Recibir">
-                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -154,6 +157,24 @@
                     Fecha = DateTime.Today,
                 });
             }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task GuardarLineaInyeccion(OTInyeccionDet detalleInyeccion)
+    {
+        try
+        {
+            await InyeccionService.GuardarLineaInyeccion(OrdenInyeccion.DocEntry, detalleInyeccion);
+
+            detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+
+            StateHasChanged();
+
+            Snackbar.Add($"Línea guardada correctamente", Severity.Success);
         }
         catch (Exception ex)
         {

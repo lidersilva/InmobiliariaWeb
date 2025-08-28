@@ -22,33 +22,33 @@
                     <HeaderContent>
                         <MudTh>OT</MudTh>
                         <MudTh>Fecha OT</MudTh>
-                        <MudTh>Artículo OV</MudTh>
-                        <MudTh>Código I</MudTh>
-                        <MudTh>Artículo I</MudTh>
-                        <MudTh>Cantidad OT</MudTh>
+                        <MudTh>Estado OT</MudTh>
                         <MudTh>DocNum OV</MudTh>
                         <MudTh>Serie OV</MudTh>
-                        <MudTh>Estado OT</MudTh>
+                        <MudTh>Artículo OV</MudTh>
+                        <MudTh>Código OT I</MudTh>
+                        <MudTh>Artículo OT I</MudTh>
+                        <MudTh>Cantidad OT</MudTh>
                         <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="OT">@context.DocEntry</MudTd>
                         <MudTd DataLabel="Fecha OT">@context.FechaOT.ToString("dd/MM/yyyy")</MudTd>
-                        <MudTd DataLabel="Código artículo OV">
-                            <MudTooltip Text="@context.ArticuloOV">
-                                @context.CodArticuloOV
-                            </MudTooltip>
-                        </MudTd>
-                        <MudTd DataLabel="Código artículo I">@context.CodArticuloI</MudTd>
-                        <MudTd DataLabel="Artículo I" Class="text-nowrap">@context.ArticuloI</MudTd>
-                        <MudTd DataLabel="Cantidad OT">@context.CantidadOT</MudTd>
-                        <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
-                        <MudTd DataLabel="Serie">@context.SerieOV</MudTd>
                         <MudTd DataLabel="Estado">
                             <MudChip T="string" Color="@PageHelper.DefinirColorEstado(context.EstadoOT)" Variant="Variant.Filled" Label="true">
                                 @context.EstadoOT
                             </MudChip>
                         </MudTd>
+                        <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
+                        <MudTd DataLabel="Serie">@context.SerieOV</MudTd>
+                        <MudTd DataLabel="Artículo OV">
+                            <MudTooltip Text="@context.ArticuloOV">
+                                @context.CodArticuloOV
+                            </MudTooltip>
+                        </MudTd>
+                        <MudTd DataLabel="Código OT I">@context.CodArticuloI</MudTd>
+                        <MudTd DataLabel="Artículo OT I" Class="text-nowrap">@context.ArticuloI</MudTd>
+                        <MudTd DataLabel="Cantidad OT">@context.CantidadOT</MudTd>
                         <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
                             <MudTooltip Text="Cargar">
                                 <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalCargarInyeccion(context)' />

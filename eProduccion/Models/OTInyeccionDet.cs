@@ -30,5 +30,8 @@
         public bool Liberado {  get; set; }
         public int DocEntryEntrada { get; set; }
         public int DocEntrySalida { get; set; }
+        public int DocNumEntrada { get; set; }
+        public int DocNumSalida { get; set; }
+        public string EstadoLinea { get; set; }
     }
 }

@@ -86,7 +86,8 @@ namespace eProduccion.Data.Produccion
                     IFNULL(""U_CCP8"", 0) ""U_CCP8"",
                     ""U_LIBERADO"",
                     IFNULL(""U_DEENTRADA"", 0) ""U_DEENTRADA"",
-                    IFNULL(""U_DESALIDA"", 0) ""U_DESALIDA""
+                    IFNULL(""U_DESALIDA"", 0) ""U_DESALIDA"",
+                    ""U_ESTADO""
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_DET"" TD
                 WHERE TD.""DocEntry"" = {docEntryOT}
                 ORDER BY ""LineId""";
@@ -128,6 +129,7 @@ namespace eProduccion.Data.Produccion
                 che.Liberado = reader["U_LIBERADO"].ToString() == "Y";
                 che.DocEntryEntrada = int.Parse(reader["U_DEENTRADA"].ToString());
                 che.DocEntrySalida = int.Parse(reader["U_DESALIDA"].ToString());
+                che.EstadoLinea = reader["U_ESTADO"].ToString();
                 list.Add(che);
             }
 
@@ -149,8 +151,44 @@ namespace eProduccion.Data.Produccion
                 {
                     new
                     {
-                        U_FECHAPROC = detalleInyeccion.Fecha,
+                        LineId = detalleInyeccion.LineId,
                         U_HORAINI = fechaActual.ToString("HHmm"),
+                        U_ESTADO = "Iniciado",
+                    }
+                }
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public async Task GuardarLineaInyeccion(int docEntryOT, OTInyeccionDet detalleInyeccion)
+        {
+            var fechaActual = DateTime.Now;
+
+            var method = Method.Patch;
+            var entity = $"EEP_OT_INY_CAB({docEntryOT})";
+
+            var body = new
+            {
+                EEP_OT_INY_DETCollection = new[]
+                {
+                    new
+                    {
+                        LineId = detalleInyeccion.LineId,
+                        U_NROCONTEN = detalleInyeccion.NroContenedor,
+                        U_NROMAQUI = detalleInyeccion.NroMaquina,
+                        U_FECHAPROC = detalleInyeccion.Fecha,
+                        U_TURNO = detalleInyeccion.Turno,
+                        U_OPERARIO = detalleInyeccion.Operario,
+                        U_CCP1 = detalleInyeccion.PesoColadaKG,
+                        U_CCP2 = detalleInyeccion.PesoMasacoteKG,
+                        U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
+                        U_CCP4 = detalleInyeccion.PesoPiezaG,
+                        U_CCP5 = detalleInyeccion.CavidadReal,
+                        U_CCP6 = detalleInyeccion.CavidadOperativa,
+                        U_CCP7 = detalleInyeccion.TiempoCicloReal,
+                        U_CCP8 = detalleInyeccion.TiempoCiclo,
+                        U_ESTADO = "Pendiente",
                     }
                 }
             };
