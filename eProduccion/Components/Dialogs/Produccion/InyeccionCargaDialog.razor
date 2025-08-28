@@ -120,7 +120,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
                     </MudTooltip>
                     <MudTooltip Text="Recibir">
-                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalFinalizar(context)' Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalRecibir(context)' Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -150,7 +150,7 @@
             detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
 
             // Si no hay datos cargados, se agrega una línea vacía editable
-            if (detallesInyeccion.Count == 0)
+            if (detallesInyeccion.Count == 0 || detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
             {
                 detallesInyeccion.Add(new OTInyeccionDet
                 {
@@ -218,7 +218,7 @@
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
     }
 
-    private async Task AbrirModalFinalizar(OTInyeccionDet detalleInyeccion)
+    private async Task AbrirModalRecibir(OTInyeccionDet detalleInyeccion)
     {
         var parameters = new DialogParameters
         {
@@ -235,7 +235,21 @@
         {
             try
             {
+                await InyeccionService.FinalizarLineaInyeccion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloI, detalleInyeccion);
 
+                detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+
+                if (detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
+                {
+                    detallesInyeccion.Add(new OTInyeccionDet
+                    {
+                        Fecha = DateTime.Today,
+                    });
+                }
+
+                StateHasChanged();
+
+                Snackbar.Add($"Salida de mercancías generada correctamente", Severity.Success);
             }
             catch (Exception ex)
             {

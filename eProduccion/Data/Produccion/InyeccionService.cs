@@ -1,13 +1,15 @@
-﻿using eProduccion.Models;
+﻿using eProduccion.Integration;
+using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
-    public class InyeccionService(ConnectionService connectionService)
+    public class InyeccionService(ConnectionService connectionService, SBOIntegration sboIntegration)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly SBOIntegration _sboIntegration = sboIntegration;
 
         public Task<OTInyeccion[]> ObtenerOTInyeccion()
         {
@@ -86,9 +88,10 @@ namespace eProduccion.Data.Produccion
                     IFNULL(""U_CCP8"", 0) ""U_CCP8"",
                     ""U_LIBERADO"",
                     IFNULL(""U_DEENTRADA"", 0) ""U_DEENTRADA"",
-                    IFNULL(""U_DESALIDA"", 0) ""U_DESALIDA"",
+                    IFNULL(TS.""DocNum"", 0) ""DocNumSalida"",
                     ""U_ESTADO""
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_DET"" TD
+                LEFT JOIN  ""{_connectionService.DataBase}"".OIGE TS ON TD.""U_DESALIDA""=TS.""DocEntry""
                 WHERE TD.""DocEntry"" = {docEntryOT}
                 ORDER BY ""LineId""";
 
@@ -129,7 +132,7 @@ namespace eProduccion.Data.Produccion
                 che.TiempoCiclo = double.Parse(reader["U_CCP8"].ToString());
                 che.Liberado = reader["U_LIBERADO"].ToString() == "Y";
                 che.DocEntryEntrada = int.Parse(reader["U_DEENTRADA"].ToString());
-                che.DocEntrySalida = int.Parse(reader["U_DESALIDA"].ToString());
+                che.DocNumSalida = int.Parse(reader["DocNumSalida"].ToString());
                 che.EstadoLinea = reader["U_ESTADO"].ToString();
                 list.Add(che);
             }
@@ -268,6 +271,89 @@ namespace eProduccion.Data.Produccion
                 U_HORAFIN = horaFin,
                 U_NROMAQUI = parada.NroMaquina,
                 U_ESTADO = estado,
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionDet detalleInyeccion)
+        {
+            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "INYECCION");
+            int cantidadInyeccion = detalleInyeccion.CantAprobadas + detalleInyeccion.CantRetenidas + detalleInyeccion.CantRechReciclable + detalleInyeccion.CantRechNoReciclable;
+
+            var listaSalidaDet = new List<EntradaSalidaDet>();
+            foreach (var i in listaMateriales)
+            {
+                var che = new EntradaSalidaDet();
+                che.Articulo = i.Item;
+                che.Quantity = cantidadInyeccion * i.Cantidad;
+                listaSalidaDet.Add(che);
+            }
+
+            var jObject = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet);
+            int docEntrySalida = int.Parse(jObject["DocEntry"].ToString());
+
+            ActualizarLineaInyeccion(detalleInyeccion.DocEntry, docEntrySalida, detalleInyeccion);
+        }
+
+        public List<ListaMaterialesDet> ObtenerListaMateriales(string codArticuloOV, string codArticuloI, string estacion)
+        {
+            var list = new List<ListaMaterialesDet>();
+
+            var query = $@"
+                SELECT 
+                    T1.""Code"", 
+                    T1.""Quantity"" 
+                FROM ""{_connectionService.DataBase}"".OITT T0
+                JOIN ""{_connectionService.DataBase}"".ITT1 T1 ON T0.""Code""=T1.""Father""
+                JOIN ""{_connectionService.DataBase}"".ITT2 T2 ON T0.""Code""=T2.""Father"" AND T1.""StageId""=T2.""StageId"" 
+                JOIN ""{_connectionService.DataBase}"".ORST T3 ON T2.""StgEntry""=T3.""AbsEntry"" 
+                WHERE T0.""Code""='{codArticuloOV}'
+                AND T3.""Code""='{estacion}'
+                AND T2.""U_CodAcabado""='{codArticuloI}'
+                AND T1.""Type""=4 ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new ListaMaterialesDet();
+                che.Item = reader["Code"].ToString();
+                che.Cantidad = double.Parse(reader["Quantity"].ToString());
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return list;
+        }
+
+        public void ActualizarLineaInyeccion(int docEntryOT, int docEntrySalida, OTInyeccionDet detalleInyeccion)
+        {
+            var fechaActual = DateTime.Now;
+
+            var method = Method.Patch;
+            var entity = $"EEP_OT_INY_CAB({docEntryOT})";
+
+            var body = new
+            {
+                EEP_OT_INY_DETCollection = new[]
+                {
+                    new
+                    {
+                        LineId = detalleInyeccion.LineId,
+                        U_HORAFIN = fechaActual.ToString("HHmm"),
+                        U_CANTAPROB = detalleInyeccion.CantAprobadas,
+                        U_CANTRET = detalleInyeccion.CantRetenidas,
+                        U_CANTMERMA = detalleInyeccion.CantRechReciclable,
+                        U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
+                        U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
+                        U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
+                        U_DESALIDA = docEntrySalida,
+                        U_ESTADO = "Finalizado",
+                    }
+                }
             };
 
             _connectionService.SetEntitySL(method, entity, body);

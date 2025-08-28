@@ -2,6 +2,7 @@
 using eProduccion.Data.Configuracion;
 using eProduccion.Data.GestionAccesos;
 using eProduccion.Data.Produccion;
+using eProduccion.Integration;
 using eProduccion.Models;
 using eProduccion.Utility;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -33,6 +34,9 @@ namespace eProduccion.Extensions
 
             // Utility
             services.AddScoped<DbHelper>();
+
+            // Integration
+            services.AddScoped<SBOIntegration>();
 
             return services;
         }
