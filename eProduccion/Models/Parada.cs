@@ -3,7 +3,6 @@
     public class Parada
     {
         public int DocEntry { get; set; }
-        public int LineId { get; set; }
         public string Estacion { get; set; }
         public int DocEntryOT { get; set; }
         public int LineIdOT { get; set; }
@@ -15,6 +14,6 @@
         public string Operador2 { get; set; }
         public DateTime HoraInicio { get; set; }
         public DateTime HoraFin { get; set; }
-        public string Estado {  get; set; }
+        public string Estado { get; set; }
     }
 }

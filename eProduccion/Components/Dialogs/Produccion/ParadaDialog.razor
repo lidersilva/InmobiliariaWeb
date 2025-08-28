@@ -35,12 +35,13 @@
                         <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
                     </MudSelect>
                 </MudTd>
-                <MudTd DataLabel="Hora inicio"></MudTd>
-                <MudTd DataLabel="Hora fin"></MudTd>
+                <MudTd DataLabel="Hora inicio">@context.HoraInicio.ToString("HH:mm")</MudTd>
+                <MudTd DataLabel="Hora fin">@context.HoraFin.ToString("HH:mm")</MudTd>
                 <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
-                    <MudTooltip Text="@(context.LineId == 0 ? "Iniciar" : "Detener")">
-                        <MudIconButton Icon="@(context.LineId == 0 ? Icons.Material.Filled.PlayArrow : Icons.Material.Filled.Stop)" Variant="Variant.Filled" 
-                        Color="@(context.LineId == 0 ? Color.Primary : Color.Error)" Size="Size.Small" Class="mr-2" Disabled="@(context.Estado == "Detenido")" />
+                    <MudTooltip Text="@(context.DocEntry == 0 ? "Iniciar" : "Detener")">
+                        <MudIconButton Icon="@(context.DocEntry == 0 ? Icons.Material.Filled.PlayArrow : Icons.Material.Filled.Stop)" Variant="Variant.Filled"
+                                       Color="@(context.DocEntry == 0 ? Color.Primary : Color.Error)" Size="Size.Small" Class="mr-2" Disabled="@(context.Estado == "Detenido")"
+                                       @onclick='() => RegistrarParada(context)' />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -67,8 +68,10 @@
     {
         try
         {
+            paradas = await InyeccionService.ObtenerRegistroParadas(DetalleInyeccion.DocEntry, DetalleInyeccion.LineId, "INYECCION");
+
             // Si no hay datos cargados, se agrega una línea vacía editable
-            if (paradas.Count == 0)
+            if (paradas.Count == 0 || paradas.LastOrDefault()?.Estado == "Detenido")
             {
                 paradas.Add(new Parada
                 {
@@ -77,6 +80,34 @@
                     Turno = DetalleInyeccion.Turno,
                 });
             }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task RegistrarParada(Parada parada)
+    {
+        try
+        {
+            await InyeccionService.RegistrarParada(parada, DetalleInyeccion);
+
+            paradas = await InyeccionService.ObtenerRegistroParadas(DetalleInyeccion.DocEntry, DetalleInyeccion.LineId, "INYECCION");
+
+            if (paradas.LastOrDefault()?.Estado == "Detenido")
+            {
+                paradas.Add(new Parada
+                {
+                    NroMaquina = DetalleInyeccion.NroMaquina,
+                    Fecha = DateTime.Today,
+                    Turno = DetalleInyeccion.Turno,
+                });
+            }
+
+            StateHasChanged();
+
+            Snackbar.Add($"Parada registrada correctamente", Severity.Success);
         }
         catch (Exception ex)
         {
