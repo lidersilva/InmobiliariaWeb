@@ -278,7 +278,7 @@ namespace eProduccion.Data.Produccion
 
         public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionDet detalleInyeccion)
         {
-            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "INYECCION");
+            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "02");
             int cantidadInyeccion = detalleInyeccion.CantAprobadas + detalleInyeccion.CantRetenidas + detalleInyeccion.CantRechReciclable + detalleInyeccion.CantRechNoReciclable;
 
             var listaSalidaDet = new List<EntradaSalidaDet>();
