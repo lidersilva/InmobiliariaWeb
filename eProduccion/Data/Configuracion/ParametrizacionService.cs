@@ -16,6 +16,12 @@ namespace eProduccion.Data.Configuracion
 
             var query = $"SELECT \n" +
                 $"TP.\"DocEntry\", \n" +
+                $"TP.\"U_CTAPRODC\", \n" +
+                $"TP.\"U_ASALIDAI\", \n" +
+                $"TP.\"U_AAPROBI\", \n" +
+                $"TP.\"U_ARECHRECII\", \n" +
+                $"TP.\"U_ARECHNORECII\", \n" +
+                $"TP.\"U_ARETENIDOSI\", \n" +
                 $"TDS.\"LineId\", \n" +
                 $"TDS.\"U_CODSERIE\", \n" +
                 $"TDS.\"U_SERIE\" " +
@@ -28,7 +34,15 @@ namespace eProduccion.Data.Configuracion
             while (reader.Read())
             {
                 if (banderaCabecera)
+                {
                     parametrizacion.DocEntry = int.Parse(reader["DocEntry"].ToString());
+                    parametrizacion.CtaProduccionCurso = reader["U_CTAPRODC"].ToString();
+                    parametrizacion.AlmacenSalidaIny = reader["U_ASALIDAI"].ToString();
+                    parametrizacion.AlmacenAprobadosIny = reader["U_AAPROBI"].ToString();
+                    parametrizacion.AlmacenRechReciIny = reader["U_ARECHRECII"].ToString();
+                    parametrizacion.AlmacenRechNoReciIny = reader["U_ARECHNORECII"].ToString();
+                    parametrizacion.AlmacenRetenidosIny = reader["U_ARETENIDOSI"].ToString();
+                }
 
                 var serieDet = new SerieDetalle();
                 serieDet.LineId = int.Parse(reader["LineId"].ToString());
@@ -87,6 +101,50 @@ namespace eProduccion.Data.Configuracion
             return list;
         }
 
+        public Task<List<CuentaContable>> ObtenerCuentasContables()
+        {
+            var list = new List<CuentaContable>();
+
+            var query = $"SELECT \"AcctCode\", \"AcctName\" From \"{_connectionService.DataBase}\".OACT WHERE \"Postable\"='Y' AND \"Levels\"=5 ORDER BY \"AcctCode\" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new CuentaContable();
+                che.Cuenta = reader["AcctCode"].ToString();
+                che.Descripcion = reader["AcctName"].ToString();
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return Task.FromResult(list);
+        }
+
+        public Task<List<Almacen>> ObtenerAlmacenes()
+        {
+            var list = new List<Almacen>();
+
+            var query = $"SELECT \"WhsCode\", \"WhsName\" FROM \"{_connectionService.DataBase}\".\"OWHS\" ORDER BY \"WhsCode\" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new Almacen();
+                che.Codigo = reader["WhsCode"].ToString();
+                che.Descripcion = reader["WhsName"].ToString();
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return Task.FromResult(list);
+        }
+
         public async Task GuardarParametrizacion(Parametrizacion parametrizacion)
         {
             var method = parametrizacion.DocEntry == null
@@ -109,6 +167,12 @@ namespace eProduccion.Data.Configuracion
 
             var body = new
             {
+                U_CTAPRODC = parametrizacion.CtaProduccionCurso,
+                U_ASALIDAI = parametrizacion.AlmacenSalidaIny,
+                U_AAPROBI = parametrizacion.AlmacenAprobadosIny,
+                U_ARECHRECII = parametrizacion.AlmacenRechReciIny,
+                U_ARECHNORECII = parametrizacion.AlmacenRechNoReciIny,
+                U_ARETENIDOSI = parametrizacion.AlmacenRetenidosIny,
                 EEP_PARSERIE_DETCollection = listSeriesDet
             };
 

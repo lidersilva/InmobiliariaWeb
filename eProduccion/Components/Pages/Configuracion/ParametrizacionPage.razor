@@ -7,6 +7,69 @@
 <PageTitle>eProducci&oacute;n | Parametrizaci&oacute;n</PageTitle>
 
 <div class="row">
+    <div class="col-7">
+        <div class="p-4">
+            <MudAutocomplete T="CuentaContable"
+                             Label="Cuenta de producción en curso"
+                             SearchFunc="BuscarCuentasContables"
+                             ToStringFunc='cuenta => cuenta != null ? $"{cuenta.Cuenta} - {cuenta.Descripcion}" : string.Empty'
+                             @bind-Value="cuentaContableSeleccionada"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true" />
+            <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén salida Inyección"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenSalidaInySeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. aprobados - Inyección"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenAprobadosInySeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. rechazados reciclables - Inyección"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenRechReciInySeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. rechazados no reciclables - Inyección"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenRechNoReciInySeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. retenidos - Inyección"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenRetenidosInySeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true" />
+        </div>
+    </div>
     <div class="col-5">
         <div class="p-4">
             <div class="table-responsive">
@@ -48,6 +111,14 @@
 
 @code {
     private Parametrizacion parametrizacion = new();
+    private List<CuentaContable> cuentasContables;
+    private List<Almacen> almacenes;
+    private CuentaContable cuentaContableSeleccionada;
+    private Almacen almacenSalidaInySeleccionado;
+    private Almacen almacenAprobadosInySeleccionado;
+    private Almacen almacenRechReciInySeleccionado;
+    private Almacen almacenRechNoReciInySeleccionado;
+    private Almacen almacenRetenidosInySeleccionado;
     private Serie[]? series;
 
     protected override async Task OnInitializedAsync()
@@ -57,7 +128,25 @@
             parametrizacion = await ParametrizacionService.ObtenerParametrizacion() ?? new Parametrizacion();
             parametrizacion.SerieDetalle ??= new List<SerieDetalle>();
 
+            cuentasContables = await ParametrizacionService.ObtenerCuentasContables();
+
+            almacenes = await ParametrizacionService.ObtenerAlmacenes();
+
             series = await ParametrizacionService.ObtenerSeriesOV();
+
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CtaProduccionCurso))
+                cuentaContableSeleccionada = cuentasContables.FirstOrDefault(c => c.Cuenta == parametrizacion.CtaProduccionCurso);
+
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenSalidaIny))
+                almacenSalidaInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenSalidaIny);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosIny))
+                almacenAprobadosInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosIny);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechReciIny))
+                almacenRechReciInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechReciIny);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechNoReciIny))
+                almacenRechNoReciInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechNoReciIny);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidosIny))
+                almacenRetenidosInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidosIny);
         }
         catch (Exception ex)
         {
@@ -84,6 +173,14 @@
     {
         try
         {
+            parametrizacion.CtaProduccionCurso = cuentaContableSeleccionada?.Cuenta;
+
+            parametrizacion.AlmacenSalidaIny = almacenSalidaInySeleccionado?.Codigo;
+            parametrizacion.AlmacenAprobadosIny = almacenAprobadosInySeleccionado?.Codigo;
+            parametrizacion.AlmacenRechReciIny = almacenRechReciInySeleccionado?.Codigo;
+            parametrizacion.AlmacenRechNoReciIny = almacenRechNoReciInySeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidosIny = almacenRetenidosInySeleccionado?.Codigo;
+
             await ParametrizacionService.GuardarParametrizacion(parametrizacion);
 
             Snackbar.Add($"Parametrización guardada correctamente", Severity.Success);
@@ -97,4 +194,35 @@
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
     }
+
+    private Task<IEnumerable<CuentaContable>> BuscarCuentasContables(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(cuentasContables.AsEnumerable());
+
+        var resultado = cuentasContables
+            .Where(c =>
+                (!string.IsNullOrEmpty(c.Cuenta) && c.Cuenta.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Descripcion) && c.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(c => c.Cuenta)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private Task<IEnumerable<Almacen>> BuscarAlmacenes(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(almacenes.AsEnumerable());
+
+        var resultado = almacenes
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
 }

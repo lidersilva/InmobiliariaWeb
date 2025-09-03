@@ -3,6 +3,12 @@
     public class Parametrizacion
     {
         public int? DocEntry { get; set; }
+        public string CtaProduccionCurso { get; set; }
+        public string AlmacenSalidaIny { get; set; }
+        public string AlmacenAprobadosIny { get; set; }
+        public string AlmacenRechReciIny { get; set; }
+        public string AlmacenRechNoReciIny { get; set; }
+        public string AlmacenRetenidosIny { get; set; }
         public List<SerieDetalle> SerieDetalle { get; set; }
     }
 }

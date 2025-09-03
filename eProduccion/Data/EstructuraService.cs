@@ -46,6 +46,13 @@ namespace eProduccion.Data
                 new () { Name = "PERM", Type = TipoCampo.Alpha, Size = 1, Description = "Código de Permiso", SubType = SubTipoCampo.None, TableName = "@EEP_ROLD", LinkedTable = "EEP_PERM", DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
                 // Parametrización
+                new () { Name = "CTAPRODC", Type = TipoCampo.Alpha, Size = 15, Description = "Cuenta de producción en curso", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ASALIDAI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. salida inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "AAPROBI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ARECHRECII", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados reciclables", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ARECHNORECII", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados no reciclables inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ARETENIDOSI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                // Parametrización - Series Det.
                 new () { Name = "CODSERIE", Type = TipoCampo.Numeric, Size = 11, Description = "Código serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "SERIE", Type = TipoCampo.Alpha, Size = 8, Description = "Serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
