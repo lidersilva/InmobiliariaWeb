@@ -10,7 +10,7 @@ namespace eProduccion.Integration
         private readonly ConnectionService _connectionService = connectionService;
 
         #region InventoryGenExits
-        public JObject CrearSalidaMercancias(int otReferencial, int lineIdReferencial, List<EntradaSalidaDet> salidaDet)
+        public JObject CrearSalidaMercancias(int otReferencial, int lineIdReferencial, List<EntradaSalidaDet> salidaDet, string cuentaSalida, string almacen, string estacion)
         {
             var method = Method.Post;
             var entity = $"InventoryGenExits";
@@ -21,10 +21,11 @@ namespace eProduccion.Integration
                 var bodyDet = new
                 {
                     ItemCode = i.Articulo,
-                    Quantity = i.Quantity,
+                    Quantity = i.Cantidad,
                     BaseType = -1,
-                    WarehouseCode = "PETROSAN",
-                    AcctCode = "1.01.04.03.18",
+                    WarehouseCode = almacen,
+                    AcctCode = cuentaSalida,
+                    BatchNumbers = i.LoteDetalle,
                 };
 
                 listSalidaDetalle.Add(bodyDet);
@@ -33,7 +34,7 @@ namespace eProduccion.Integration
             var body = new
             {
                 DocDate = DateTime.Now,
-                Comments = $"Salida eProduccion\r\nInyeccion OT {otReferencial} Linea {lineIdReferencial}",
+                Comments = $"Salida eProduccion\r\n{estacion} OT {otReferencial} Linea {lineIdReferencial}",
                 U_OTREFE = otReferencial,
                 U_LINEREFE = lineIdReferencial,
                 DocumentLines = listSalidaDetalle,
