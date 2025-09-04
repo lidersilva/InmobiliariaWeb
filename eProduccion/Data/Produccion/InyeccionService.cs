@@ -15,22 +15,24 @@ namespace eProduccion.Data.Produccion
         {
             var list = new List<OTInyeccion>();
 
-            var query = $"SELECT \n" +
-                $"TI.\"DocEntry\", \n" +
-                $"TI.\"U_FECHAOT\", \n" +
-                $"TI.\"U_CODARTICULO\", \n" +
-                $"(SELECT x.\"ItemName\" FROM \"{_connectionService.DataBase}\".OITM x WHERE x.\"ItemCode\"=TI.\"U_CODARTICULO\") ARTICULO, \n" +
-                $"TI.\"U_CODSUBART\", \n" +
-                $"TA.\"ItemName\", \n" +
-                $"TI.\"U_CANTIDADOT\", \n" +
-                $"TP.\"U_DOCNUMOV\", \n" +
-                $"TS.\"SeriesName\", \n" +
-                $"TI.\"U_ESTADO\" \n" +
-                $"FROM \"{_connectionService.DataBase}\".\"@EEP_OT_INY_CAB\" TI \n" +
-                $"JOIN \"{_connectionService.DataBase}\".\"@EEP_PLANI_OT\" TP ON TI.\"U_CODEPLANIOT\"=TP.\"Code\" \n" +
-                $"JOIN \"{_connectionService.DataBase}\".NNM1 TS ON TP.\"U_CODSERIE\"=TS.\"Series\" \n" +
-                $"JOIN \"{_connectionService.DataBase}\".OITM TA ON TI.\"U_CODSUBART\"=TA.\"ItemCode\" \n" +
-                $"ORDER BY TI.\"DocEntry\" DESC ";
+            var query = $@"
+                SELECT 
+                TI.""DocEntry"", 
+                TI.""U_FECHAOT"", 
+                TI.""U_CODARTICULO"", 
+                (SELECT x.""ItemName"" FROM ""{_connectionService.DataBase}"".OITM x WHERE x.""ItemCode""=TI.""U_CODARTICULO"") ARTICULO, 
+                TI.""U_CODSUBART"", 
+                TA.""ItemName"", 
+                TI.""U_CANTIDADOT"", 
+                TP.""U_DOCNUMOV"", 
+                TS.""SeriesName"", 
+                TI.""U_ESTADO"", 
+                (SELECT IFNULL(x.""U_EP_CPM"", 0) FROM ""{_connectionService.DataBase}"".OITM x WHERE x.""ItemCode""=TI.""U_CODSUBART"") CAVREALES
+                FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_CAB"" TI 
+                JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TI.""U_CODEPLANIOT""=TP.""Code"" 
+                JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 
+                JOIN ""{_connectionService.DataBase}"".OITM TA ON TI.""U_CODSUBART""=TA.""ItemCode"" 
+                ORDER BY TI.""DocEntry"" DESC ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -48,6 +50,7 @@ namespace eProduccion.Data.Produccion
                 che.DocNumOV = int.Parse(reader["U_DOCNUMOV"].ToString());
                 che.SerieOV = reader["SeriesName"].ToString();
                 che.EstadoOT = reader["U_ESTADO"].ToString();
+                che.CavidadesReales = int.Parse(reader["CAVREALES"].ToString());
                 list.Add(che);
             }
 
@@ -230,6 +233,12 @@ namespace eProduccion.Data.Produccion
                         U_FECHAPROC = detalleInyeccion.Fecha,
                         U_TURNO = detalleInyeccion.Turno,
                         U_OPERARIO = detalleInyeccion.Operario,
+                        U_CANTAPROB = detalleInyeccion.CantAprobadas,
+                        U_CANTRET = detalleInyeccion.CantRetenidas,
+                        U_CANTMERMA = detalleInyeccion.CantRechReciclable,
+                        U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
+                        U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
+                        U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
                         U_CCP1 = detalleInyeccion.PesoColadaKG,
                         U_CCP2 = detalleInyeccion.PesoMasacoteKG,
                         U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
@@ -350,6 +359,13 @@ namespace eProduccion.Data.Produccion
                         U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
                         U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
                         U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
+                        U_CCP1 = detalleInyeccion.PesoColadaKG,
+                        U_CCP2 = detalleInyeccion.PesoMasacoteKG,
+                        U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
+                        U_CCP4 = detalleInyeccion.PesoPiezaG,
+                        U_CCP6 = detalleInyeccion.CavidadOperativa,
+                        U_CCP7 = detalleInyeccion.TiempoCicloReal,
+                        U_CCP8 = detalleInyeccion.TiempoCiclo,
                         U_DESALIDA = docEntrySalida,
                         U_ESTADO = "Finalizado",
                     }

@@ -129,6 +129,7 @@ namespace eProduccion.Data
                 // Campos SAP
                 new () { Name = "OTREFE", Type = TipoCampo.Numeric, Size = 11, Description = "OT referencial", SubType = SubTipoCampo.None, TableName = "OIGE", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "LINEREFE", Type = TipoCampo.Numeric, Size = 11, Description = "LineId referencial", SubType = SubTipoCampo.None, TableName = "OIGE", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CodAcabado", Type = TipoCampo.Alpha, Size = 50, Description = "Subproducto", SubType = SubTipoCampo.None, TableName = "ITT2", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
             }.ForEach(AgregarCampos);
             #endregion
 

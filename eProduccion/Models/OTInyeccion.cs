@@ -12,6 +12,7 @@
         public int DocNumOV { get; set; }
         public string SerieOV { get; set; }
         public string EstadoOT {  get; set; }
+        public int CavidadesReales {  get; set; }
         public List<OTInyeccionDet> OTInyeccionDetalle {  get; set; }
     }
 }

@@ -92,7 +92,7 @@
                     <MudNumericField T="double" @bind-Value="@context.PesoPiezaG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
                 <MudTd DataLabel="Cavidades reales" Style="min-width: 110px;">
-                    <MudNumericField T="int" @bind-Value="@context.CavidadReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                    <MudNumericField T="int" @bind-Value="@context.CavidadReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Cavidades operativas" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CavidadOperativa" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
@@ -153,9 +153,11 @@
             if (detallesInyeccion.Count == 0 || detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
             {
                 detallesInyeccion.Add(new OTInyeccionDet
-                {
-                    Fecha = DateTime.Today,
-                });
+                    {
+                        Fecha = DateTime.Today,
+                        Turno = ObtenerTurnoSegunHoraSistema(),
+                        CavidadReal = OrdenInyeccion.CavidadesReales,
+                    });
             }
         }
         catch (Exception ex)
@@ -208,12 +210,12 @@
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = false,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = false,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
     }
@@ -242,9 +244,9 @@
                 if (detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
                 {
                     detallesInyeccion.Add(new OTInyeccionDet
-                    {
-                        Fecha = DateTime.Today,
-                    });
+                        {
+                            Fecha = DateTime.Today,
+                        });
                 }
 
                 StateHasChanged();
@@ -256,6 +258,18 @@
                 Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
             }
         }
+    }
+
+    private string ObtenerTurnoSegunHoraSistema()
+    {
+        var horaActual = DateTime.Now.TimeOfDay;
+
+        if (horaActual >= TimeSpan.FromHours(6) && horaActual < TimeSpan.FromHours(14))
+            return "TM";
+        if (horaActual >= TimeSpan.FromHours(14) && horaActual < TimeSpan.FromHours(22))
+            return "TT";
+        else
+            return "TN";
     }
 
     private void Cancel() => MudDialog.Cancel();
