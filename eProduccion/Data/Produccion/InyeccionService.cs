@@ -1,4 +1,5 @@
-﻿using eProduccion.Integration;
+﻿using eProduccion.Data.Configuracion;
+using eProduccion.Integration;
 using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
@@ -6,10 +7,11 @@ using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
-    public class InyeccionService(ConnectionService connectionService, SBOIntegration sboIntegration)
+    public class InyeccionService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion)
     {
         private readonly ConnectionService _connectionService = connectionService;
         private readonly SBOIntegration _sboIntegration = sboIntegration;
+        private readonly ParametrizacionService _parametrizacion = parametrizacion;
 
         public Task<OTInyeccion[]> ObtenerOTInyeccion()
         {
@@ -278,19 +280,28 @@ namespace eProduccion.Data.Produccion
 
         public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionDet detalleInyeccion)
         {
-            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "02");
+            var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
+
             int cantidadInyeccion = detalleInyeccion.CantAprobadas + detalleInyeccion.CantRetenidas + detalleInyeccion.CantRechReciclable + detalleInyeccion.CantRechNoReciclable;
+
+            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "02");
 
             var listaSalidaDet = new List<EntradaSalidaDet>();
             foreach (var i in listaMateriales)
             {
-                var che = new EntradaSalidaDet();
-                che.Articulo = i.Item;
-                che.Quantity = cantidadInyeccion * i.Cantidad;
-                listaSalidaDet.Add(che);
+                if (i.TipoItem == 4)
+                {
+                    var lotes = ObtenerLotesSalida(i.Item, parametrizacion.AlmacenSalidaIny);
+
+                    var che = new EntradaSalidaDet();
+                    che.Articulo = i.Item;
+                    che.Cantidad = cantidadInyeccion * i.Cantidad;
+                    che.LoteDetalle = CalcularLotesAConsumir(che.Cantidad, lotes);
+                    listaSalidaDet.Add(che);
+                }
             }
 
-            var jObject = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet);
+            var jObject = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, "Inyección");
             int docEntrySalida = int.Parse(jObject["DocEntry"].ToString());
 
             ActualizarLineaInyeccion(detalleInyeccion.DocEntry, docEntrySalida, detalleInyeccion);
@@ -303,15 +314,16 @@ namespace eProduccion.Data.Produccion
             var query = $@"
                 SELECT 
                     T1.""Code"", 
-                    T1.""Quantity"" 
+                    T1.""Quantity"", 
+                    T1.""Type"" 
                 FROM ""{_connectionService.DataBase}"".OITT T0
                 JOIN ""{_connectionService.DataBase}"".ITT1 T1 ON T0.""Code""=T1.""Father""
                 JOIN ""{_connectionService.DataBase}"".ITT2 T2 ON T0.""Code""=T2.""Father"" AND T1.""StageId""=T2.""StageId"" 
                 JOIN ""{_connectionService.DataBase}"".ORST T3 ON T2.""StgEntry""=T3.""AbsEntry"" 
                 WHERE T0.""Code""='{codArticuloOV}'
                 AND T3.""Code""='{estacion}'
-                AND T2.""U_CodAcabado""='{codArticuloI}'
-                AND T1.""Type""=4 ";
+                AND T2.""U_CodAcabado""='{codArticuloI}' 
+                GROUP BY T1.""Code"", T1.""Quantity"", T1.""Type"" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -321,6 +333,7 @@ namespace eProduccion.Data.Produccion
                 var che = new ListaMaterialesDet();
                 che.Item = reader["Code"].ToString();
                 che.Cantidad = double.Parse(reader["Quantity"].ToString());
+                che.TipoItem = int.Parse(reader["Type"].ToString());
                 list.Add(che);
             }
 
@@ -357,6 +370,61 @@ namespace eProduccion.Data.Produccion
             };
 
             _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public List<Lote> ObtenerLotesSalida(string codArticuloI, string almacen)
+        {
+            var list = new List<Lote>();
+
+            var query = $@"
+                SELECT 
+                TC.""DistNumber"", 
+                TD.""Quantity""
+                FROM ""{_connectionService.DataBase}"".OBTQ TD 
+                JOIN ""{_connectionService.DataBase}"".OBTN TC ON TD.""SysNumber""=TC.""SysNumber"" AND TD.""ItemCode"" = TC.""ItemCode"" 
+                WHERE TD.""Quantity"">0 
+                AND TD.""ItemCode""='{codArticuloI}' 
+                AND TD.""WhsCode"" ='{almacen}' 
+                GROUP BY TC.""DistNumber"", TD.""Quantity"", TC.""ExpDate""
+                ORDER BY TC.""ExpDate"" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new Lote();
+                che.NroLote = reader["DistNumber"].ToString();
+                che.Cantidad = double.Parse(reader["Quantity"].ToString());
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return list;
+        }
+
+        public List<Lote> CalcularLotesAConsumir(double cantidadConsumir, List<Lote> lotes)
+        {
+            var list = new List<Lote>();
+
+            foreach (var i in lotes)
+            {
+                if (cantidadConsumir <= 0)
+                    break;
+
+                double cantidadConsumida = Math.Min(i.Cantidad, cantidadConsumir);
+
+                list.Add(new Lote()
+                {
+                    NroLote = i.NroLote,
+                    Cantidad = cantidadConsumida,
+                });
+
+                cantidadConsumir -= cantidadConsumida;
+            }
+
+            return list;
         }
     }
 }
