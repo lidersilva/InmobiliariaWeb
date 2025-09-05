@@ -81,5 +81,43 @@ namespace eProduccion.Integration
             return jObject;
         }
         #endregion
+
+        #region InventoryGenEntries
+        public JObject CrearEntradaMercancias(int otReferencial, int lineIdReferencial, List<EntradaSalidaDet> entradaDet, string cuentaSalida, string estacion)
+        {
+            var method = Method.Post;
+            var entity = $"InventoryGenEntries";
+
+            var listSalidaDetalle = new List<dynamic>();
+            foreach (var i in entradaDet)
+            {
+                var bodyDet = new
+                {
+                    ItemCode = i.Articulo,
+                    Quantity = i.Cantidad,
+                    BaseType = -1,
+                    AccountCode = cuentaSalida,
+                    WarehouseCode = i.Almacen,
+                    UnitPrice = i.PrecioUnitario,
+                    BatchNumbers = i.LoteDetalle,
+                };
+
+                listSalidaDetalle.Add(bodyDet);
+            }
+
+            var body = new
+            {
+                DocDate = DateTime.Now,
+                Comments = $"Entrada eProducción\r\n{estacion} OT {otReferencial} Línea {lineIdReferencial}",
+                U_OTREFE = otReferencial,
+                U_LINEREFE = lineIdReferencial,
+                DocumentLines = listSalidaDetalle,
+            };
+
+            var jObject = _connectionService.SetEntitySL(method, entity, body);
+
+            return jObject;
+        }
+        #endregion
     }
 }

@@ -4,6 +4,7 @@ using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
+using static MudBlazor.Colors;
 
 namespace eProduccion.Data.Produccion
 {
@@ -92,12 +93,13 @@ namespace eProduccion.Data.Produccion
                     IFNULL(""U_CCP7"", 0) ""U_CCP7"",
                     IFNULL(""U_CCP8"", 0) ""U_CCP8"",
                     ""U_LIBERADO"",
-                    IFNULL(""U_DEENTRADA"", 0) ""U_DEENTRADA"",
                     IFNULL(TS.""DocNum"", 0) ""DocNumSalida"",
                     IFNULL(TD.""U_NROASIENTO"", 0) ""U_NROASIENTO"",
+                    IFNULL(TE.""DocNum"", 0) ""DocNumEntrada"",
                     ""U_ESTADO""
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_DET"" TD
                 LEFT JOIN  ""{_connectionService.DataBase}"".OIGE TS ON TD.""U_DESALIDA""=TS.""DocEntry""
+                LEFT JOIN  ""{_connectionService.DataBase}"".OIGN TE ON TD.""U_DEENTRADA""=TE.""DocEntry""
                 WHERE TD.""DocEntry"" = {docEntryOT}
                 ORDER BY ""LineId""";
 
@@ -137,9 +139,9 @@ namespace eProduccion.Data.Produccion
                 che.TiempoCicloReal = double.Parse(reader["U_CCP7"].ToString());
                 che.TiempoCiclo = double.Parse(reader["U_CCP8"].ToString());
                 che.Liberado = reader["U_LIBERADO"].ToString() == "Y";
-                che.DocEntryEntrada = int.Parse(reader["U_DEENTRADA"].ToString());
                 che.DocNumSalida = int.Parse(reader["DocNumSalida"].ToString());
                 che.Asiento = int.Parse(reader["U_NROASIENTO"].ToString());
+                che.DocNumEntrada = int.Parse(reader["DocNumEntrada"].ToString());
                 che.EstadoLinea = reader["U_ESTADO"].ToString();
                 list.Add(che);
             }
@@ -293,6 +295,7 @@ namespace eProduccion.Data.Produccion
         {
             var listLineasAsiento = new List<AsientoDet>();
             int nroAsiento = 0;
+            double totalDebitoRecurso = 0;
 
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
@@ -300,6 +303,7 @@ namespace eProduccion.Data.Produccion
 
             var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "02");
 
+            // Salida
             var listaSalidaDet = new List<EntradaSalidaDet>();
             foreach (var i in listaMateriales)
             {
@@ -318,10 +322,12 @@ namespace eProduccion.Data.Produccion
             var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, "Inyección");
             int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
             int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
+            int nroAsientoSalida = int.Parse(jObjectSalida["TransNum"].ToString());
 
+            //Asiento
             if (listaMateriales.Any(x => x.TipoItem == 290))
             {
-                double totalDebitoRecurso = 0;
+                totalDebitoRecurso = 0;
 
                 // Cuentas de mayor a utilizar en el asiento para los recursos
                 var cuentasMayor = ObtenerCuentasMayorRecurso();
@@ -356,7 +362,87 @@ namespace eProduccion.Data.Produccion
                 nroAsiento = int.Parse(jObjectAsiento["JdtNum"].ToString());
             }
 
-            ActualizarLineaInyeccionFinalizacion(detalleInyeccion.DocEntry, docEntrySalida, nroAsiento, detalleInyeccion);
+            // Entrada
+            double totalDebitoSalida = ObtenerDebitoAsientoSalidaMercaderias(nroAsientoSalida);
+            double precioUnitarioEntrada = totalDebitoRecurso + totalDebitoSalida / cantidadInyeccion;
+
+            var listEntradaDet = new List<EntradaSalidaDet>();
+            if (detalleInyeccion.CantAprobadas > 0)
+            {
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArticuloI,
+                    Cantidad = detalleInyeccion.CantAprobadas,
+                    Almacen = parametrizacion.AlmacenAprobadosIny,
+                    PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detalleInyeccion.CantAprobadas,
+                        }
+                    ]
+                });
+            }
+
+            if (detalleInyeccion.CantRetenidas > 0)
+            {
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArticuloI,
+                    Cantidad = detalleInyeccion.CantRetenidas,
+                    Almacen = parametrizacion.AlmacenRetenidosIny,
+                    PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detalleInyeccion.CantRetenidas,
+                        }
+                    ]
+                });
+            }
+
+            if (detalleInyeccion.CantRechReciclable > 0)
+            {
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArticuloI,
+                    Cantidad = detalleInyeccion.CantRechReciclable,
+                    Almacen = parametrizacion.AlmacenRechReciIny,
+                    PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detalleInyeccion.CantRechReciclable,
+                        }
+                    ]
+                });
+            }
+
+            if (detalleInyeccion.CantRechNoReciclable > 0)
+            {
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArticuloI,
+                    Cantidad = detalleInyeccion.CantRechNoReciclable,
+                    Almacen = parametrizacion.AlmacenRechNoReciIny,
+                    PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detalleInyeccion.CantRechNoReciclable,
+                        }
+                    ]
+                });
+            }
+
+            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listEntradaDet, parametrizacion.CtaProduccionCurso, "Inyección");
+            int docEntryEntrada = int.Parse(jObjectEntrada["DocEntry"].ToString());
+
+            ActualizarLineaInyeccionFinalizacion(detalleInyeccion.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detalleInyeccion);
         }
 
         public List<ListaMaterialesDet> ObtenerListaMateriales(string codArticuloOV, string codArticuloI, string estacion)
@@ -394,7 +480,7 @@ namespace eProduccion.Data.Produccion
             return list;
         }
 
-        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, OTInyeccionDet detalleInyeccion)
+        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, int docEntryEntrada, OTInyeccionDet detalleInyeccion)
         {
             var fechaActual = DateTime.Now;
 
@@ -424,6 +510,7 @@ namespace eProduccion.Data.Produccion
                         U_CCP8 = detalleInyeccion.TiempoCiclo,
                         U_DESALIDA = docEntrySalida,
                         U_NROASIENTO = nroAsiento,
+                        U_DEENTRADA = docEntryEntrada,
                         U_ESTADO = "Finalizado",
                     }
                 }
@@ -596,6 +683,26 @@ namespace eProduccion.Data.Produccion
             }
 
             return listCostoCuenta;
+        }
+
+        public double ObtenerDebitoAsientoSalidaMercaderias(int asiento)
+        {
+            double totalDebito = 0;
+
+            var query = $@"
+                SELECT SUM(""Debit"") ""Debit"" FROM ""{_connectionService.DataBase}"".JDT1 WHERE ""TransId""={asiento} ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                totalDebito = double.Parse(reader["Debit"].ToString());
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return totalDebito;
         }
     }
 }
