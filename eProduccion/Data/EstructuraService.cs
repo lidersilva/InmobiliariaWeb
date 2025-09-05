@@ -109,6 +109,7 @@ namespace eProduccion.Data
                 new () { Name = "DEENTRADA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry entrada", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "DESALIDA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry salida", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado línea", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "NROASIENTO", Type = TipoCampo.Numeric, Size = 11, Description = "Número asiento", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INY_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
                 // Registro paradas
                 new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación de trabajo", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },

@@ -6,9 +6,9 @@
         public int LineId { get; set; }
         public string NroContenedor { get; set; }
         public string NroMaquina { get; set; }
-        public DateTime? Fecha {  get; set; }
+        public DateTime? Fecha { get; set; }
         public DateTime HoraInicio { get; set; }
-        public DateTime HoraFin {  get; set; }
+        public DateTime HoraFin { get; set; }
         public string Turno { get; set; }
         public string Operario { get; set; }
         public int CantAprobadas { get; set; }
@@ -27,11 +27,12 @@
         public int CavidadOperativa { get; set; }
         public double TiempoCicloReal { get; set; }
         public double TiempoCiclo { get; set; }
-        public bool Liberado {  get; set; }
+        public bool Liberado { get; set; }
         public int DocEntryEntrada { get; set; }
         public int DocEntrySalida { get; set; }
         public int DocNumEntrada { get; set; }
         public int DocNumSalida { get; set; }
+        public int Asiento { get; set; }
         public string EstadoLinea { get; set; }
     }
 }

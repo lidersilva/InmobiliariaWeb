@@ -95,12 +95,12 @@
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.False,
-            FullWidth = true,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.False,
+                FullWidth = true,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<InyeccionCargaDialog>("", parameters, options);
     }

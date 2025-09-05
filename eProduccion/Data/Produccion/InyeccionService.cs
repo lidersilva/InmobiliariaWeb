@@ -94,6 +94,7 @@ namespace eProduccion.Data.Produccion
                     ""U_LIBERADO"",
                     IFNULL(""U_DEENTRADA"", 0) ""U_DEENTRADA"",
                     IFNULL(TS.""DocNum"", 0) ""DocNumSalida"",
+                    IFNULL(TD.""U_NROASIENTO"", 0) ""U_NROASIENTO"",
                     ""U_ESTADO""
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_DET"" TD
                 LEFT JOIN  ""{_connectionService.DataBase}"".OIGE TS ON TD.""U_DESALIDA""=TS.""DocEntry""
@@ -138,6 +139,7 @@ namespace eProduccion.Data.Produccion
                 che.Liberado = reader["U_LIBERADO"].ToString() == "Y";
                 che.DocEntryEntrada = int.Parse(reader["U_DEENTRADA"].ToString());
                 che.DocNumSalida = int.Parse(reader["DocNumSalida"].ToString());
+                che.Asiento = int.Parse(reader["U_NROASIENTO"].ToString());
                 che.EstadoLinea = reader["U_ESTADO"].ToString();
                 list.Add(che);
             }
@@ -289,6 +291,9 @@ namespace eProduccion.Data.Produccion
 
         public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionDet detalleInyeccion)
         {
+            var listLineasAsiento = new List<AsientoDet>();
+            int nroAsiento = 0;
+
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
             int cantidadInyeccion = detalleInyeccion.CantAprobadas + detalleInyeccion.CantRetenidas + detalleInyeccion.CantRechReciclable + detalleInyeccion.CantRechNoReciclable;
@@ -310,10 +315,48 @@ namespace eProduccion.Data.Produccion
                 }
             }
 
-            var jObject = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, "Inyección");
-            int docEntrySalida = int.Parse(jObject["DocEntry"].ToString());
+            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, "Inyección");
+            int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
+            int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
 
-            ActualizarLineaInyeccion(detalleInyeccion.DocEntry, docEntrySalida, detalleInyeccion);
+            if (listaMateriales.Any(x => x.TipoItem == 290))
+            {
+                double totalDebitoRecurso = 0;
+
+                // Cuentas de mayor a utilizar en el asiento para los recursos
+                var cuentasMayor = ObtenerCuentasMayorRecurso();
+
+                foreach (var i in listaMateriales.Where(x => x.TipoItem == 290))
+                {
+                    var costosRecurso = ObtenerCostosRecurso(i.Item);
+
+                    var listCostosPorCuenta = ObtenerCostoPorCuentaRecurso(costosRecurso, cuentasMayor);
+
+                    foreach (var j in listCostosPorCuenta)
+                    {
+                        double creditoRecurso = j.Costo * i.Cantidad * cantidadInyeccion;
+
+                        listLineasAsiento.Add(new AsientoDet
+                        {
+                            AccountCode = j.Cuenta,
+                            Credito = creditoRecurso
+                        });
+
+                        totalDebitoRecurso += creditoRecurso;
+                    }
+                }
+
+                listLineasAsiento.Add(new AsientoDet
+                {
+                    AccountCode = parametrizacion.CtaProduccionCurso,
+                    Debito = totalDebitoRecurso
+                });
+
+                var jObjectAsiento = _sboIntegration.CrearAsiento(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listLineasAsiento, "Inyección", docNumSalida);
+                nroAsiento = int.Parse(jObjectAsiento["JdtNum"].ToString());
+            }
+
+            ActualizarLineaInyeccionFinalizacion(detalleInyeccion.DocEntry, docEntrySalida, nroAsiento, detalleInyeccion);
         }
 
         public List<ListaMaterialesDet> ObtenerListaMateriales(string codArticuloOV, string codArticuloI, string estacion)
@@ -351,7 +394,7 @@ namespace eProduccion.Data.Produccion
             return list;
         }
 
-        public void ActualizarLineaInyeccion(int docEntryOT, int docEntrySalida, OTInyeccionDet detalleInyeccion)
+        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, OTInyeccionDet detalleInyeccion)
         {
             var fechaActual = DateTime.Now;
 
@@ -380,6 +423,7 @@ namespace eProduccion.Data.Produccion
                         U_CCP7 = detalleInyeccion.TiempoCicloReal,
                         U_CCP8 = detalleInyeccion.TiempoCiclo,
                         U_DESALIDA = docEntrySalida,
+                        U_NROASIENTO = nroAsiento,
                         U_ESTADO = "Finalizado",
                     }
                 }
@@ -441,6 +485,117 @@ namespace eProduccion.Data.Produccion
             }
 
             return list;
+        }
+
+        public CostoRecurso ObtenerCostosRecurso(string codRecurso)
+        {
+            var mCostoRecurso = new CostoRecurso();
+
+            var query = $@"
+                SELECT 
+                ""StdCost1"",
+                ""StdCost2"",
+                ""StdCost3"",
+                ""StdCost4"",
+                ""StdCost5"",
+                ""StdCost6"",
+                ""StdCost7"",
+                ""StdCost8"",
+                ""StdCost9"",
+                ""StdCost10""
+                FROM ""{_connectionService.DataBase}"".ORSC 
+                WHERE ""VisResCode""='{codRecurso}' ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                mCostoRecurso.CostoRecurso1 = double.Parse(reader["StdCost1"].ToString());
+                mCostoRecurso.CostoRecurso2 = double.Parse(reader["StdCost2"].ToString());
+                mCostoRecurso.CostoRecurso3 = double.Parse(reader["StdCost3"].ToString());
+                mCostoRecurso.CostoRecurso4 = double.Parse(reader["StdCost4"].ToString());
+                mCostoRecurso.CostoRecurso5 = double.Parse(reader["StdCost5"].ToString());
+                mCostoRecurso.CostoRecurso6 = double.Parse(reader["StdCost6"].ToString());
+                mCostoRecurso.CostoRecurso7 = double.Parse(reader["StdCost7"].ToString());
+                mCostoRecurso.CostoRecurso8 = double.Parse(reader["StdCost8"].ToString());
+                mCostoRecurso.CostoRecurso9 = double.Parse(reader["StdCost9"].ToString());
+                mCostoRecurso.CostoRecurso10 = double.Parse(reader["StdCost10"].ToString());
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return mCostoRecurso;
+        }
+
+        public CuentaMayorRecurso ObtenerCuentasMayorRecurso()
+        {
+            var mCCuentaMayorRecurso = new CuentaMayorRecurso();
+
+            var query = $@"
+                SELECT 
+                ""ResStdExp1"", 
+                ""ResStdExp2"",
+                ""ResStdExp3"",
+                ""ResStdExp4"",
+                ""ResStdExp5"",
+                ""ResStdExp6"",
+                ""ResStdExp7"",
+                ""ResStdExp8"",
+                ""ResStdExp9"",
+                ""ResStdEx10"" 
+                FROM ""{_connectionService.DataBase}"".OACP
+                WHERE ""PeriodCat""={DateTime.Now.Year} ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                mCCuentaMayorRecurso.GastoCosto1 = reader["ResStdExp1"].ToString();
+                mCCuentaMayorRecurso.GastoCosto2 = reader["ResStdExp2"].ToString();
+                mCCuentaMayorRecurso.GastoCosto3 = reader["ResStdExp3"].ToString();
+                mCCuentaMayorRecurso.GastoCosto4 = reader["ResStdExp4"].ToString();
+                mCCuentaMayorRecurso.GastoCosto5 = reader["ResStdExp5"].ToString();
+                mCCuentaMayorRecurso.GastoCosto6 = reader["ResStdExp6"].ToString();
+                mCCuentaMayorRecurso.GastoCosto7 = reader["ResStdExp7"].ToString();
+                mCCuentaMayorRecurso.GastoCosto8 = reader["ResStdExp8"].ToString();
+                mCCuentaMayorRecurso.GastoCosto9 = reader["ResStdExp9"].ToString();
+                mCCuentaMayorRecurso.GastoCosto10 = reader["ResStdEx10"].ToString();
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return mCCuentaMayorRecurso;
+        }
+
+        public List<CostoCuentaRecurso> ObtenerCostoPorCuentaRecurso(CostoRecurso costos, CuentaMayorRecurso cuentas)
+        {
+            var listCostoCuenta = new List<CostoCuentaRecurso>();
+
+            for (int i = 1; i <= 10; i++)
+            {
+                var propCosto = typeof(CostoRecurso).GetProperty($"CostoRecurso{i}");
+                var propCuenta = typeof(CuentaMayorRecurso).GetProperty($"GastoCosto{i}");
+
+                if (propCosto != null && propCuenta != null)
+                {
+                    var valorCosto = (double)(propCosto.GetValue(costos) ?? 0);
+                    var valorCuenta = (string)(propCuenta.GetValue(cuentas) ?? string.Empty);
+
+                    if (valorCosto > 0)
+                    {
+                        listCostoCuenta.Add(new CostoCuentaRecurso
+                        {
+                            Numero = i,
+                            Costo = valorCosto,
+                            Cuenta = valorCuenta,
+                        });
+                    }
+                }
+            }
+
+            return listCostoCuenta;
         }
     }
 }

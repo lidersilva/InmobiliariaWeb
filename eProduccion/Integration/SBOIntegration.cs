@@ -34,10 +34,46 @@ namespace eProduccion.Integration
             var body = new
             {
                 DocDate = DateTime.Now,
-                Comments = $"Salida eProduccion\r\n{estacion} OT {otReferencial} Linea {lineIdReferencial}",
+                Comments = $"Salida eProducción\r\n{estacion} OT {otReferencial} Línea {lineIdReferencial}",
                 U_OTREFE = otReferencial,
                 U_LINEREFE = lineIdReferencial,
                 DocumentLines = listSalidaDetalle,
+            };
+
+            var jObject = _connectionService.SetEntitySL(method, entity, body);
+
+            return jObject;
+        }
+        #endregion
+
+        #region JournalEntries
+        public JObject CrearAsiento(int otReferencial, int lineIdReferencial, List<AsientoDet> asientoDet, string estacion, int docNumSalida)
+        {
+            var method = Method.Post;
+            var entity = $"JournalEntries";
+
+            var listAsientoDetalle = new List<dynamic>();
+            foreach (var i in asientoDet)
+            {
+                var bodyDet = new
+                {
+                    AccountCode = i.AccountCode,
+                    Debit = i.Debito,
+                    Credit = i.Credito,
+                };
+
+                listAsientoDetalle.Add(bodyDet);
+            }
+
+            var body = new
+            {
+                ReferenceDate = DateTime.Now,
+                TaxDate = DateTime.Now,
+                Memo = $"Asiento eProducción {estacion} OT {otReferencial} Línea {lineIdReferencial} DocNum Salida {docNumSalida}",
+                Reference = docNumSalida,
+                Reference2 = otReferencial,
+                Reference3 = lineIdReferencial,
+                JournalEntryLines = listAsientoDetalle,
             };
 
             var jObject = _connectionService.SetEntitySL(method, entity, body);
