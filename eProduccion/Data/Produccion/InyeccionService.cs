@@ -402,7 +402,7 @@ namespace eProduccion.Data.Produccion
                 AND TD.""ItemCode""='{codArticuloI}' 
                 AND TD.""WhsCode"" ='{almacen}' 
                 GROUP BY TC.""DistNumber"", TD.""Quantity"", TC.""ExpDate""
-                ORDER BY TC.""ExpDate"" ";
+                ORDER BY IFNULL(TC.""ExpDate"", CURRENT_DATE) ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
