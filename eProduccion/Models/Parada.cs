@@ -9,6 +9,7 @@
         public DateTime? Fecha { get; set; }
         public string NroMaquina { get; set; }
         public string TipoParada { get; set; }
+        public MotivoParadaDefecto? MotTipoParada { get; set; }
         public string Turno { get; set; }
         public string Operador1 { get; set; }
         public string Operador2 { get; set; }

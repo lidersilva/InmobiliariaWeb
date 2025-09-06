@@ -25,8 +25,15 @@
                 <MudTd DataLabel="Fecha" Style="min-width: 200px;">
                     <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" Disabled="true" />
                 </MudTd>
-                <MudTd DataLabel="Tipo paro" Style="min-width: 110px;">
-                    <MudTextField T="string" @bind-Value="@context.TipoParada" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
+                <MudTd DataLabel="Tipo paro" Style="min-width: 200px;">
+                    <MudAutocomplete T="MotivoParadaDefecto"
+                                     SearchFunc="BuscarTipoParada"
+                                     ToStringFunc='motivo => motivo != null ? $"{motivo.Codigo} {motivo.Descripcion}" : string.Empty'
+                                     @bind-Value="@context.MotTipoParada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
                 </MudTd>
                 <MudTd DataLabel="Turno" Style="min-width: 150px;">
                     <MudSelect T="string" @bind-Value="@context.Turno" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" Disabled="true">
@@ -37,7 +44,7 @@
                 </MudTd>
                 <MudTd DataLabel="Hora inicio">@context.HoraInicio.ToString("HH:mm")</MudTd>
                 <MudTd DataLabel="Hora fin">@context.HoraFin.ToString("HH:mm")</MudTd>
-                <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                <MudTd DataLabel="Acciones">
                     <MudTooltip Text="@(context.DocEntry == 0 ? "Iniciar" : "Detener")">
                         <MudIconButton Icon="@(context.DocEntry == 0 ? Icons.Material.Filled.PlayArrow : Icons.Material.Filled.Stop)" Variant="Variant.Filled"
                                        Color="@(context.DocEntry == 0 ? Color.Primary : Color.Error)" Size="Size.Small" Class="mr-2" Disabled="@(context.Estado == "Detenido")"
@@ -63,22 +70,25 @@
     public OTInyeccionDet DetalleInyeccion { get; set; }
 
     List<Parada> paradas = new();
+    List<MotivoParadaDefecto> listaMotivoParada = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            paradas = await InyeccionService.ObtenerRegistroParadas(DetalleInyeccion.DocEntry, DetalleInyeccion.LineId, "INYECCION");
+            listaMotivoParada = (await InyeccionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "PR").ToList();
+
+            await CargarDetallesParada();
 
             // Si no hay datos cargados, se agrega una línea vacía editable
             if (paradas.Count == 0 || paradas.LastOrDefault()?.Estado == "Detenido")
             {
                 paradas.Add(new Parada
-                {
-                    NroMaquina = DetalleInyeccion.NroMaquina,
-                    Fecha = DateTime.Today,
-                    Turno = DetalleInyeccion.Turno,
-                });
+                    {
+                        NroMaquina = DetalleInyeccion.NroMaquina,
+                        Fecha = DateTime.Today,
+                        Turno = DetalleInyeccion.Turno,
+                    });
             }
         }
         catch (Exception ex)
@@ -91,18 +101,20 @@
     {
         try
         {
+            parada.TipoParada = parada.MotTipoParada?.Codigo;
+
             await InyeccionService.RegistrarParada(parada, DetalleInyeccion);
 
-            paradas = await InyeccionService.ObtenerRegistroParadas(DetalleInyeccion.DocEntry, DetalleInyeccion.LineId, "INYECCION");
+            await CargarDetallesParada();
 
             if (paradas.LastOrDefault()?.Estado == "Detenido")
             {
                 paradas.Add(new Parada
-                {
-                    NroMaquina = DetalleInyeccion.NroMaquina,
-                    Fecha = DateTime.Today,
-                    Turno = DetalleInyeccion.Turno,
-                });
+                    {
+                        NroMaquina = DetalleInyeccion.NroMaquina,
+                        Fecha = DateTime.Today,
+                        Turno = DetalleInyeccion.Turno,
+                    });
             }
 
             StateHasChanged();
@@ -113,6 +125,31 @@
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
+    }
+
+    private async Task CargarDetallesParada()
+    {
+        paradas = await InyeccionService.ObtenerRegistroParadas(DetalleInyeccion.DocEntry, DetalleInyeccion.LineId, "INYECCION");
+
+        foreach (var det in paradas)
+        {
+            det.MotTipoParada = listaMotivoParada.FirstOrDefault(x => x.Codigo == det.TipoParada);
+        }
+    }
+
+    private Task<IEnumerable<MotivoParadaDefecto>> BuscarTipoParada(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(listaMotivoParada.AsEnumerable());
+
+        var resultado = listaMotivoParada
+            .Where(c =>
+                (!string.IsNullOrEmpty(c.Codigo) && c.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Descripcion) && c.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(c => c.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
     }
 
     private void Cancel() => MudDialog.Cancel();
