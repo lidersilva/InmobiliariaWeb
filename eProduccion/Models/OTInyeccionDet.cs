@@ -16,9 +16,11 @@
         public int CantRechReciclable { get; set; }
         public double PesoRechReciclable { get; set; }
         public string MotiMPesoRechReciclable { get; set; }
+        public MotivoParadaDefecto? MotPesoRechReciclable { get; set; }
         public int CantRechNoReciclable { get; set; }
         public double PesoRechNoReciclable { get; set; }
         public string MotiMPesoRechNoReciclable { get; set; }
+        public MotivoParadaDefecto? MotPesoRechNoReciclable { get; set; }
         public double PesoColadaKG { get; set; }
         public double PesoMasacoteKG { get; set; }
         public double PesoAjusMaquinaKG { get; set; }

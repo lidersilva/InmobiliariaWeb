@@ -22,10 +22,10 @@
                 <MudTh>Cant. retenidas</MudTh>
                 <MudTh>Cant. rechazadas reciclables</MudTh>
                 <MudTh>Peso rechazado reciclable</MudTh>
-                <MudTh>Motivo rechazado reciclable</MudTh>
+                <MudTh Class="text-nowrap">Motivo rechazado reciclable</MudTh>
                 <MudTh>Cant. rechazadas no reciclables</MudTh>
                 <MudTh>Peso rechazado no reciclable</MudTh>
-                <MudTh>Motivo rechazado no reciclable</MudTh>
+                <MudTh Class="text-nowrap">Motivo rechazado no reciclable</MudTh>
                 <MudTh>Peso colada (KG)</MudTh>
                 <MudTh>Peso masacote (KG)</MudTh>
                 <MudTh>Peso por ajustes máq. (KG)</MudTh>
@@ -72,14 +72,32 @@
                 <MudTd DataLabel="Peso rechazado reciclable" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoRechReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Motivo rechazado reciclable"></MudTd>
+                <MudTd DataLabel="Motivo rechazado reciclable">
+                    <MudAutocomplete T="MotivoParadaDefecto"
+                                     SearchFunc="BuscarMotivosDefectos"
+                                     ToStringFunc='motivo => motivo != null ? $"{motivo.Codigo} {motivo.Descripcion}" : string.Empty'
+                                     @bind-Value="@context.MotPesoRechReciclable"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
                 <MudTd DataLabel="Cant. rechazadas no reciclables" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CantRechNoReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
                 <MudTd DataLabel="Peso rechazado no reciclable" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoRechNoReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Motivo rechazado no reciclable" Style="min-width: 110px;"></MudTd>
+                <MudTd DataLabel="Motivo rechazado no reciclable">
+                    <MudAutocomplete T="MotivoParadaDefecto"
+                                     SearchFunc="BuscarMotivosDefectos"
+                                     ToStringFunc='motivo => motivo != null ? $"{motivo.Codigo} {motivo.Descripcion}" : string.Empty'
+                                     @bind-Value="@context.MotPesoRechNoReciclable"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
                 <MudTd DataLabel="Peso colada (KG)" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoColadaKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
@@ -144,12 +162,15 @@
     public OTInyeccion OrdenInyeccion { get; set; }
 
     List<OTInyeccionDet> detallesInyeccion = new();
+    List<MotivoParadaDefecto> listaMotivoDefecto = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+            listaMotivoDefecto = (await InyeccionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
+
+            await CargarDetallesOTInyeccion();
 
             // Si no hay datos cargados, se agrega una línea vacía editable
             if (detallesInyeccion.Count == 0 || detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
@@ -172,9 +193,12 @@
     {
         try
         {
+            detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
+            detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
+
             await InyeccionService.GuardarLineaInyeccion(OrdenInyeccion.DocEntry, detalleInyeccion);
 
-            detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+            await CargarDetallesOTInyeccion();
 
             StateHasChanged();
 
@@ -192,7 +216,7 @@
         {
             await InyeccionService.RegistrarInicioInyeccion(OrdenInyeccion.DocEntry, detalleInyeccion);
 
-            detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+            await CargarDetallesOTInyeccion();
 
             StateHasChanged();
 
@@ -239,15 +263,20 @@
         {
             try
             {
+                detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
+                detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
+
                 await InyeccionService.FinalizarLineaInyeccion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloI, detalleInyeccion);
 
-                detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+                await CargarDetallesOTInyeccion();
 
                 if (detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
                 {
                     detallesInyeccion.Add(new OTInyeccionDet
                         {
                             Fecha = DateTime.Today,
+                            Turno = ObtenerTurnoSegunHoraSistema(),
+                            CavidadReal = OrdenInyeccion.CavidadesReales,
                         });
                 }
 
@@ -262,6 +291,17 @@
         }
     }
 
+    private async Task CargarDetallesOTInyeccion()
+    {
+        detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccion(OrdenInyeccion.DocEntry);
+
+        foreach (var det in detallesInyeccion)
+        {
+            det.MotPesoRechReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechReciclable);
+            det.MotPesoRechNoReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechNoReciclable);
+        }
+    }
+
     private string ObtenerTurnoSegunHoraSistema()
     {
         var horaActual = DateTime.Now.TimeOfDay;
@@ -272,6 +312,21 @@
             return "TT";
         else
             return "TN";
+    }
+
+    private Task<IEnumerable<MotivoParadaDefecto>> BuscarMotivosDefectos(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(listaMotivoDefecto.AsEnumerable());
+
+        var resultado = listaMotivoDefecto
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
     }
 
     private void Cancel() => MudDialog.Cancel();

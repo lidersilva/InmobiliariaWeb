@@ -4,7 +4,6 @@ using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
-using static MudBlazor.Colors;
 
 namespace eProduccion.Data.Produccion
 {
@@ -243,8 +242,10 @@ namespace eProduccion.Data.Produccion
                         U_CANTRET = detalleInyeccion.CantRetenidas,
                         U_CANTMERMA = detalleInyeccion.CantRechReciclable,
                         U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
+                        U_MOTIVOMERMA = detalleInyeccion.MotiMPesoRechReciclable,
                         U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
                         U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
+                        U_MOTIVOMERMA2 = detalleInyeccion.MotiMPesoRechNoReciclable,
                         U_CCP1 = detalleInyeccion.PesoColadaKG,
                         U_CCP2 = detalleInyeccion.PesoMasacoteKG,
                         U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
@@ -499,8 +500,10 @@ namespace eProduccion.Data.Produccion
                         U_CANTRET = detalleInyeccion.CantRetenidas,
                         U_CANTMERMA = detalleInyeccion.CantRechReciclable,
                         U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
+                        U_MOTIVOMERMA = detalleInyeccion.MotiMPesoRechReciclable,
                         U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
                         U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
+                        U_MOTIVOMERMA2 = detalleInyeccion.MotiMPesoRechNoReciclable,
                         U_CCP1 = detalleInyeccion.PesoColadaKG,
                         U_CCP2 = detalleInyeccion.PesoMasacoteKG,
                         U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
@@ -703,6 +706,29 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return totalDebito;
+        }
+
+        public async Task<List<MotivoParadaDefecto>> ObtenerMotivosParadaDefecto()
+        {
+            var listMotivos = new List<MotivoParadaDefecto>();
+
+            var query = $@"SELECT ""U_CODIGO"", ""U_DESCRIPCION"", ""U_TIPO"" FROM ""{_connectionService.DataBase}"".""@EEP_PARADA_DEFECTO"" ORDER BY ""U_CODIGO"" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new MotivoParadaDefecto();
+                che.Codigo = reader["U_CODIGO"].ToString();
+                che.Descripcion = reader["U_DESCRIPCION"].ToString();
+                che.Tipo = reader["U_TIPO"].ToString();
+                listMotivos.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return listMotivos;
         }
     }
 }

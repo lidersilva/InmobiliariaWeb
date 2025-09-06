@@ -31,6 +31,7 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_OT_INY_CAB", Descr = "EEP OT Inyección cab.", ObjectType = 3 },
                 new () {TableName = "EEP_OT_INY_DET", Descr = "EEP OT Inyección det.", ObjectType = 4},
                 new () { TableName = "EEP_PARADAS", Descr = "EEP Registro paradas", ObjectType = 3 },
+                new () { TableName = "EEP_PARADA_DEFECTO", Descr = "Maestro mot. paradas/defectos", ObjectType = 3 },
             }.ForEach(AgregarTablas);
             #endregion
 
@@ -126,6 +127,17 @@ namespace eProduccion.Data
                 new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado parada", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
 
+
+                // Maestro paradas/motivos defectos
+                new () { Name = "CODIGO", Type = TipoCampo.Alpha, Size = 3, Description = "Código mot. parada/defecto", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "DESCRIPCION", Type = TipoCampo.Alpha, Size = 50, Description = "Descripción mot. parada/defecto", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "TIPO", Type = TipoCampo.Alpha, Size = 2, Description = "Tipo", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = "PR",
+                    ValidValuesMD =
+                    [
+                        new ValidValuesMD() { Value = "PR", Description = "Parada"},
+                        new ValidValuesMD() { Value = "DF", Description = "Defecto"}
+                    ],
+                    LinkedSystemObject = null },
 
                 // Campos SAP
                 new () { Name = "OTREFE", Type = TipoCampo.Numeric, Size = 11, Description = "OT referencial", SubType = SubTipoCampo.None, TableName = "OIGE", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
@@ -243,6 +255,25 @@ namespace eProduccion.Data
                         new UserColumnsMD_FormColumns() { Code = "EEP_PARADAS", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
                     ]
                 },
+                new ()
+                {
+                    Code = "EEP_PARADA_DEFECTO", Name = "EEP_PARADA_DEFECTO", TableName = "EEP_PARADA_DEFECTO", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "U_CODIGO", ColumnDescription = "Código" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "U_DESCRIPCION", ColumnDescription = "Descripción" },
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "U_TIPO", ColumnDescription = "Tipo" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "U_CODIGO", FormColumnDescription = "Código" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "U_DESCRIPCION", FormColumnDescription = "Descripción" },
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "U_TIPO", FormColumnDescription = "Tipo" },
+                    ]
+                },
             }.ForEach(AgregarObjetos);
             #endregion
 
@@ -255,8 +286,8 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_PERM", Code = "04", Name = "Parametrización", Descripcion = "Parametrización del sistema" },
 
                 // Roles
-                new MasterData() { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },
-                new MasterData() { TableName = "EEP_ROLC", Code = "02", Name = "Usuario", Activo = YesNo.Yes },
+                new () { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },
+                new () { TableName = "EEP_ROLC", Code = "02", Name = "Usuario", Activo = YesNo.Yes },
             }.ForEach(AgregarDatosMaestros);
             #endregion
 
