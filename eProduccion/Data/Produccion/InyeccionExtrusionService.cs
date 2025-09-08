@@ -13,7 +13,7 @@ namespace eProduccion.Data.Produccion
         private readonly SBOIntegration _sboIntegration = sboIntegration;
         private readonly ParametrizacionService _parametrizacion = parametrizacion;
 
-        public Task<OTInyeccionExtrusion[]> ObtenerOTInyeccion()
+        public Task<OTInyeccionExtrusion[]> ObtenerOTInyeccionExtrusion(string estacion)
         {
             var list = new List<OTInyeccionExtrusion>();
 
@@ -34,7 +34,7 @@ namespace eProduccion.Data.Produccion
                 JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TI.""U_CODEPLANIOT""=TP.""Code"" 
                 JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 
                 JOIN ""{_connectionService.DataBase}"".OITM TA ON TI.""U_CODSUBART""=TA.""ItemCode"" 
-                WHERE ""U_ESTACION""='INYECCION'
+                WHERE ""U_ESTACION""='{estacion}'
                 ORDER BY TI.""DocEntry"" DESC ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
@@ -47,8 +47,8 @@ namespace eProduccion.Data.Produccion
                 che.FechaOT = DateTime.Parse(reader["U_FECHAOT"].ToString());
                 che.CodArticuloOV = reader["U_CODARTICULO"].ToString();
                 che.ArticuloOV = reader["ARTICULO"].ToString();
-                che.CodArticuloI = reader["U_CODSUBART"].ToString();
-                che.ArticuloI = reader["ItemName"].ToString();
+                che.CodArticuloIE = reader["U_CODSUBART"].ToString();
+                che.ArticuloIE = reader["ItemName"].ToString();
                 che.CantidadOT = double.Parse(reader["U_CANTIDADOT"].ToString());
                 che.DocNumOV = int.Parse(reader["U_DOCNUMOV"].ToString());
                 che.SerieOV = reader["SeriesName"].ToString();
@@ -62,7 +62,7 @@ namespace eProduccion.Data.Produccion
             return Task.FromResult(list.ToArray());
         }
 
-        public Task<List<OTInyeccionExtrusionDet>> ObtenerDetalleInyeccion(int docEntryOT)
+        public Task<List<OTInyeccionExtrusionDet>> ObtenerDetalleInyeccionExtrusion(int docEntryOT)
         {
             var list = new List<OTInyeccionExtrusionDet>();
 
@@ -197,7 +197,7 @@ namespace eProduccion.Data.Produccion
             return Task.FromResult(list);
         }
 
-        public async Task RegistrarInicioInyeccion(int docEntryOT, OTInyeccionExtrusionDet detalleInyeccion)
+        public async Task RegistrarInicioInyeccionExtrusion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
             var fechaActual = DateTime.Now;
 
@@ -210,7 +210,7 @@ namespace eProduccion.Data.Produccion
                 {
                     new
                     {
-                        LineId = detalleInyeccion.LineId,
+                        LineId = detInyeccionExtrusion.LineId,
                         U_HORAINI = fechaActual.ToString("HHmm"),
                         U_ESTADO = "Iniciado",
                     }
@@ -220,7 +220,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task GuardarLineaInyeccion(int docEntryOT, OTInyeccionExtrusionDet detalleInyeccion)
+        public async Task GuardarLineaInyeccion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
             var fechaActual = DateTime.Now;
 
@@ -233,30 +233,30 @@ namespace eProduccion.Data.Produccion
                 {
                     new
                     {
-                        LineId = detalleInyeccion.LineId,
-                        U_NROCONTEN = detalleInyeccion.NroContenedor,
-                        U_NROMAQUI = detalleInyeccion.NroMaquina,
-                        U_FECHAPROC = detalleInyeccion.Fecha,
-                        U_TURNO = detalleInyeccion.Turno,
-                        U_OPERARIO = detalleInyeccion.Operario,
-                        U_CANTAPROB = detalleInyeccion.CantAprobadas,
-                        U_CANTRET = detalleInyeccion.CantRetenidas,
-                        U_CANTMERMA = detalleInyeccion.CantRechReciclable,
-                        U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
-                        U_MOTIVOMERMA = detalleInyeccion.MotiMPesoRechReciclable,
-                        U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
-                        U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
-                        U_MOTIVOMERMA2 = detalleInyeccion.MotiMPesoRechNoReciclable,
-                        U_CCP1 = detalleInyeccion.PesoColadaKG,
-                        U_CCP2 = detalleInyeccion.PesoMasacoteKG,
-                        U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
-                        U_CCP4 = detalleInyeccion.PesoPiezaG,
-                        U_CCP5 = detalleInyeccion.CavidadReal,
-                        U_CCP6 = detalleInyeccion.CavidadOperativa,
-                        U_CCP7 = detalleInyeccion.TiempoCicloReal,
-                        U_CCP8 = detalleInyeccion.TiempoCiclo,
+                        LineId = detInyeccionExtrusion.LineId,
+                        U_NROCONTEN = detInyeccionExtrusion.NroContenedor,
+                        U_NROMAQUI = detInyeccionExtrusion.NroMaquina,
+                        U_FECHAPROC = detInyeccionExtrusion.Fecha,
+                        U_TURNO = detInyeccionExtrusion.Turno,
+                        U_OPERARIO = detInyeccionExtrusion.Operario,
+                        U_CANTAPROB = detInyeccionExtrusion.CantAprobadas,
+                        U_CANTRET = detInyeccionExtrusion.CantRetenidas,
+                        U_CANTMERMA = detInyeccionExtrusion.CantRechReciclable,
+                        U_CANTMERMAKG = detInyeccionExtrusion.PesoRechReciclable,
+                        U_MOTIVOMERMA = detInyeccionExtrusion.MotiMPesoRechReciclable,
+                        U_CANTMERMA2 = detInyeccionExtrusion.CantRechNoReciclable,
+                        U_CANTMERMAKG2 = detInyeccionExtrusion.PesoRechNoReciclable,
+                        U_MOTIVOMERMA2 = detInyeccionExtrusion.MotiMPesoRechNoReciclable,
+                        U_CCP1 = detInyeccionExtrusion.PesoColadaKG,
+                        U_CCP2 = detInyeccionExtrusion.PesoMasacoteKG,
+                        U_CCP3 = detInyeccionExtrusion.PesoAjusMaquinaKG,
+                        U_CCP4 = detInyeccionExtrusion.PesoPiezaG,
+                        U_CCP5 = detInyeccionExtrusion.CavidadReal,
+                        U_CCP6 = detInyeccionExtrusion.CavidadOperativa,
+                        U_CCP7 = detInyeccionExtrusion.TiempoCicloReal,
+                        U_CCP8 = detInyeccionExtrusion.TiempoCiclo,
                         U_ESTADO = "Pendiente",
-                        U_LIBERADO = detalleInyeccion.Liberado ? "Y" : "N",
+                        U_LIBERADO = detInyeccionExtrusion.Liberado ? "Y" : "N",
                     }
                 }
             };

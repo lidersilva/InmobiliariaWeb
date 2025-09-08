@@ -46,8 +46,8 @@
                                 @context.CodArticuloOV
                             </MudTooltip>
                         </MudTd>
-                        <MudTd DataLabel="Código OT I" Class="text-nowrap">@context.CodArticuloI</MudTd>
-                        <MudTd DataLabel="Artículo OT I" Class="text-nowrap">@context.ArticuloI</MudTd>
+                        <MudTd DataLabel="Código OT I" Class="text-nowrap">@context.CodArticuloIE</MudTd>
+                        <MudTd DataLabel="Artículo OT I" Class="text-nowrap">@context.ArticuloIE</MudTd>
                         <MudTd DataLabel="Cantidad OT">@context.CantidadOT</MudTd>
                         <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
                             <MudTooltip Text="Cargar">
@@ -79,7 +79,7 @@
     {
         try
         {
-            ordenesInyeccion = await InyeccionService.ObtenerOTInyeccion();
+            ordenesInyeccion = await InyeccionService.ObtenerOTInyeccionExtrusion("INYECCION");
         }
         catch (Exception ex)
         {
@@ -119,8 +119,8 @@
             item.FechaOT.ToString("dd/MM/yyyy").Contains(searchString) ||
             (!string.IsNullOrWhiteSpace(item.CodArticuloOV) && item.CodArticuloOV.ToLower().Contains(searchString)) ||
             (!string.IsNullOrWhiteSpace(item.ArticuloOV) && item.ArticuloOV.ToLower().Contains(searchString)) ||
-            (!string.IsNullOrWhiteSpace(item.CodArticuloI) && item.CodArticuloI.ToLower().Contains(searchString)) ||
-            (!string.IsNullOrWhiteSpace(item.ArticuloI) && item.ArticuloI.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.CodArticuloIE) && item.CodArticuloIE.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.ArticuloIE) && item.ArticuloIE.ToLower().Contains(searchString)) ||
             item.DocNumOV.ToString().Contains(searchString) ||
             (!string.IsNullOrWhiteSpace(item.SerieOV) && item.SerieOV.ToLower().Contains(searchString)) ||
             (!string.IsNullOrWhiteSpace(item.EstadoOT) && item.EstadoOT.ToLower().Contains(searchString));

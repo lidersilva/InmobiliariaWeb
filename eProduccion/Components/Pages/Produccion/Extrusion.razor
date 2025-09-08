@@ -5,12 +5,124 @@
 @using eProduccion.Data.Produccion
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject InyeccionExtrusionService ExtrusionService
 
-<PageTitle>eProducci&oacute;n | Inyecci&oacute;n</PageTitle>
+<PageTitle>eProducci&oacute;n | Extrusi&oacute;n</PageTitle>
+
+<div class="row">
+    <div class="col-12">
+        <div class="p-4">
+            <div class="table-responsive">
+                <MudTable T="OTInyeccionExtrusion" Items="@ordenesExtrusion" Filter="FiltrarTabla" @bind-SelectedItem="otSeleccionada">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">OT Inyección</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>OT</MudTh>
+                        <MudTh>Fecha OT</MudTh>
+                        <MudTh>Estado OT</MudTh>
+                        <MudTh>DocNum OV</MudTh>
+                        <MudTh>Serie OV</MudTh>
+                        <MudTh>Artículo OV</MudTh>
+                        <MudTh>Código OT E</MudTh>
+                        <MudTh>Artículo OT E</MudTh>
+                        <MudTh>Cantidad OT</MudTh>
+                        <MudTh>Acciones</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="OT">@context.DocEntry</MudTd>
+                        <MudTd DataLabel="Fecha OT">@context.FechaOT.ToString("dd/MM/yyyy")</MudTd>
+                        <MudTd DataLabel="Estado">
+                            <MudChip T="string" Color="@PageHelper.DefinirColorEstado(context.EstadoOT)" Variant="Variant.Filled" Label="true">
+                                @context.EstadoOT
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
+                        <MudTd DataLabel="Serie">@context.SerieOV</MudTd>
+                        <MudTd DataLabel="Artículo OV" Class="text-nowrap">
+                            <MudTooltip Text="@context.ArticuloOV">
+                                @context.CodArticuloOV
+                            </MudTooltip>
+                        </MudTd>
+                        <MudTd DataLabel="Código OT E" Class="text-nowrap">@context.CodArticuloIE</MudTd>
+                        <MudTd DataLabel="Artículo OT E" Class="text-nowrap">@context.ArticuloIE</MudTd>
+                        <MudTd DataLabel="Cantidad OT">@context.CantidadOT</MudTd>
+                        <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                            <MudTooltip Text="Cargar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalCargarExtrusion(context)' />
+                            </MudTooltip>
+                            <MudTooltip Text="Cancelar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                            </MudTooltip>
+                            <MudTooltip Text="Finalizar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" />
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+                    </PagerContent>
+                </MudTable>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    private OTInyeccionExtrusion[]? ordenesExtrusion;
+    private OTInyeccionExtrusion? otSeleccionada;
+    private string textoBusqueda = "";
+
     protected override async Task OnInitializedAsync()
     {
-        
+        try
+        {
+            ordenesExtrusion = await ExtrusionService.ObtenerOTInyeccionExtrusion("EXTRUSION");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalCargarExtrusion(OTInyeccionExtrusion ordenExtrusion)
+    {
+        var parameters = new DialogParameters
+        {
+            { "OrdenExtrusion", ordenExtrusion },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            FullWidth = true,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<ExtrusionCargaDialog>("", parameters, options);
+    }
+
+    private bool FiltrarTabla(OTInyeccionExtrusion item) => AplicarFiltroTabla(item, textoBusqueda);
+
+    private bool AplicarFiltroTabla(OTInyeccionExtrusion item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        searchString = searchString.Trim().ToLower();
+
+        return
+            item.DocEntry.ToString().Contains(searchString) ||
+            item.FechaOT.ToString("dd/MM/yyyy").Contains(searchString) ||
+            (!string.IsNullOrWhiteSpace(item.CodArticuloOV) && item.CodArticuloOV.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.ArticuloOV) && item.ArticuloOV.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.CodArticuloIE) && item.CodArticuloIE.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.ArticuloIE) && item.ArticuloIE.ToLower().Contains(searchString)) ||
+            item.DocNumOV.ToString().Contains(searchString) ||
+            (!string.IsNullOrWhiteSpace(item.SerieOV) && item.SerieOV.ToLower().Contains(searchString)) ||
+            (!string.IsNullOrWhiteSpace(item.EstadoOT) && item.EstadoOT.ToLower().Contains(searchString));
     }
 }

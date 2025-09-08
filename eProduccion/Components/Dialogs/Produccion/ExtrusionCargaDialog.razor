@@ -2,14 +2,14 @@
 @using eProduccion.Models
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject InyeccionExtrusionService InyeccionService
+@inject InyeccionExtrusionService ExtrusionService
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6" Class="mb-0">Carga Inyección</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTable T="OTInyeccionExtrusionDet" Items="@detallesInyeccion">
+        <MudTable T="OTInyeccionExtrusionDet" Items="@detallesExtrusion">
             <HeaderContent>
                 <MudTh>Nro. contenedor</MudTh>
                 <MudTh>Nro. máquina</MudTh>
@@ -128,7 +128,7 @@
                 <MudTd DataLabel="DocNum entrada">@context.DocNumEntrada</MudTd>
                 <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
                     <MudTooltip Text="Guardar">
-                        <MudIconButton Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Class="mr-2" @onclick='() => GuardarLineaInyeccion(context)' Disabled="@(context.EstadoLinea == "Iniciado" || context.EstadoLinea == "Finalizado")" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Class="mr-2" @onclick='() => GuardarLineaExtrusion(context)' Disabled="@(context.EstadoLinea == "Iniciado" || context.EstadoLinea == "Finalizado")" />
                     </MudTooltip>
                     <MudTooltip Text="Inicio">
                         <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => RegistrarInicio(context)' Disabled="@(context.LineId == 0 || context.EstadoLinea != "Pendiente")" />
@@ -159,28 +159,28 @@
     private IMudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public OTInyeccionExtrusion OrdenInyeccion { get; set; }
+    public OTInyeccionExtrusion OrdenExtrusion { get; set; }
 
-    List<OTInyeccionExtrusionDet> detallesInyeccion = new();
+    List<OTInyeccionExtrusionDet> detallesExtrusion = new();
     List<MotivoParadaDefecto> listaMotivoDefecto = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            listaMotivoDefecto = (await InyeccionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
+            listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
 
-            await CargarDetallesOTInyeccion();
+            await CargarDetallesOTExtrusion();
 
             // Si no hay datos cargados, se agrega una línea vacía editable
-            if (detallesInyeccion.Count == 0 || detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
+            if (detallesExtrusion.Count == 0 || detallesExtrusion.LastOrDefault()?.EstadoLinea == "Finalizado")
             {
-                detallesInyeccion.Add(new OTInyeccionExtrusionDet
-                    {
-                        Fecha = DateTime.Today,
-                        Turno = ObtenerTurnoSegunHoraSistema(),
-                        CavidadReal = OrdenInyeccion.CavidadesReales,
-                    });
+                detallesExtrusion.Add(new OTInyeccionExtrusionDet
+                {
+                    Fecha = DateTime.Today,
+                    Turno = ObtenerTurnoSegunHoraSistema(),
+                    CavidadReal = OrdenExtrusion.CavidadesReales,
+                });
             }
         }
         catch (Exception ex)
@@ -189,16 +189,16 @@
         }
     }
 
-    private async Task GuardarLineaInyeccion(OTInyeccionExtrusionDet detalleInyeccion)
+    private async Task GuardarLineaExtrusion(OTInyeccionExtrusionDet detalleExtrusion)
     {
         try
         {
-            detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
-            detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
+            detalleExtrusion.MotiMPesoRechReciclable = detalleExtrusion.MotPesoRechReciclable?.Codigo;
+            detalleExtrusion.MotiMPesoRechNoReciclable = detalleExtrusion.MotPesoRechNoReciclable?.Codigo;
 
-            await InyeccionService.GuardarLineaInyeccion(OrdenInyeccion.DocEntry, detalleInyeccion);
+            await ExtrusionService.GuardarLineaInyeccion(OrdenExtrusion.DocEntry, detalleExtrusion);
 
-            await CargarDetallesOTInyeccion();
+            await CargarDetallesOTExtrusion();
 
             StateHasChanged();
 
@@ -210,13 +210,13 @@
         }
     }
 
-    private async Task RegistrarInicio(OTInyeccionExtrusionDet detalleInyeccion)
+    private async Task RegistrarInicio(OTInyeccionExtrusionDet detalleExtrusion)
     {
         try
         {
-            await InyeccionService.RegistrarInicioInyeccionExtrusion(OrdenInyeccion.DocEntry, detalleInyeccion);
+            await ExtrusionService.RegistrarInicioInyeccionExtrusion(OrdenExtrusion.DocEntry, detalleExtrusion);
 
-            await CargarDetallesOTInyeccion();
+            await CargarDetallesOTExtrusion();
 
             StateHasChanged();
 
@@ -228,25 +228,25 @@
         }
     }
 
-    private async Task AbrirModalParada(OTInyeccionExtrusionDet detalleInyeccion)
+    private async Task AbrirModalParada(OTInyeccionExtrusionDet detalleExtrusion)
     {
         var parameters = new DialogParameters
         {
-            { "DetalleInyeccion", detalleInyeccion },
+            { "DetalleExtrusion", detalleExtrusion },
         };
 
         var options = new DialogOptions
-            {
-                CloseOnEscapeKey = true,
-                MaxWidth = MaxWidth.Medium,
-                FullWidth = false,
-                BackdropClick = false,
-            };
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = false,
+            BackdropClick = false,
+        };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
     }
 
-    private async Task AbrirModalRecibir(OTInyeccionExtrusionDet detalleInyeccion)
+    private async Task AbrirModalRecibir(OTInyeccionExtrusionDet detalleExtrusion)
     {
         var parameters = new DialogParameters
         {
@@ -263,21 +263,21 @@
         {
             try
             {
-                detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
-                detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
+                detalleExtrusion.MotiMPesoRechReciclable = detalleExtrusion.MotPesoRechReciclable?.Codigo;
+                detalleExtrusion.MotiMPesoRechNoReciclable = detalleExtrusion.MotPesoRechNoReciclable?.Codigo;
 
-                await InyeccionService.FinalizarLineaInyeccion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloIE, detalleInyeccion);
+                await ExtrusionService.FinalizarLineaInyeccion(OrdenExtrusion.CodArticuloOV, OrdenExtrusion.CodArticuloIE, detalleExtrusion);
 
-                await CargarDetallesOTInyeccion();
+                await CargarDetallesOTExtrusion();
 
-                if (detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
+                if (detallesExtrusion.LastOrDefault()?.EstadoLinea == "Finalizado")
                 {
-                    detallesInyeccion.Add(new OTInyeccionExtrusionDet
-                        {
-                            Fecha = DateTime.Today,
-                            Turno = ObtenerTurnoSegunHoraSistema(),
-                            CavidadReal = OrdenInyeccion.CavidadesReales,
-                        });
+                    detallesExtrusion.Add(new OTInyeccionExtrusionDet
+                    {
+                        Fecha = DateTime.Today,
+                        Turno = ObtenerTurnoSegunHoraSistema(),
+                        CavidadReal = OrdenExtrusion.CavidadesReales,
+                    });
                 }
 
                 StateHasChanged();
@@ -291,11 +291,11 @@
         }
     }
 
-    private async Task CargarDetallesOTInyeccion()
+    private async Task CargarDetallesOTExtrusion()
     {
-        detallesInyeccion = await InyeccionService.ObtenerDetalleInyeccionExtrusion(OrdenInyeccion.DocEntry);
+        detallesExtrusion = await ExtrusionService.ObtenerDetalleInyeccionExtrusion(OrdenExtrusion.DocEntry);
 
-        foreach (var det in detallesInyeccion)
+        foreach (var det in detallesExtrusion)
         {
             det.MotPesoRechReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechReciclable);
             det.MotPesoRechNoReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechNoReciclable);
