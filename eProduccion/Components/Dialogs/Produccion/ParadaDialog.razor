@@ -1,7 +1,7 @@
 ﻿@using eProduccion.Data.Produccion
 @using eProduccion.Models
 @inject ISnackbar Snackbar
-@inject InyeccionService InyeccionService
+@inject InyeccionExtrusionService InyeccionService
 
 <MudDialog>
     <TitleContent>
@@ -67,7 +67,7 @@
     private IMudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public OTInyeccionDet DetalleInyeccion { get; set; }
+    public OTInyeccionExtrusionDet DetalleInyeccion { get; set; }
 
     List<Parada> paradas = new();
     List<MotivoParadaDefecto> listaMotivoParada = new();

@@ -5,7 +5,7 @@
 @using eProduccion.Data.Produccion
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject InyeccionService InyeccionService
+@inject InyeccionExtrusionService InyeccionService
 
 <PageTitle>eProducci&oacute;n | Inyecci&oacute;n</PageTitle>
 
@@ -13,7 +13,7 @@
     <div class="col-12">
         <div class="p-4">
             <div class="table-responsive">
-                <MudTable T="OTInyeccion" Items="@ordenesInyeccion" Filter="FiltrarTabla" @bind-SelectedItem="otSeleccionada">
+                <MudTable T="OTInyeccionExtrusion" Items="@ordenesInyeccion" Filter="FiltrarTabla" @bind-SelectedItem="otSeleccionada">
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">OT Inyección</MudText>
                         <MudSpacer />
@@ -71,8 +71,8 @@
 </div>
 
 @code {
-    private OTInyeccion[]? ordenesInyeccion;
-    private OTInyeccion? otSeleccionada;
+    private OTInyeccionExtrusion[]? ordenesInyeccion;
+    private OTInyeccionExtrusion? otSeleccionada;
     private string textoBusqueda = "";
 
     protected override async Task OnInitializedAsync()
@@ -87,7 +87,7 @@
         }
     }
 
-    private async Task AbrirModalCargarInyeccion(OTInyeccion ordenInyeccion)
+    private async Task AbrirModalCargarInyeccion(OTInyeccionExtrusion ordenInyeccion)
     {
         var parameters = new DialogParameters
         {
@@ -105,9 +105,9 @@
         var dialog = await DialogService.ShowAsync<InyeccionCargaDialog>("", parameters, options);
     }
 
-    private bool FiltrarTabla(OTInyeccion item) => AplicarFiltroTabla(item, textoBusqueda);
+    private bool FiltrarTabla(OTInyeccionExtrusion item) => AplicarFiltroTabla(item, textoBusqueda);
 
-    private bool AplicarFiltroTabla(OTInyeccion item, string searchString)
+    private bool AplicarFiltroTabla(OTInyeccionExtrusion item, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;

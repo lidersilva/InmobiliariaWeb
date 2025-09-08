@@ -1,6 +1,6 @@
 ﻿namespace eProduccion.Models
 {
-    public class OTInyeccion
+    public class OTInyeccionExtrusion
     {
         public int DocEntry {  get; set; }
         public DateTime FechaOT { get; set; } 
@@ -13,6 +13,6 @@
         public string SerieOV { get; set; }
         public string EstadoOT {  get; set; }
         public int CavidadesReales {  get; set; }
-        public List<OTInyeccionDet> OTInyeccionDetalle {  get; set; }
+        public List<OTInyeccionExtrusionDet> OTInyeccionDetalle {  get; set; }
     }
 }

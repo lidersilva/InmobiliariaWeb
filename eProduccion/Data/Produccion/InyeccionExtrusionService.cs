@@ -7,15 +7,15 @@ using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
-    public class InyeccionService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion)
+    public class InyeccionExtrusionService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion)
     {
         private readonly ConnectionService _connectionService = connectionService;
         private readonly SBOIntegration _sboIntegration = sboIntegration;
         private readonly ParametrizacionService _parametrizacion = parametrizacion;
 
-        public Task<OTInyeccion[]> ObtenerOTInyeccion()
+        public Task<OTInyeccionExtrusion[]> ObtenerOTInyeccion()
         {
-            var list = new List<OTInyeccion>();
+            var list = new List<OTInyeccionExtrusion>();
 
             var query = $@"
                 SELECT 
@@ -34,6 +34,7 @@ namespace eProduccion.Data.Produccion
                 JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TI.""U_CODEPLANIOT""=TP.""Code"" 
                 JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 
                 JOIN ""{_connectionService.DataBase}"".OITM TA ON TI.""U_CODSUBART""=TA.""ItemCode"" 
+                WHERE ""U_ESTACION""='INYECCION'
                 ORDER BY TI.""DocEntry"" DESC ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
@@ -41,7 +42,7 @@ namespace eProduccion.Data.Produccion
 
             while (reader.Read())
             {
-                var che = new OTInyeccion();
+                var che = new OTInyeccionExtrusion();
                 che.DocEntry = int.Parse(reader["DocEntry"].ToString());
                 che.FechaOT = DateTime.Parse(reader["U_FECHAOT"].ToString());
                 che.CodArticuloOV = reader["U_CODARTICULO"].ToString();
@@ -61,9 +62,9 @@ namespace eProduccion.Data.Produccion
             return Task.FromResult(list.ToArray());
         }
 
-        public Task<List<OTInyeccionDet>> ObtenerDetalleInyeccion(int docEntryOT)
+        public Task<List<OTInyeccionExtrusionDet>> ObtenerDetalleInyeccion(int docEntryOT)
         {
-            var list = new List<OTInyeccionDet>();
+            var list = new List<OTInyeccionExtrusionDet>();
 
             var query = $@"
                 SELECT 
@@ -107,7 +108,7 @@ namespace eProduccion.Data.Produccion
 
             while (reader.Read())
             {
-                var che = new OTInyeccionDet();
+                var che = new OTInyeccionExtrusionDet();
                 che.DocEntry = docEntryOT;
                 che.LineId = int.Parse(reader["LineId"].ToString());
                 che.NroContenedor = reader["U_NROCONTEN"].ToString();
@@ -196,7 +197,7 @@ namespace eProduccion.Data.Produccion
             return Task.FromResult(list);
         }
 
-        public async Task RegistrarInicioInyeccion(int docEntryOT, OTInyeccionDet detalleInyeccion)
+        public async Task RegistrarInicioInyeccion(int docEntryOT, OTInyeccionExtrusionDet detalleInyeccion)
         {
             var fechaActual = DateTime.Now;
 
@@ -219,7 +220,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task GuardarLineaInyeccion(int docEntryOT, OTInyeccionDet detalleInyeccion)
+        public async Task GuardarLineaInyeccion(int docEntryOT, OTInyeccionExtrusionDet detalleInyeccion)
         {
             var fechaActual = DateTime.Now;
 
@@ -263,7 +264,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task RegistrarParada(Parada parada, OTInyeccionDet detalleInyeccion)
+        public async Task RegistrarParada(Parada parada, OTInyeccionExtrusionDet detalleInyeccion)
         {
             var fechaActual = DateTime.Now;
             var estado = parada.DocEntry == 0 ? "Iniciado" : "Detenido";
@@ -292,7 +293,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionDet detalleInyeccion)
+        public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionExtrusionDet detalleInyeccion)
         {
             var listLineasAsiento = new List<AsientoDet>();
             int nroAsiento = 0;
@@ -481,7 +482,7 @@ namespace eProduccion.Data.Produccion
             return list;
         }
 
-        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, int docEntryEntrada, OTInyeccionDet detalleInyeccion)
+        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, int docEntryEntrada, OTInyeccionExtrusionDet detalleInyeccion)
         {
             var fechaActual = DateTime.Now;
 

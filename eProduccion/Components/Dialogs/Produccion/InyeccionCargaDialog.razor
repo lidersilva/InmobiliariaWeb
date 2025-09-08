@@ -2,14 +2,14 @@
 @using eProduccion.Models
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject InyeccionService InyeccionService
+@inject InyeccionExtrusionService InyeccionService
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6" Class="mb-0">Carga Inyección</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTable T="OTInyeccionDet" Items="@detallesInyeccion">
+        <MudTable T="OTInyeccionExtrusionDet" Items="@detallesInyeccion">
             <HeaderContent>
                 <MudTh>Nro. contenedor</MudTh>
                 <MudTh>Nro. máquina</MudTh>
@@ -159,9 +159,9 @@
     private IMudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public OTInyeccion OrdenInyeccion { get; set; }
+    public OTInyeccionExtrusion OrdenInyeccion { get; set; }
 
-    List<OTInyeccionDet> detallesInyeccion = new();
+    List<OTInyeccionExtrusionDet> detallesInyeccion = new();
     List<MotivoParadaDefecto> listaMotivoDefecto = new();
 
     protected override async Task OnInitializedAsync()
@@ -175,7 +175,7 @@
             // Si no hay datos cargados, se agrega una línea vacía editable
             if (detallesInyeccion.Count == 0 || detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
             {
-                detallesInyeccion.Add(new OTInyeccionDet
+                detallesInyeccion.Add(new OTInyeccionExtrusionDet
                     {
                         Fecha = DateTime.Today,
                         Turno = ObtenerTurnoSegunHoraSistema(),
@@ -189,7 +189,7 @@
         }
     }
 
-    private async Task GuardarLineaInyeccion(OTInyeccionDet detalleInyeccion)
+    private async Task GuardarLineaInyeccion(OTInyeccionExtrusionDet detalleInyeccion)
     {
         try
         {
@@ -210,7 +210,7 @@
         }
     }
 
-    private async Task RegistrarInicio(OTInyeccionDet detalleInyeccion)
+    private async Task RegistrarInicio(OTInyeccionExtrusionDet detalleInyeccion)
     {
         try
         {
@@ -228,7 +228,7 @@
         }
     }
 
-    private async Task AbrirModalParada(OTInyeccionDet detalleInyeccion)
+    private async Task AbrirModalParada(OTInyeccionExtrusionDet detalleInyeccion)
     {
         var parameters = new DialogParameters
         {
@@ -246,7 +246,7 @@
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
     }
 
-    private async Task AbrirModalRecibir(OTInyeccionDet detalleInyeccion)
+    private async Task AbrirModalRecibir(OTInyeccionExtrusionDet detalleInyeccion)
     {
         var parameters = new DialogParameters
         {
@@ -272,7 +272,7 @@
 
                 if (detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
                 {
-                    detallesInyeccion.Add(new OTInyeccionDet
+                    detallesInyeccion.Add(new OTInyeccionExtrusionDet
                         {
                             Fecha = DateTime.Today,
                             Turno = ObtenerTurnoSegunHoraSistema(),

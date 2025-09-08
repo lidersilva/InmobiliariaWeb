@@ -1,6 +1,6 @@
 ﻿namespace eProduccion.Models
 {
-    public class OTInyeccionDet
+    public class OTInyeccionExtrusionDet
     {
         public int DocEntry { get; set; }
         public int LineId { get; set; }

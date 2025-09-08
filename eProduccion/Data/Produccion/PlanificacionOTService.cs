@@ -169,36 +169,64 @@ namespace eProduccion.Data.Produccion
         {
             StringBuilder bodyBatch = new StringBuilder();
 
-
             foreach (var i in listaOV)
             {
                 var listaEtapasRuta = ObtenerEtapasRuta(i.CodArticulo);
 
                 foreach (var e in listaEtapasRuta)
                 {
-                    bodyBatch.AppendLine("--changeset_EEP");
-                    bodyBatch.AppendLine("content-type: application/http");
-                    bodyBatch.AppendLine("content-transfer-encoding:binary");
-                    bodyBatch.AppendLine();
-                    bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_INYEX_CAB");
-                    bodyBatch.AppendLine();
-
-                    var body = new
+                    if (e.EtapaRuta == "02")
                     {
-                        U_FECHAOT = DateTime.Now.ToString("yyyy-MM-dd"),
-                        U_CODARTICULO = i.CodArticulo,
-                        U_CODSUBART = e.SubProducto,
-                        U_CANTIDADOT = i.CantSolicitar,
-                        U_ESTADO = "Pendiente",
-                        U_DOCENTRYOV = i.DocEntryOV,
-                        U_ESTANTERIOR = "PLANIFICACION OT",
-                        U_CODEPLANIOT = i.Code,
-                        U_USEROT = _connectionService.UserName,
-                        U_ESTACION = "INYECCION",
-                    };
+                        bodyBatch.AppendLine("--changeset_EEP");
+                        bodyBatch.AppendLine("content-type: application/http");
+                        bodyBatch.AppendLine("content-transfer-encoding:binary");
+                        bodyBatch.AppendLine();
+                        bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_INYEX_CAB");
+                        bodyBatch.AppendLine();
 
-                    bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
-                    bodyBatch.AppendLine();
+                        var body = new
+                        {
+                            U_FECHAOT = DateTime.Now.ToString("yyyy-MM-dd"),
+                            U_CODARTICULO = i.CodArticulo,
+                            U_CODSUBART = e.SubProducto,
+                            U_CANTIDADOT = i.CantSolicitar,
+                            U_ESTADO = "Pendiente",
+                            U_DOCENTRYOV = i.DocEntryOV,
+                            U_ESTANTERIOR = "PLANIFICACION OT",
+                            U_CODEPLANIOT = i.Code,
+                            U_USEROT = _connectionService.UserName,
+                            U_ESTACION = "INYECCION",
+                        };
+
+                        bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
+                        bodyBatch.AppendLine();
+                    }
+                    else if (e.EtapaRuta == "08")
+                    {
+                        bodyBatch.AppendLine("--changeset_EEP");
+                        bodyBatch.AppendLine("content-type: application/http");
+                        bodyBatch.AppendLine("content-transfer-encoding:binary");
+                        bodyBatch.AppendLine();
+                        bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_INYEX_CAB");
+                        bodyBatch.AppendLine();
+
+                        var body = new
+                        {
+                            U_FECHAOT = DateTime.Now.ToString("yyyy-MM-dd"),
+                            U_CODARTICULO = i.CodArticulo,
+                            U_CODSUBART = e.SubProducto,
+                            U_CANTIDADOT = i.CantSolicitar,
+                            U_ESTADO = "Pendiente",
+                            U_DOCENTRYOV = i.DocEntryOV,
+                            U_ESTANTERIOR = "PLANIFICACION OT",
+                            U_CODEPLANIOT = i.Code,
+                            U_USEROT = _connectionService.UserName,
+                            U_ESTACION = "EXTRUSION",
+                        };
+
+                        bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
+                        bodyBatch.AppendLine();
+                    }
                 }
             }
 
