@@ -9,5 +9,6 @@
         public string? Estado { get; set; }
         public string? Password { get; set; }
         public string? NewPassword { get; set; }
+        public string? TipoUsuario { get; set; }
     }
 }

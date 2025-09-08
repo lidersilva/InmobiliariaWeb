@@ -128,7 +128,7 @@ namespace eProduccion.Data.GestionAccesos
         {
             var list = new List<Usuario>();
 
-            var query = $"SELECT \"Code\", \"U_CODE\", \"Name\", \"U_MAIL\", \"U_ACTI\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" WHERE \"U_CODE\"!='EEP_ADMIN' ORDER BY \"U_CODE\" ";
+            var query = $"SELECT \"Code\", \"U_CODE\", \"Name\", \"U_MAIL\", \"U_ACTI\", \"U_TIPO\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" WHERE \"U_CODE\"!='EEP_ADMIN' ORDER BY \"U_CODE\" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -141,7 +141,8 @@ namespace eProduccion.Data.GestionAccesos
                     CodigoUsuario = reader["U_CODE"].ToString(),
                     NombreUsuario = reader["Name"].ToString(),
                     Email = reader["U_MAIL"].ToString(),
-                    Estado = reader["U_ACTI"].ToString()
+                    Estado = reader["U_ACTI"].ToString(),
+                    TipoUsuario = reader["U_TIPO"].ToString(),
                 };
 
                 list.Add(che);
@@ -175,6 +176,7 @@ namespace eProduccion.Data.GestionAccesos
                     U_FACT = fechaActual.ToString("yyyyMMdd"),
                     U_HCRE = fechaActual.ToString("HHmm"),
                     U_HACT = fechaActual.ToString("HHmm"),
+                    U_TIPO = usuario.TipoUsuario,
                 };
 
                 _connectionService.SetEntitySL(method, entity, body);
@@ -230,7 +232,8 @@ namespace eProduccion.Data.GestionAccesos
                 U_MAIL = usuario.Email,
                 U_FACT = fechaActual.ToString("yyyyMMdd"),
                 U_HACT = fechaActual.ToString("HHmm"),
-                U_ACTI = usuario.Estado
+                U_ACTI = usuario.Estado,
+                U_TIPO = usuario.TipoUsuario,
             };
 
             _connectionService.SetEntitySL(method, entity, body);

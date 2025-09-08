@@ -8,6 +8,10 @@
         <MudTextField @bind-Value="@_Usuario.CodigoUsuario" Label="C&oacute;digo" Disabled="@(Accion == "Editar")" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" Class="mb-2"></MudTextField>
         <MudTextField @bind-Value="@_Usuario.NombreUsuario" Label="Nombre usuario" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" Class="mb-2"></MudTextField>
         <MudTextField @bind-Value="@_Usuario.Email" Label="E-Mail" Variant="Variant.Text" Class="mb-2"></MudTextField>
+        <MudSelect T="string" @bind-Value="@_Usuario.TipoUsuario" Label="Tipo de usuario" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
+            <MudSelectItem Value="@("")"></MudSelectItem>
+            <MudSelectItem Value="@("OP")">OP - Operario</MudSelectItem>
+        </MudSelect>
         @if (Accion == "Crear")
         {
             <MudTextField @bind-Value="@_Usuario.Password" Label="Contraseña" Required="true" RequiredError="Campo obligatorio" Variant="Variant.Text" InputType="InputType.Password" Class="mb-2"></MudTextField>
