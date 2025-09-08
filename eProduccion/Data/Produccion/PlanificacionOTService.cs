@@ -180,7 +180,7 @@ namespace eProduccion.Data.Produccion
                     bodyBatch.AppendLine("content-type: application/http");
                     bodyBatch.AppendLine("content-transfer-encoding:binary");
                     bodyBatch.AppendLine();
-                    bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_INY_CAB");
+                    bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_INYEX_CAB");
                     bodyBatch.AppendLine();
 
                     var body = new
@@ -194,6 +194,7 @@ namespace eProduccion.Data.Produccion
                         U_ESTANTERIOR = "PLANIFICACION OT",
                         U_CODEPLANIOT = i.Code,
                         U_USEROT = _connectionService.UserName,
+                        U_ESTACION = "INYECCION",
                     };
 
                     bodyBatch.AppendLine(Utils.JsonSerializeObject(body));

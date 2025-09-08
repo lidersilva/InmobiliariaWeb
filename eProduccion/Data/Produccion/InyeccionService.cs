@@ -30,7 +30,7 @@ namespace eProduccion.Data.Produccion
                 TS.""SeriesName"", 
                 TI.""U_ESTADO"", 
                 (SELECT IFNULL(x.""U_EP_CPM"", 0) FROM ""{_connectionService.DataBase}"".OITM x WHERE x.""ItemCode""=TI.""U_CODSUBART"") CAVREALES
-                FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_CAB"" TI 
+                FROM ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_CAB"" TI 
                 JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TI.""U_CODEPLANIOT""=TP.""Code"" 
                 JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 
                 JOIN ""{_connectionService.DataBase}"".OITM TA ON TI.""U_CODSUBART""=TA.""ItemCode"" 
@@ -96,7 +96,7 @@ namespace eProduccion.Data.Produccion
                     IFNULL(TD.""U_NROASIENTO"", 0) ""U_NROASIENTO"",
                     IFNULL(TE.""DocNum"", 0) ""DocNumEntrada"",
                     ""U_ESTADO""
-                FROM ""{_connectionService.DataBase}"".""@EEP_OT_INY_DET"" TD
+                FROM ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_DET"" TD
                 LEFT JOIN  ""{_connectionService.DataBase}"".OIGE TS ON TD.""U_DESALIDA""=TS.""DocEntry""
                 LEFT JOIN  ""{_connectionService.DataBase}"".OIGN TE ON TD.""U_DEENTRADA""=TE.""DocEntry""
                 WHERE TD.""DocEntry"" = {docEntryOT}
@@ -201,11 +201,11 @@ namespace eProduccion.Data.Produccion
             var fechaActual = DateTime.Now;
 
             var method = Method.Patch;
-            var entity = $"EEP_OT_INY_CAB({docEntryOT})";
+            var entity = $"EEP_OT_INYEX_CAB({docEntryOT})";
 
             var body = new
             {
-                EEP_OT_INY_DETCollection = new[]
+                EEP_OT_INYEX_DETCollection = new[]
                 {
                     new
                     {
@@ -224,11 +224,11 @@ namespace eProduccion.Data.Produccion
             var fechaActual = DateTime.Now;
 
             var method = Method.Patch;
-            var entity = $"EEP_OT_INY_CAB({docEntryOT})";
+            var entity = $"EEP_OT_INYEX_CAB({docEntryOT})";
 
             var body = new
             {
-                EEP_OT_INY_DETCollection = new[]
+                EEP_OT_INYEX_DETCollection = new[]
                 {
                     new
                     {
@@ -486,11 +486,11 @@ namespace eProduccion.Data.Produccion
             var fechaActual = DateTime.Now;
 
             var method = Method.Patch;
-            var entity = $"EEP_OT_INY_CAB({docEntryOT})";
+            var entity = $"EEP_OT_INYEX_CAB({docEntryOT})";
 
             var body = new
             {
-                EEP_OT_INY_DETCollection = new[]
+                EEP_OT_INYEX_DETCollection = new[]
                 {
                     new
                     {
