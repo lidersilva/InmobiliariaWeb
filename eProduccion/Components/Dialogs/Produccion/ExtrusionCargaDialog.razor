@@ -196,7 +196,7 @@
             detalleExtrusion.MotiMPesoRechReciclable = detalleExtrusion.MotPesoRechReciclable?.Codigo;
             detalleExtrusion.MotiMPesoRechNoReciclable = detalleExtrusion.MotPesoRechNoReciclable?.Codigo;
 
-            await ExtrusionService.GuardarLineaInyeccion(OrdenExtrusion.DocEntry, detalleExtrusion);
+            await ExtrusionService.GuardarLineaInyeccionExtrusion(OrdenExtrusion.DocEntry, detalleExtrusion);
 
             await CargarDetallesOTExtrusion();
 
@@ -266,7 +266,7 @@
                 detalleExtrusion.MotiMPesoRechReciclable = detalleExtrusion.MotPesoRechReciclable?.Codigo;
                 detalleExtrusion.MotiMPesoRechNoReciclable = detalleExtrusion.MotPesoRechNoReciclable?.Codigo;
 
-                await ExtrusionService.FinalizarLineaInyeccion(OrdenExtrusion.CodArticuloOV, OrdenExtrusion.CodArticuloIE, detalleExtrusion);
+                await ExtrusionService.FinalizarLineaInyeccionExtrusion(OrdenExtrusion.CodArticuloOV, OrdenExtrusion.CodArticuloIE, detalleExtrusion, "EXTRUSION");
 
                 await CargarDetallesOTExtrusion();
 

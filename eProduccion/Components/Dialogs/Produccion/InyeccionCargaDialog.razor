@@ -196,7 +196,7 @@
             detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
             detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
 
-            await InyeccionService.GuardarLineaInyeccion(OrdenInyeccion.DocEntry, detalleInyeccion);
+            await InyeccionService.GuardarLineaInyeccionExtrusion(OrdenInyeccion.DocEntry, detalleInyeccion);
 
             await CargarDetallesOTInyeccion();
 
@@ -266,7 +266,7 @@
                 detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
                 detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
 
-                await InyeccionService.FinalizarLineaInyeccion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloIE, detalleInyeccion);
+                await InyeccionService.FinalizarLineaInyeccionExtrusion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloIE, detalleInyeccion, "INYECCION");
 
                 await CargarDetallesOTInyeccion();
 

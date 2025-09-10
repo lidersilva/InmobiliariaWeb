@@ -220,7 +220,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task GuardarLineaInyeccion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
+        public async Task GuardarLineaInyeccionExtrusion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
             var fechaActual = DateTime.Now;
 
@@ -293,17 +293,19 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task FinalizarLineaInyeccion(string codArticuloOV, string codArticuloI, OTInyeccionExtrusionDet detalleInyeccion)
+        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloI, OTInyeccionExtrusionDet detalleInyeccion, string estacion)
         {
             var listLineasAsiento = new List<AsientoDet>();
             int nroAsiento = 0;
             double totalDebitoRecurso = 0;
+            string etapaRuta = estacion == "INYECCION" ? "02" : "08";
+            string comentarioEstacion = estacion == "INYECCION" ? "Inyección" : "Extrusión";
 
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
             int cantidadInyeccion = detalleInyeccion.CantAprobadas + detalleInyeccion.CantRetenidas + detalleInyeccion.CantRechReciclable + detalleInyeccion.CantRechNoReciclable;
 
-            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, "02");
+            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, etapaRuta);
 
             // Salida
             var listaSalidaDet = new List<EntradaSalidaDet>();
@@ -321,7 +323,7 @@ namespace eProduccion.Data.Produccion
                 }
             }
 
-            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, "Inyección");
+            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, comentarioEstacion);
             int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
             int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
             int nroAsientoSalida = int.Parse(jObjectSalida["TransNum"].ToString());
@@ -360,7 +362,7 @@ namespace eProduccion.Data.Produccion
                     Debito = totalDebitoRecurso
                 });
 
-                var jObjectAsiento = _sboIntegration.CrearAsiento(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listLineasAsiento, "Inyección", docNumSalida);
+                var jObjectAsiento = _sboIntegration.CrearAsiento(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listLineasAsiento, comentarioEstacion, docNumSalida);
                 nroAsiento = int.Parse(jObjectAsiento["JdtNum"].ToString());
             }
 
@@ -441,7 +443,7 @@ namespace eProduccion.Data.Produccion
                 });
             }
 
-            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listEntradaDet, parametrizacion.CtaProduccionCurso, "Inyección");
+            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listEntradaDet, parametrizacion.CtaProduccionCurso, comentarioEstacion);
             int docEntryEntrada = int.Parse(jObjectEntrada["DocEntry"].ToString());
 
             ActualizarLineaInyeccionFinalizacion(detalleInyeccion.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detalleInyeccion);
@@ -482,7 +484,7 @@ namespace eProduccion.Data.Produccion
             return list;
         }
 
-        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, int docEntryEntrada, OTInyeccionExtrusionDet detalleInyeccion)
+        public void ActualizarLineaInyeccionFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, int docEntryEntrada, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
             var fechaActual = DateTime.Now;
 
@@ -495,23 +497,23 @@ namespace eProduccion.Data.Produccion
                 {
                     new
                     {
-                        LineId = detalleInyeccion.LineId,
+                        LineId = detInyeccionExtrusion.LineId,
                         U_HORAFIN = fechaActual.ToString("HHmm"),
-                        U_CANTAPROB = detalleInyeccion.CantAprobadas,
-                        U_CANTRET = detalleInyeccion.CantRetenidas,
-                        U_CANTMERMA = detalleInyeccion.CantRechReciclable,
-                        U_CANTMERMAKG = detalleInyeccion.PesoRechReciclable,
-                        U_MOTIVOMERMA = detalleInyeccion.MotiMPesoRechReciclable,
-                        U_CANTMERMA2 = detalleInyeccion.CantRechNoReciclable,
-                        U_CANTMERMAKG2 = detalleInyeccion.PesoRechNoReciclable,
-                        U_MOTIVOMERMA2 = detalleInyeccion.MotiMPesoRechNoReciclable,
-                        U_CCP1 = detalleInyeccion.PesoColadaKG,
-                        U_CCP2 = detalleInyeccion.PesoMasacoteKG,
-                        U_CCP3 = detalleInyeccion.PesoAjusMaquinaKG,
-                        U_CCP4 = detalleInyeccion.PesoPiezaG,
-                        U_CCP6 = detalleInyeccion.CavidadOperativa,
-                        U_CCP7 = detalleInyeccion.TiempoCicloReal,
-                        U_CCP8 = detalleInyeccion.TiempoCiclo,
+                        U_CANTAPROB = detInyeccionExtrusion.CantAprobadas,
+                        U_CANTRET = detInyeccionExtrusion.CantRetenidas,
+                        U_CANTMERMA = detInyeccionExtrusion.CantRechReciclable,
+                        U_CANTMERMAKG = detInyeccionExtrusion.PesoRechReciclable,
+                        U_MOTIVOMERMA = detInyeccionExtrusion.MotiMPesoRechReciclable,
+                        U_CANTMERMA2 = detInyeccionExtrusion.CantRechNoReciclable,
+                        U_CANTMERMAKG2 = detInyeccionExtrusion.PesoRechNoReciclable,
+                        U_MOTIVOMERMA2 = detInyeccionExtrusion.MotiMPesoRechNoReciclable,
+                        U_CCP1 = detInyeccionExtrusion.PesoColadaKG,
+                        U_CCP2 = detInyeccionExtrusion.PesoMasacoteKG,
+                        U_CCP3 = detInyeccionExtrusion.PesoAjusMaquinaKG,
+                        U_CCP4 = detInyeccionExtrusion.PesoPiezaG,
+                        U_CCP6 = detInyeccionExtrusion.CavidadOperativa,
+                        U_CCP7 = detInyeccionExtrusion.TiempoCicloReal,
+                        U_CCP8 = detInyeccionExtrusion.TiempoCiclo,
                         U_DESALIDA = docEntrySalida,
                         U_NROASIENTO = nroAsiento,
                         U_DEENTRADA = docEntryEntrada,
