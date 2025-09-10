@@ -20,7 +20,7 @@
                              Dense="true" />
             <MudDivider DividerType="DividerType.Middle" Class="my-3" />
             <MudAutocomplete T="Almacen"
-                             Label="Almacén salida Inyección"
+                             Label="Almacén salida - Inyección"
                              SearchFunc="BuscarAlmacenes"
                              ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
                              @bind-Value="almacenSalidaInySeleccionado"
@@ -64,6 +64,56 @@
                              SearchFunc="BuscarAlmacenes"
                              ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
                              @bind-Value="almacenRetenidosInySeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true" />
+            <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén salida - Extrusión"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenSalidaExtSeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. aprobados - Extrusión"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenAprobadosExtSeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. rechazados reciclables - Extrusión"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenRechReciExtSeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. rechazados no reciclables - Extrusión"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenRechNoReciExtSeleccionado"
+                             CoerceText="true"
+                             Clearable="true"
+                             ResetValueOnEmptyText="true"
+                             Dense="true"
+                             Class="mb-2" />
+            <MudAutocomplete T="Almacen"
+                             Label="Almacén prod. retenidos - Extrusión"
+                             SearchFunc="BuscarAlmacenes"
+                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                             @bind-Value="almacenRetenidosExtSeleccionado"
                              CoerceText="true"
                              Clearable="true"
                              ResetValueOnEmptyText="true"
@@ -119,6 +169,11 @@
     private Almacen almacenRechReciInySeleccionado;
     private Almacen almacenRechNoReciInySeleccionado;
     private Almacen almacenRetenidosInySeleccionado;
+    private Almacen almacenSalidaExtSeleccionado;
+    private Almacen almacenAprobadosExtSeleccionado;
+    private Almacen almacenRechReciExtSeleccionado;
+    private Almacen almacenRechNoReciExtSeleccionado;
+    private Almacen almacenRetenidosExtSeleccionado;
     private Serie[]? series;
 
     protected override async Task OnInitializedAsync()
@@ -147,6 +202,17 @@
                 almacenRechNoReciInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechNoReciIny);
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidosIny))
                 almacenRetenidosInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidosIny);
+
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenSalidaExt))
+                almacenSalidaExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenSalidaExt);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosExt))
+                almacenAprobadosExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosExt);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechReciExt))
+                almacenRechReciExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechReciExt);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechNoReciExt))
+                almacenRechNoReciExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechNoReciExt);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidosExt))
+                almacenRetenidosExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidosExt);
         }
         catch (Exception ex)
         {
@@ -180,6 +246,12 @@
             parametrizacion.AlmacenRechReciIny = almacenRechReciInySeleccionado?.Codigo;
             parametrizacion.AlmacenRechNoReciIny = almacenRechNoReciInySeleccionado?.Codigo;
             parametrizacion.AlmacenRetenidosIny = almacenRetenidosInySeleccionado?.Codigo;
+
+            parametrizacion.AlmacenSalidaExt = almacenSalidaExtSeleccionado?.Codigo;
+            parametrizacion.AlmacenAprobadosExt = almacenAprobadosExtSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechReciExt = almacenRechReciExtSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechNoReciExt = almacenRechNoReciExtSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidosExt = almacenRetenidosExtSeleccionado?.Codigo;
 
             await ParametrizacionService.GuardarParametrizacion(parametrizacion);
 

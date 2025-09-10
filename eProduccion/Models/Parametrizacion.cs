@@ -9,6 +9,11 @@
         public string AlmacenRechReciIny { get; set; }
         public string AlmacenRechNoReciIny { get; set; }
         public string AlmacenRetenidosIny { get; set; }
+        public string AlmacenSalidaExt { get; set; }
+        public string AlmacenAprobadosExt { get; set; }
+        public string AlmacenRechReciExt { get; set; }
+        public string AlmacenRechNoReciExt { get; set; }
+        public string AlmacenRetenidosExt { get; set; }
         public List<SerieDetalle> SerieDetalle { get; set; }
     }
 }

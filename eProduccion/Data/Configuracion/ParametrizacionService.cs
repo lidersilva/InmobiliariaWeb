@@ -22,6 +22,11 @@ namespace eProduccion.Data.Configuracion
                 $"TP.\"U_ARECHRECII\", \n" +
                 $"TP.\"U_ARECHNORECII\", \n" +
                 $"TP.\"U_ARETENIDOSI\", \n" +
+                $"TP.\"U_ASALIDAE\", \n" +
+                $"TP.\"U_AAPROBE\", \n" +
+                $"TP.\"U_ARECHRECIE\", \n" +
+                $"TP.\"U_ARECHNORECIE\", \n" +
+                $"TP.\"U_ARETENIDOSE\", \n" +
                 $"TDS.\"LineId\", \n" +
                 $"TDS.\"U_CODSERIE\", \n" +
                 $"TDS.\"U_SERIE\" " +
@@ -42,6 +47,11 @@ namespace eProduccion.Data.Configuracion
                     parametrizacion.AlmacenRechReciIny = reader["U_ARECHRECII"].ToString();
                     parametrizacion.AlmacenRechNoReciIny = reader["U_ARECHNORECII"].ToString();
                     parametrizacion.AlmacenRetenidosIny = reader["U_ARETENIDOSI"].ToString();
+                    parametrizacion.AlmacenSalidaExt = reader["U_ASALIDAE"].ToString();
+                    parametrizacion.AlmacenAprobadosExt = reader["U_AAPROBE"].ToString();
+                    parametrizacion.AlmacenRechReciExt = reader["U_ARECHRECIE"].ToString();
+                    parametrizacion.AlmacenRechNoReciExt = reader["U_ARECHNORECIE"].ToString();
+                    parametrizacion.AlmacenRetenidosExt = reader["U_ARETENIDOSE"].ToString();
                 }
 
                 var serieDet = new SerieDetalle();
@@ -173,6 +183,11 @@ namespace eProduccion.Data.Configuracion
                 U_ARECHRECII = parametrizacion.AlmacenRechReciIny,
                 U_ARECHNORECII = parametrizacion.AlmacenRechNoReciIny,
                 U_ARETENIDOSI = parametrizacion.AlmacenRetenidosIny,
+                U_ASALIDAE = parametrizacion.AlmacenSalidaExt,
+                U_AAPROBE = parametrizacion.AlmacenAprobadosExt,
+                U_ARECHRECIE = parametrizacion.AlmacenRechReciExt,
+                U_ARECHNORECIE = parametrizacion.AlmacenRechNoReciExt,
+                U_ARETENIDOSE = parametrizacion.AlmacenRetenidosExt,
                 EEP_PARSERIE_DETCollection = listSeriesDet
             };
 
