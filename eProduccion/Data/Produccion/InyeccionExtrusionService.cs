@@ -233,19 +233,21 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloI, OTInyeccionExtrusionDet detInyeccionExtrusion, string estacion)
+        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloIE, OTInyeccionExtrusionDet detInyeccionExtrusion, string estacion)
         {
             var listLineasAsiento = new List<AsientoDet>();
             int nroAsiento = 0;
             double totalDebitoRecurso = 0;
-            string etapaRuta = estacion == "INYECCION" ? "02" : "08";
-            string comentarioEstacion = estacion == "INYECCION" ? "Inyección" : "Extrusión";
 
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
-            int cantidadInyeccion = detInyeccionExtrusion.CantAprobadas + detInyeccionExtrusion.CantRetenidas + detInyeccionExtrusion.CantRechReciclable + detInyeccionExtrusion.CantRechNoReciclable;
+            string etapaRuta = estacion == "INYECCION" ? "02" : "08";
+            string comentarioEstacion = estacion == "INYECCION" ? "Inyección" : "Extrusión";
+            string almacenSalida = estacion == "INYECCION" ? parametrizacion.AlmacenSalidaIny : parametrizacion.AlmacenSalidaExt;
 
-            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, etapaRuta);
+            int cantidadRecibir = detInyeccionExtrusion.CantAprobadas + detInyeccionExtrusion.CantRetenidas + detInyeccionExtrusion.CantRechReciclable + detInyeccionExtrusion.CantRechNoReciclable;
+
+            var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloIE, etapaRuta);
 
             // Salida
             var listaSalidaDet = new List<EntradaSalidaDet>();
@@ -253,17 +255,17 @@ namespace eProduccion.Data.Produccion
             {
                 if (i.TipoItem == 4)
                 {
-                    var lotes = ObtenerLotesSalida(i.Item, parametrizacion.AlmacenSalidaIny);
+                    var lotes = ObtenerLotesSalida(i.Item, almacenSalida);
 
                     var che = new EntradaSalidaDet();
                     che.Articulo = i.Item;
-                    che.Cantidad = cantidadInyeccion * i.Cantidad;
+                    che.Cantidad = cantidadRecibir * i.Cantidad;
                     che.LoteDetalle = CalcularLotesAConsumir(che.Cantidad, lotes);
                     listaSalidaDet.Add(che);
                 }
             }
 
-            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, comentarioEstacion);
+            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, almacenSalida, comentarioEstacion);
             int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
             int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
             int nroAsientoSalida = int.Parse(jObjectSalida["TransNum"].ToString());
@@ -284,7 +286,7 @@ namespace eProduccion.Data.Produccion
 
                     foreach (var j in listCostosPorCuenta)
                     {
-                        double creditoRecurso = j.Costo * i.Cantidad * cantidadInyeccion;
+                        double creditoRecurso = j.Costo * i.Cantidad * cantidadRecibir;
 
                         listLineasAsiento.Add(new AsientoDet
                         {
@@ -308,16 +310,18 @@ namespace eProduccion.Data.Produccion
 
             // Entrada
             double totalDebitoSalida = ObtenerDebitoAsientoSalidaMercaderias(nroAsientoSalida);
-            double precioUnitarioEntrada = totalDebitoRecurso + totalDebitoSalida / cantidadInyeccion;
+            double precioUnitarioEntrada = totalDebitoRecurso + totalDebitoSalida / cantidadRecibir;
 
             var listEntradaDet = new List<EntradaSalidaDet>();
             if (detInyeccionExtrusion.CantAprobadas > 0)
             {
+                var almacen = estacion == "INYECCION" ? parametrizacion.AlmacenAprobadosIny : parametrizacion.AlmacenAprobadosExt;
+
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
-                    Articulo = codArticuloI,
+                    Articulo = codArticuloIE,
                     Cantidad = detInyeccionExtrusion.CantAprobadas,
-                    Almacen = parametrizacion.AlmacenAprobadosIny,
+                    Almacen = almacen,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
@@ -331,11 +335,13 @@ namespace eProduccion.Data.Produccion
 
             if (detInyeccionExtrusion.CantRetenidas > 0)
             {
+                var almacen = estacion == "INYECCION" ? parametrizacion.AlmacenRetenidosIny : parametrizacion.AlmacenRetenidosExt;
+
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
-                    Articulo = codArticuloI,
+                    Articulo = codArticuloIE,
                     Cantidad = detInyeccionExtrusion.CantRetenidas,
-                    Almacen = parametrizacion.AlmacenRetenidosIny,
+                    Almacen = almacen,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
@@ -349,11 +355,13 @@ namespace eProduccion.Data.Produccion
 
             if (detInyeccionExtrusion.CantRechReciclable > 0)
             {
+                var almacen = estacion == "INYECCION" ? parametrizacion.AlmacenRechReciIny : parametrizacion.AlmacenRechReciExt;
+
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
-                    Articulo = codArticuloI,
+                    Articulo = codArticuloIE,
                     Cantidad = detInyeccionExtrusion.CantRechReciclable,
-                    Almacen = parametrizacion.AlmacenRechReciIny,
+                    Almacen = almacen,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
@@ -367,11 +375,13 @@ namespace eProduccion.Data.Produccion
 
             if (detInyeccionExtrusion.CantRechNoReciclable > 0)
             {
+                var almacen = estacion == "INYECCION" ? parametrizacion.AlmacenRechNoReciIny : parametrizacion.AlmacenRechNoReciExt;
+
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
-                    Articulo = codArticuloI,
+                    Articulo = codArticuloIE,
                     Cantidad = detInyeccionExtrusion.CantRechNoReciclable,
-                    Almacen = parametrizacion.AlmacenRechNoReciIny,
+                    Almacen = almacen,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
