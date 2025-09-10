@@ -176,11 +176,11 @@
             if (detallesInyeccion.Count == 0 || detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
             {
                 detallesInyeccion.Add(new OTInyeccionExtrusionDet
-                    {
-                        Fecha = DateTime.Today,
-                        Turno = ObtenerTurnoSegunHoraSistema(),
-                        CavidadReal = OrdenInyeccion.CavidadesReales,
-                    });
+                {
+                    Fecha = DateTime.Today,
+                    Turno = ObtenerTurnoSegunHoraSistema(),
+                    CavidadReal = OrdenInyeccion.CavidadesReales,
+                });
             }
         }
         catch (Exception ex)
@@ -232,16 +232,21 @@
     {
         var parameters = new DialogParameters
         {
-            { "DetalleInyeccion", detalleInyeccion },
+            { "Estacion", "INYECCION" },
+            { "DocEntryParam", detalleInyeccion.DocEntry },
+            { "LineIdParam", detalleInyeccion.LineId },
+            { "NroMaquinaParam", detalleInyeccion.NroMaquina },
+            { "TurnoParam", detalleInyeccion.Turno },
+            { "Operario1", detalleInyeccion.Operario },
         };
 
         var options = new DialogOptions
-            {
-                CloseOnEscapeKey = true,
-                MaxWidth = MaxWidth.Medium,
-                FullWidth = false,
-                BackdropClick = false,
-            };
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = false,
+            BackdropClick = false,
+        };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
     }
@@ -273,11 +278,11 @@
                 if (detallesInyeccion.LastOrDefault()?.EstadoLinea == "Finalizado")
                 {
                     detallesInyeccion.Add(new OTInyeccionExtrusionDet
-                        {
-                            Fecha = DateTime.Today,
-                            Turno = ObtenerTurnoSegunHoraSistema(),
-                            CavidadReal = OrdenInyeccion.CavidadesReales,
-                        });
+                    {
+                        Fecha = DateTime.Today,
+                        Turno = ObtenerTurnoSegunHoraSistema(),
+                        CavidadReal = OrdenInyeccion.CavidadesReales,
+                    });
                 }
 
                 StateHasChanged();

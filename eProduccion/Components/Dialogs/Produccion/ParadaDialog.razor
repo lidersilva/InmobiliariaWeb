@@ -2,6 +2,7 @@
 @using eProduccion.Models
 @inject ISnackbar Snackbar
 @inject InyeccionExtrusionService InyeccionService
+@inject ParadaService ParadaService
 
 <MudDialog>
     <TitleContent>
@@ -67,7 +68,17 @@
     private IMudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public OTInyeccionExtrusionDet DetalleInyeccion { get; set; }
+    public string Estacion { get; set; }
+    [Parameter]
+    public int DocEntryParam { get; set; }
+    [Parameter]
+    public int LineIdParam { get; set; }
+    [Parameter]
+    public string NroMaquinaParam { get; set; }
+    [Parameter]
+    public string TurnoParam { get; set; }
+    [Parameter]
+    public string Operario1 { get; set; }
 
     List<Parada> paradas = new();
     List<MotivoParadaDefecto> listaMotivoParada = new();
@@ -84,11 +95,11 @@
             if (paradas.Count == 0 || paradas.LastOrDefault()?.Estado == "Detenido")
             {
                 paradas.Add(new Parada
-                    {
-                        NroMaquina = DetalleInyeccion.NroMaquina,
-                        Fecha = DateTime.Today,
-                        Turno = DetalleInyeccion.Turno,
-                    });
+                {
+                    NroMaquina = NroMaquinaParam,
+                    Fecha = DateTime.Today,
+                    Turno = TurnoParam,
+                });
             }
         }
         catch (Exception ex)
@@ -103,18 +114,18 @@
         {
             parada.TipoParada = parada.MotTipoParada?.Codigo;
 
-            await InyeccionService.RegistrarParada(parada, DetalleInyeccion);
+            await ParadaService.RegistrarParada(parada, Estacion, DocEntryParam, LineIdParam, Operario1);
 
             await CargarDetallesParada();
 
             if (paradas.LastOrDefault()?.Estado == "Detenido")
             {
                 paradas.Add(new Parada
-                    {
-                        NroMaquina = DetalleInyeccion.NroMaquina,
-                        Fecha = DateTime.Today,
-                        Turno = DetalleInyeccion.Turno,
-                    });
+                {
+                    NroMaquina = NroMaquinaParam,
+                    Fecha = DateTime.Today,
+                    Turno = TurnoParam,
+                });
             }
 
             StateHasChanged();
@@ -129,7 +140,7 @@
 
     private async Task CargarDetallesParada()
     {
-        paradas = await InyeccionService.ObtenerRegistroParadas(DetalleInyeccion.DocEntry, DetalleInyeccion.LineId, "INYECCION");
+        paradas = await ParadaService.ObtenerRegistroParadas(DocEntryParam, LineIdParam, Estacion);
 
         foreach (var det in paradas)
         {

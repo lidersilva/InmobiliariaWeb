@@ -31,6 +31,7 @@ namespace eProduccion.Extensions
             // Producción
             services.AddScoped<PlanificacionOTService>();
             services.AddScoped<InyeccionExtrusionService>();
+            services.AddScoped<ParadaService>();
 
             // Utility
             services.AddScoped<DbHelper>();

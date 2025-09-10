@@ -151,52 +151,6 @@ namespace eProduccion.Data.Produccion
             return Task.FromResult(list);
         }
 
-        public Task<List<Parada>> ObtenerRegistroParadas(int docEntryOT, int lineIdOT, string estacionTrabajo)
-        {
-            var list = new List<Parada>();
-
-            var query = $@"
-                SELECT 
-                    TP.""DocEntry"", 
-                    TP.""U_FECHA"", 
-                    TP.""U_TIPOPARO"", 
-                    TP.""U_TURNO"", 
-                    TP.""U_HORAINI"", 
-                    TP.""U_HORAFIN"", 
-                    TP.""U_NROMAQUI"",
-                    TP.""U_ESTADO""
-                FROM ""{_connectionService.DataBase}"".""@EEP_PARADAS"" TP
-                WHERE TP.""U_ESTACION""='{estacionTrabajo}'
-                AND TP.""U_OT""={docEntryOT}
-                AND TP.""U_LINEIDOT""={lineIdOT}
-                ORDER BY TP.""DocEntry"" ";
-
-            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var che = new Parada();
-                che.DocEntry = int.Parse(reader["DocEntry"].ToString());
-                che.Fecha = DateTime.Parse(reader["U_FECHA"].ToString());
-                che.TipoParada = reader["U_TIPOPARO"].ToString();
-                che.Turno = reader["U_TURNO"].ToString();
-                var horaInicioString = reader["U_HORAINI"].ToString().PadLeft(4, '0');
-                if (!string.IsNullOrWhiteSpace(horaInicioString) && horaInicioString.Length == 4)
-                    che.HoraInicio = DateTime.ParseExact(horaInicioString, "HHmm", CultureInfo.InvariantCulture);
-                var horaFinString = reader["U_HORAFIN"].ToString().PadLeft(4, '0');
-                if (!string.IsNullOrWhiteSpace(horaFinString) && horaFinString.Length == 4)
-                    che.HoraFin = DateTime.ParseExact(horaFinString, "HHmm", CultureInfo.InvariantCulture);
-                che.NroMaquina = reader["U_NROMAQUI"].ToString();
-                che.Estado = reader["U_ESTADO"].ToString();
-                list.Add(che);
-            }
-
-            _connectionService.DisconnectODBC();
-
-            return Task.FromResult(list);
-        }
-
         public async Task RegistrarInicioInyeccionExtrusion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
             var fechaActual = DateTime.Now;
@@ -264,36 +218,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task RegistrarParada(Parada parada, OTInyeccionExtrusionDet detalleInyeccion)
-        {
-            var fechaActual = DateTime.Now;
-            var estado = parada.DocEntry == 0 ? "Iniciado" : "Detenido";
-            var horaInicio = estado == "Iniciado" ? fechaActual.ToString("HHmm") : parada.HoraInicio.ToString("HHmm");
-            var horaFin = estado == "Detenido" ? fechaActual.ToString("HHmm") : parada.HoraFin.ToString("HHmm");
-
-            var method = estado == "Iniciado" ? Method.Post : Method.Patch;
-            var entity = estado == "Iniciado" ? $"EEP_PARADAS" : $"EEP_PARADAS({parada.DocEntry})";
-
-            var body = new
-            {
-                U_ESTACION = "INYECCION",
-                U_OT = detalleInyeccion.DocEntry,
-                U_LINEIDOT = detalleInyeccion.LineId,
-                U_FECHA = parada.Fecha,
-                U_TIPOPARO = parada.TipoParada,
-                U_TURNO = parada.Turno,
-                U_OPERADOR1 = detalleInyeccion.Operario,
-                U_OPERADOR2 = "",
-                U_HORAINI = horaInicio,
-                U_HORAFIN = horaFin,
-                U_NROMAQUI = parada.NroMaquina,
-                U_ESTADO = estado,
-            };
-
-            _connectionService.SetEntitySL(method, entity, body);
-        }
-
-        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloI, OTInyeccionExtrusionDet detalleInyeccion, string estacion)
+        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloI, OTInyeccionExtrusionDet detInyeccionExtrusion, string estacion)
         {
             var listLineasAsiento = new List<AsientoDet>();
             int nroAsiento = 0;
@@ -303,7 +228,7 @@ namespace eProduccion.Data.Produccion
 
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
-            int cantidadInyeccion = detalleInyeccion.CantAprobadas + detalleInyeccion.CantRetenidas + detalleInyeccion.CantRechReciclable + detalleInyeccion.CantRechNoReciclable;
+            int cantidadInyeccion = detInyeccionExtrusion.CantAprobadas + detInyeccionExtrusion.CantRetenidas + detInyeccionExtrusion.CantRechReciclable + detInyeccionExtrusion.CantRechNoReciclable;
 
             var listaMateriales = ObtenerListaMateriales(codArticuloOV, codArticuloI, etapaRuta);
 
@@ -323,7 +248,7 @@ namespace eProduccion.Data.Produccion
                 }
             }
 
-            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, comentarioEstacion);
+            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, parametrizacion.AlmacenSalidaIny, comentarioEstacion);
             int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
             int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
             int nroAsientoSalida = int.Parse(jObjectSalida["TransNum"].ToString());
@@ -362,7 +287,7 @@ namespace eProduccion.Data.Produccion
                     Debito = totalDebitoRecurso
                 });
 
-                var jObjectAsiento = _sboIntegration.CrearAsiento(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listLineasAsiento, comentarioEstacion, docNumSalida);
+                var jObjectAsiento = _sboIntegration.CrearAsiento(detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, listLineasAsiento, comentarioEstacion, docNumSalida);
                 nroAsiento = int.Parse(jObjectAsiento["JdtNum"].ToString());
             }
 
@@ -371,82 +296,82 @@ namespace eProduccion.Data.Produccion
             double precioUnitarioEntrada = totalDebitoRecurso + totalDebitoSalida / cantidadInyeccion;
 
             var listEntradaDet = new List<EntradaSalidaDet>();
-            if (detalleInyeccion.CantAprobadas > 0)
+            if (detInyeccionExtrusion.CantAprobadas > 0)
             {
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
                     Articulo = codArticuloI,
-                    Cantidad = detalleInyeccion.CantAprobadas,
+                    Cantidad = detInyeccionExtrusion.CantAprobadas,
                     Almacen = parametrizacion.AlmacenAprobadosIny,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
                         new Lote{
-                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
-                            Cantidad = detalleInyeccion.CantAprobadas,
+                            NroLote = $"{detInyeccionExtrusion.DocEntry}-1-{detInyeccionExtrusion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detInyeccionExtrusion.CantAprobadas,
                         }
                     ]
                 });
             }
 
-            if (detalleInyeccion.CantRetenidas > 0)
+            if (detInyeccionExtrusion.CantRetenidas > 0)
             {
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
                     Articulo = codArticuloI,
-                    Cantidad = detalleInyeccion.CantRetenidas,
+                    Cantidad = detInyeccionExtrusion.CantRetenidas,
                     Almacen = parametrizacion.AlmacenRetenidosIny,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
                         new Lote{
-                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
-                            Cantidad = detalleInyeccion.CantRetenidas,
+                            NroLote = $"{detInyeccionExtrusion.DocEntry}-1-{detInyeccionExtrusion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detInyeccionExtrusion.CantRetenidas,
                         }
                     ]
                 });
             }
 
-            if (detalleInyeccion.CantRechReciclable > 0)
+            if (detInyeccionExtrusion.CantRechReciclable > 0)
             {
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
                     Articulo = codArticuloI,
-                    Cantidad = detalleInyeccion.CantRechReciclable,
+                    Cantidad = detInyeccionExtrusion.CantRechReciclable,
                     Almacen = parametrizacion.AlmacenRechReciIny,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
                         new Lote{
-                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
-                            Cantidad = detalleInyeccion.CantRechReciclable,
+                            NroLote = $"{detInyeccionExtrusion.DocEntry}-1-{detInyeccionExtrusion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detInyeccionExtrusion.CantRechReciclable,
                         }
                     ]
                 });
             }
 
-            if (detalleInyeccion.CantRechNoReciclable > 0)
+            if (detInyeccionExtrusion.CantRechNoReciclable > 0)
             {
                 listEntradaDet.Add(new EntradaSalidaDet
                 {
                     Articulo = codArticuloI,
-                    Cantidad = detalleInyeccion.CantRechNoReciclable,
+                    Cantidad = detInyeccionExtrusion.CantRechNoReciclable,
                     Almacen = parametrizacion.AlmacenRechNoReciIny,
                     PrecioUnitario = precioUnitarioEntrada,
                     LoteDetalle =
                     [
                         new Lote{
-                            NroLote = $"{detalleInyeccion.DocEntry}-1-{detalleInyeccion.Turno}-{DateTime.Now:yyyyMMdd}",
-                            Cantidad = detalleInyeccion.CantRechNoReciclable,
+                            NroLote = $"{detInyeccionExtrusion.DocEntry}-1-{detInyeccionExtrusion.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detInyeccionExtrusion.CantRechNoReciclable,
                         }
                     ]
                 });
             }
 
-            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(detalleInyeccion.DocEntry, detalleInyeccion.LineId, listEntradaDet, parametrizacion.CtaProduccionCurso, comentarioEstacion);
+            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, listEntradaDet, parametrizacion.CtaProduccionCurso, comentarioEstacion);
             int docEntryEntrada = int.Parse(jObjectEntrada["DocEntry"].ToString());
 
-            ActualizarLineaInyeccionFinalizacion(detalleInyeccion.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detalleInyeccion);
+            ActualizarLineaInyeccionFinalizacion(detInyeccionExtrusion.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detInyeccionExtrusion);
         }
 
         public List<ListaMaterialesDet> ObtenerListaMateriales(string codArticuloOV, string codArticuloI, string estacion)

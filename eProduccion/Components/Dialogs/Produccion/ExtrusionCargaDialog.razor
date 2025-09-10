@@ -232,7 +232,12 @@
     {
         var parameters = new DialogParameters
         {
-            { "DetalleExtrusion", detalleExtrusion },
+            { "Estacion", "EXTRUSION" },
+            { "DocEntryParam", detalleExtrusion.DocEntry },
+            { "LineIdParam", detalleExtrusion.LineId },
+            { "NroMaquinaParam", detalleExtrusion.NroMaquina },
+            { "TurnoParam", detalleExtrusion.Turno },
+            { "Operario1", detalleExtrusion.Operario },
         };
 
         var options = new DialogOptions
