@@ -36,5 +36,10 @@
         public int DocNumSalida { get; set; }
         public int Asiento { get; set; }
         public string EstadoLinea { get; set; }
+        public double MetrosMinReal { get; set; }
+        public double MetrosMinuto { get; set; }
+        public double MetrosTurnoReal { get; set; }
+        public double MetrosTurno { get; set; }
+        public string Operario2 { get; set; }
     }
 }

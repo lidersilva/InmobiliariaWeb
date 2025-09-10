@@ -18,6 +18,7 @@
                 <MudTh>Hora fin</MudTh>
                 <MudTh>Turno</MudTh>
                 <MudTh>Operario</MudTh>
+                <MudTh>Operario 2</MudTh>
                 <MudTh>Cant. aprobadas</MudTh>
                 <MudTh>Cant. retenidas</MudTh>
                 <MudTh>Cant. rechazadas reciclables</MudTh>
@@ -32,8 +33,10 @@
                 <MudTh>Peso pieza (G)</MudTh>
                 <MudTh>Cavidades reales</MudTh>
                 <MudTh>Cavidades operativas</MudTh>
-                <MudTh>Tiempo ciclo (S)</MudTh>
-                <MudTh>Tiempo ciclo real (S)</MudTh>
+                <MudTh>Metros p/ min. real</MudTh>
+                <MudTh>Metros p/ min.</MudTh>
+                <MudTh>Metros p/ turno real</MudTh>
+                <MudTh>Metros p/ turno</MudTh>
                 <MudTh>Liberado producción</MudTh>
                 <MudTh>DocNum salida</MudTh>
                 <MudTh>Asiento</MudTh>
@@ -60,6 +63,7 @@
                     </MudSelect>
                 </MudTd>
                 <MudTd DataLabel="Operario"></MudTd>
+                <MudTd DataLabel="Operario 2"></MudTd>
                 <MudTd DataLabel="Cant. aprobadas">
                     <MudNumericField T="int" @bind-Value="@context.CantAprobadas" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
@@ -116,11 +120,17 @@
                 <MudTd DataLabel="Cavidades operativas" Style="min-width: 110px;">
                     <MudNumericField T="int" @bind-Value="@context.CavidadOperativa" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Tiempo ciclo (S)" Style="min-width: 110px;">
-                    <MudNumericField T="double" @bind-Value="@context.TiempoCiclo" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                <MudTd DataLabel="Metros p/ min. real" Style="min-width: 110px;">
+                    <MudNumericField T="double" @bind-Value="@context.MetrosMinReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Tiempo ciclo real (S)" Style="min-width: 110px;">
-                    <MudNumericField T="double" @bind-Value="@context.TiempoCicloReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                <MudTd DataLabel="Metros p/ min." Style="min-width: 110px;">
+                    <MudNumericField T="double" @bind-Value="@context.MetrosMinuto" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Metros p/ turno real" Style="min-width: 110px;">
+                    <MudNumericField T="double" @bind-Value="@context.MetrosTurnoReal" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Metros p/ turno" Style="min-width: 110px;">
+                    <MudNumericField T="double" @bind-Value="@context.MetrosTurno" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
                 <MudTd DataLabel="Liberado producción"><input type="checkbox" class="form-check-input" @bind="context.Liberado"></MudTd>
                 <MudTd DataLabel="DocNum salida">@context.DocNumSalida</MudTd>

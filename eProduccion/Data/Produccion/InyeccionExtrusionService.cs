@@ -76,6 +76,7 @@ namespace eProduccion.Data.Produccion
                     ""U_HORAFIN"",
                     ""U_TURNO"",
                     ""U_OPERARIO"",
+                    ""U_OPERARIO2"",
                     IFNULL(""U_CANTAPROB"", 0) ""U_CANTAPROB"",
                     IFNULL(""U_CANTRET"", 0) ""U_CANTRET"",
                     IFNULL(""U_CANTMERMA"", 0) ""U_CANTMERMA"",
@@ -92,6 +93,10 @@ namespace eProduccion.Data.Produccion
                     IFNULL(""U_CCP6"", 0) ""U_CCP6"",
                     IFNULL(""U_CCP7"", 0) ""U_CCP7"",
                     IFNULL(""U_CCP8"", 0) ""U_CCP8"",
+                    IFNULL(""U_CCP9"", 0) ""U_CCP9"",
+                    IFNULL(""U_CCP10"", 0) ""U_CCP10"",
+                    IFNULL(""U_CCP11"", 0) ""U_CCP11"",
+                    IFNULL(""U_CCP12"", 0) ""U_CCP12"",
                     ""U_LIBERADO"",
                     IFNULL(TS.""DocNum"", 0) ""DocNumSalida"",
                     IFNULL(TD.""U_NROASIENTO"", 0) ""U_NROASIENTO"",
@@ -122,6 +127,7 @@ namespace eProduccion.Data.Produccion
                     che.HoraFin = DateTime.ParseExact(horaFinString, "HHmm", CultureInfo.InvariantCulture);
                 che.Turno = reader["U_TURNO"].ToString();
                 che.Operario = reader["U_OPERARIO"].ToString();
+                che.Operario2 = reader["U_OPERARIO2"].ToString();
                 che.CantAprobadas = int.Parse(reader["U_CANTAPROB"].ToString());
                 che.CantRetenidas = int.Parse(reader["U_CANTRET"].ToString());
                 che.CantRechReciclable = int.Parse(reader["U_CANTMERMA"].ToString());
@@ -138,6 +144,10 @@ namespace eProduccion.Data.Produccion
                 che.CavidadOperativa = int.Parse(reader["U_CCP6"].ToString());
                 che.TiempoCicloReal = double.Parse(reader["U_CCP7"].ToString());
                 che.TiempoCiclo = double.Parse(reader["U_CCP8"].ToString());
+                che.MetrosMinReal = double.Parse(reader["U_CCP9"].ToString());
+                che.MetrosMinuto = double.Parse(reader["U_CCP10"].ToString());
+                che.MetrosTurnoReal = double.Parse(reader["U_CCP11"].ToString());
+                che.MetrosTurno = double.Parse(reader["U_CCP12"].ToString());
                 che.Liberado = reader["U_LIBERADO"].ToString() == "Y";
                 che.DocNumSalida = int.Parse(reader["DocNumSalida"].ToString());
                 che.Asiento = int.Parse(reader["U_NROASIENTO"].ToString());
@@ -193,6 +203,7 @@ namespace eProduccion.Data.Produccion
                         U_FECHAPROC = detInyeccionExtrusion.Fecha,
                         U_TURNO = detInyeccionExtrusion.Turno,
                         U_OPERARIO = detInyeccionExtrusion.Operario,
+                        U_OPERARIO2 = detInyeccionExtrusion.Operario2,
                         U_CANTAPROB = detInyeccionExtrusion.CantAprobadas,
                         U_CANTRET = detInyeccionExtrusion.CantRetenidas,
                         U_CANTMERMA = detInyeccionExtrusion.CantRechReciclable,
@@ -209,6 +220,10 @@ namespace eProduccion.Data.Produccion
                         U_CCP6 = detInyeccionExtrusion.CavidadOperativa,
                         U_CCP7 = detInyeccionExtrusion.TiempoCicloReal,
                         U_CCP8 = detInyeccionExtrusion.TiempoCiclo,
+                        U_CCP9 = detInyeccionExtrusion.MetrosMinReal,
+                        U_CCP10 = detInyeccionExtrusion.MetrosMinuto,
+                        U_CCP11 = detInyeccionExtrusion.MetrosTurnoReal,
+                        U_CCP12 = detInyeccionExtrusion.MetrosTurno,
                         U_ESTADO = "Pendiente",
                         U_LIBERADO = detInyeccionExtrusion.Liberado ? "Y" : "N",
                     }
@@ -439,6 +454,10 @@ namespace eProduccion.Data.Produccion
                         U_CCP6 = detInyeccionExtrusion.CavidadOperativa,
                         U_CCP7 = detInyeccionExtrusion.TiempoCicloReal,
                         U_CCP8 = detInyeccionExtrusion.TiempoCiclo,
+                        U_CCP9 = detInyeccionExtrusion.MetrosMinReal,
+                        U_CCP10 = detInyeccionExtrusion.MetrosMinuto,
+                        U_CCP11 = detInyeccionExtrusion.MetrosTurnoReal,
+                        U_CCP12 = detInyeccionExtrusion.MetrosTurno,
                         U_DESALIDA = docEntrySalida,
                         U_NROASIENTO = nroAsiento,
                         U_DEENTRADA = docEntryEntrada,
