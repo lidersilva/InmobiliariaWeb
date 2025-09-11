@@ -1,17 +1,19 @@
-﻿@using eProduccion.Data.GestionAccesos
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using eProduccion.Data.GestionAccesos
 @using eProduccion.Data.Produccion
 @using eProduccion.Models
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject InyeccionExtrusionService ExtrusionService
 @inject UsuarioSistemaService UsuarioSistemaService
+@inject ProtectedLocalStorage SessionStorage
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6" Class="mb-0">Carga Inyección</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTable T="OTInyeccionExtrusionDet" Items="@detallesExtrusion">
+        <MudTable T="OTInyeccionExtrusionDet" Items="@detallesExtrusion" Dense="true">
             <HeaderContent>
                 <MudTh>Nro. contenedor</MudTh>
                 <MudTh>Nro. máquina</MudTh>
@@ -196,25 +198,59 @@
     private Usuario operario2Seleccionado;
     List<OTInyeccionExtrusionDet> detallesExtrusion = new();
     List<MotivoParadaDefecto> listaMotivoDefecto = new();
+    OTInyeccionExtrusionDet nuevoDetalle = null;
+    private string UserName = "";
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            var userResult = await SessionStorage.GetAsync<string>("UserName");
+            if (userResult.Success)
+                UserName = userResult.Value;
+
             listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
             operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
 
             await CargarDetallesOTExtrusion();
 
             // Si no hay datos cargados, se agrega una línea vacía editable
-            if (detallesExtrusion.Count == 0 || detallesExtrusion.LastOrDefault()?.EstadoLinea == "Finalizado")
+            if (detallesExtrusion.Count == 0)
             {
-                detallesExtrusion.Add(new OTInyeccionExtrusionDet
+                nuevoDetalle = new OTInyeccionExtrusionDet
                 {
                     Fecha = DateTime.Today,
                     Turno = ObtenerTurnoSegunHoraSistema(),
                     CavidadReal = OrdenExtrusion.CavidadesReales,
-                });
+                };
+
+                detallesExtrusion.Add(nuevoDetalle);
+            }
+            else if (detallesExtrusion.LastOrDefault()?.EstadoLinea == "Finalizado")
+            {
+                var ultimaCarga = detallesExtrusion.Where(x => x.Operario == UserName && x.Turno == ObtenerTurnoSegunHoraSistema() && x.Fecha == DateTime.Today).LastOrDefault();
+
+                nuevoDetalle = new OTInyeccionExtrusionDet
+                {
+                    Fecha = DateTime.Today,
+                    Turno = ObtenerTurnoSegunHoraSistema(),
+                    CavidadReal = OrdenExtrusion.CavidadesReales,
+                };
+
+                if (ultimaCarga != null)
+                {
+                    nuevoDetalle.PesoColadaKG = ultimaCarga.PesoColadaKG;
+                    nuevoDetalle.PesoMasacoteKG = ultimaCarga.PesoMasacoteKG;
+                    nuevoDetalle.PesoAjusMaquinaKG = ultimaCarga.PesoAjusMaquinaKG;
+                    nuevoDetalle.PesoPiezaG = ultimaCarga.PesoPiezaG;
+                    nuevoDetalle.CavidadOperativa = ultimaCarga.CavidadOperativa;
+                    nuevoDetalle.MetrosMinReal = ultimaCarga.MetrosMinReal;
+                    nuevoDetalle.MetrosMinuto = ultimaCarga.MetrosMinuto;
+                    nuevoDetalle.MetrosTurnoReal = ultimaCarga.MetrosTurnoReal;
+                    nuevoDetalle.MetrosTurno = ultimaCarga.MetrosTurno;
+                }
+
+                detallesExtrusion.Add(nuevoDetalle);
             }
         }
         catch (Exception ex)
@@ -316,12 +352,29 @@
 
                 if (detallesExtrusion.LastOrDefault()?.EstadoLinea == "Finalizado")
                 {
-                    detallesExtrusion.Add(new OTInyeccionExtrusionDet
+                    var ultimaCarga = detallesExtrusion.Where(x => x.Operario == UserName && x.Turno == ObtenerTurnoSegunHoraSistema() && x.Fecha == DateTime.Today).LastOrDefault();
+
+                    nuevoDetalle = new OTInyeccionExtrusionDet
                     {
                         Fecha = DateTime.Today,
                         Turno = ObtenerTurnoSegunHoraSistema(),
                         CavidadReal = OrdenExtrusion.CavidadesReales,
-                    });
+                    };
+
+                    if (ultimaCarga != null)
+                    {
+                        nuevoDetalle.PesoColadaKG = ultimaCarga.PesoColadaKG;
+                        nuevoDetalle.PesoMasacoteKG = ultimaCarga.PesoMasacoteKG;
+                        nuevoDetalle.PesoAjusMaquinaKG = ultimaCarga.PesoAjusMaquinaKG;
+                        nuevoDetalle.PesoPiezaG = ultimaCarga.PesoPiezaG;
+                        nuevoDetalle.CavidadOperativa = ultimaCarga.CavidadOperativa;
+                        nuevoDetalle.MetrosMinReal = ultimaCarga.MetrosMinReal;
+                        nuevoDetalle.MetrosMinuto = ultimaCarga.MetrosMinuto;
+                        nuevoDetalle.MetrosTurnoReal = ultimaCarga.MetrosTurnoReal;
+                        nuevoDetalle.MetrosTurno = ultimaCarga.MetrosTurno;
+                    }
+
+                    detallesExtrusion.Add(nuevoDetalle);
                 }
 
                 StateHasChanged();
