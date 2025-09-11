@@ -9,7 +9,7 @@ namespace eProduccion.Data.Produccion
     {
         private readonly ConnectionService _connectionService = connectionService;
 
-        public async Task RegistrarParada(Parada parada, string estacion, int docEntryOT, int lineId, string operario1)
+        public async Task RegistrarParada(Parada parada, string estacion, int docEntryOT, int lineId, string operario1, string operario2)
         {
             var fechaActual = DateTime.Now;
             var estado = parada.DocEntry == 0 ? "Iniciado" : "Detenido";
@@ -28,7 +28,7 @@ namespace eProduccion.Data.Produccion
                 U_TIPOPARO = parada.TipoParada,
                 U_TURNO = parada.Turno,
                 U_OPERADOR1 = operario1,
-                U_OPERADOR2 = "",
+                U_OPERADOR2 = operario2,
                 U_HORAINI = horaInicio,
                 U_HORAFIN = horaFin,
                 U_NROMAQUI = parada.NroMaquina,

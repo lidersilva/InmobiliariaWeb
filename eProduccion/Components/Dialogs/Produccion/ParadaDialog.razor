@@ -78,7 +78,9 @@
     [Parameter]
     public string TurnoParam { get; set; }
     [Parameter]
-    public string Operario1 { get; set; }
+    public string Operario { get; set; }
+    [Parameter]
+    public string? Operario2 { get; set; }
 
     List<Parada> paradas = new();
     List<MotivoParadaDefecto> listaMotivoParada = new();
@@ -114,7 +116,7 @@
         {
             parada.TipoParada = parada.MotTipoParada?.Codigo;
 
-            await ParadaService.RegistrarParada(parada, Estacion, DocEntryParam, LineIdParam, Operario1);
+            await ParadaService.RegistrarParada(parada, Estacion, DocEntryParam, LineIdParam, Operario, Operario2);
 
             await CargarDetallesParada();
 

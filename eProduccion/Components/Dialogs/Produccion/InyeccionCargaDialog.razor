@@ -1,8 +1,10 @@
-﻿@using eProduccion.Data.Produccion
+﻿@using eProduccion.Data.GestionAccesos
+@using eProduccion.Data.Produccion
 @using eProduccion.Models
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject InyeccionExtrusionService InyeccionService
+@inject UsuarioSistemaService UsuarioSistemaService
 
 <MudDialog>
     <TitleContent>
@@ -59,7 +61,16 @@
                         <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
                     </MudSelect>
                 </MudTd>
-                <MudTd DataLabel="Operario"></MudTd>
+                <MudTd DataLabel="Operario" Style="min-width: 220px;">
+                    <MudAutocomplete T="Usuario"
+                                     SearchFunc="BuscarOperarios"
+                                     ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                     @bind-Value="@context.UsuarioOperario"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
                 <MudTd DataLabel="Cant. aprobadas">
                     <MudNumericField T="int" @bind-Value="@context.CantAprobadas" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
@@ -161,6 +172,8 @@
     [Parameter]
     public OTInyeccionExtrusion OrdenInyeccion { get; set; }
 
+    private List<Usuario> operarios;
+    private Usuario operarioSeleccionado;
     List<OTInyeccionExtrusionDet> detallesInyeccion = new();
     List<MotivoParadaDefecto> listaMotivoDefecto = new();
 
@@ -169,6 +182,7 @@
         try
         {
             listaMotivoDefecto = (await InyeccionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
+            operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
 
             await CargarDetallesOTInyeccion();
 
@@ -195,6 +209,7 @@
         {
             detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
             detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
+            detalleInyeccion.Operario = detalleInyeccion.UsuarioOperario?.CodigoUsuario;
 
             await InyeccionService.GuardarLineaInyeccionExtrusion(OrdenInyeccion.DocEntry, detalleInyeccion);
 
@@ -237,7 +252,8 @@
             { "LineIdParam", detalleInyeccion.LineId },
             { "NroMaquinaParam", detalleInyeccion.NroMaquina },
             { "TurnoParam", detalleInyeccion.Turno },
-            { "Operario1", detalleInyeccion.Operario },
+            { "Operario", detalleInyeccion.Operario },
+            { "Operario2", detalleInyeccion.Operario2 },
         };
 
         var options = new DialogOptions
@@ -270,6 +286,7 @@
             {
                 detalleInyeccion.MotiMPesoRechReciclable = detalleInyeccion.MotPesoRechReciclable?.Codigo;
                 detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
+                detalleInyeccion.Operario = detalleInyeccion.UsuarioOperario?.CodigoUsuario;
 
                 await InyeccionService.FinalizarLineaInyeccionExtrusion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloIE, detalleInyeccion, "INYECCION");
 
@@ -304,6 +321,7 @@
         {
             det.MotPesoRechReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechReciclable);
             det.MotPesoRechNoReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechNoReciclable);
+            det.UsuarioOperario = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario);
         }
     }
 
@@ -329,6 +347,21 @@
                 (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
                 (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
             .OrderBy(a => a.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private Task<IEnumerable<Usuario>> BuscarOperarios(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(operarios.AsEnumerable());
+
+        var resultado = operarios
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.CodigoUsuario) && a.CodigoUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.NombreUsuario) && a.NombreUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.CodigoUsuario)
             .Take(20);
 
         return Task.FromResult(resultado);
