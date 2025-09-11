@@ -128,7 +128,7 @@ namespace eProduccion.Data.GestionAccesos
         {
             var list = new List<Usuario>();
 
-            var query = $"SELECT \"Code\", \"U_CODE\", \"Name\", \"U_MAIL\", \"U_ACTI\", \"U_TIPO\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" WHERE \"U_CODE\"!='EEP_ADMIN' ORDER BY \"U_CODE\" ";
+            var query = $"SELECT \"Code\", \"U_CODE\", \"Name\", \"U_MAIL\", \"U_ACTI\", \"U_TIPO\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" ORDER BY \"U_CODE\" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
