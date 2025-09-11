@@ -11,6 +11,7 @@
         public DateTime HoraFin { get; set; }
         public string Turno { get; set; }
         public string Operario { get; set; }
+        public Usuario? UsuarioOperario { set; get; }
         public int CantAprobadas { get; set; }
         public int CantRetenidas { get; set; }
         public int CantRechReciclable { get; set; }
@@ -41,5 +42,6 @@
         public double MetrosTurnoReal { get; set; }
         public double MetrosTurno { get; set; }
         public string Operario2 { get; set; }
+        public Usuario? UsuarioOperario2 { set; get; }
     }
 }

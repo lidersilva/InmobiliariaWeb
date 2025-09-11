@@ -1,8 +1,10 @@
-﻿@using eProduccion.Data.Produccion
+﻿@using eProduccion.Data.GestionAccesos
+@using eProduccion.Data.Produccion
 @using eProduccion.Models
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject InyeccionExtrusionService ExtrusionService
+@inject UsuarioSistemaService UsuarioSistemaService
 
 <MudDialog>
     <TitleContent>
@@ -18,7 +20,7 @@
                 <MudTh>Hora fin</MudTh>
                 <MudTh>Turno</MudTh>
                 <MudTh>Operario</MudTh>
-                <MudTh>Operario 2</MudTh>
+                <MudTh Class="text-nowrap">Operario 2</MudTh>
                 <MudTh>Cant. aprobadas</MudTh>
                 <MudTh>Cant. retenidas</MudTh>
                 <MudTh>Cant. rechazadas reciclables</MudTh>
@@ -62,8 +64,26 @@
                         <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
                     </MudSelect>
                 </MudTd>
-                <MudTd DataLabel="Operario"></MudTd>
-                <MudTd DataLabel="Operario 2"></MudTd>
+                <MudTd DataLabel="Operario" Style="min-width: 220px;">
+                    <MudAutocomplete T="Usuario"
+                                     SearchFunc="BuscarOperarios"
+                                     ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                     @bind-Value="@context.UsuarioOperario"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
+                <MudTd DataLabel="Operario 2" Style="min-width: 220px;">
+                    <MudAutocomplete T="Usuario"
+                                     SearchFunc="BuscarOperarios"
+                                     ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                     @bind-Value="@context.UsuarioOperario2"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
                 <MudTd DataLabel="Cant. aprobadas">
                     <MudNumericField T="int" @bind-Value="@context.CantAprobadas" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
@@ -76,7 +96,7 @@
                 <MudTd DataLabel="Peso rechazado reciclable" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoRechReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Motivo rechazado reciclable">
+                <MudTd DataLabel="Motivo rechazado reciclable" Style="min-width: 250px;">
                     <MudAutocomplete T="MotivoParadaDefecto"
                                      SearchFunc="BuscarMotivosDefectos"
                                      ToStringFunc='motivo => motivo != null ? $"{motivo.Codigo} {motivo.Descripcion}" : string.Empty'
@@ -92,7 +112,7 @@
                 <MudTd DataLabel="Peso rechazado no reciclable" Style="min-width: 110px;">
                     <MudNumericField T="double" @bind-Value="@context.PesoRechNoReciclable" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                 </MudTd>
-                <MudTd DataLabel="Motivo rechazado no reciclable">
+                <MudTd DataLabel="Motivo rechazado no reciclable" Style="min-width: 250px;">
                     <MudAutocomplete T="MotivoParadaDefecto"
                                      SearchFunc="BuscarMotivosDefectos"
                                      ToStringFunc='motivo => motivo != null ? $"{motivo.Codigo} {motivo.Descripcion}" : string.Empty'
@@ -171,6 +191,9 @@
     [Parameter]
     public OTInyeccionExtrusion OrdenExtrusion { get; set; }
 
+    private List<Usuario> operarios;
+    private Usuario operarioSeleccionado;
+    private Usuario operario2Seleccionado;
     List<OTInyeccionExtrusionDet> detallesExtrusion = new();
     List<MotivoParadaDefecto> listaMotivoDefecto = new();
 
@@ -179,6 +202,7 @@
         try
         {
             listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
+            operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
 
             await CargarDetallesOTExtrusion();
 
@@ -205,6 +229,8 @@
         {
             detalleExtrusion.MotiMPesoRechReciclable = detalleExtrusion.MotPesoRechReciclable?.Codigo;
             detalleExtrusion.MotiMPesoRechNoReciclable = detalleExtrusion.MotPesoRechNoReciclable?.Codigo;
+            detalleExtrusion.Operario = detalleExtrusion.UsuarioOperario?.CodigoUsuario;
+            detalleExtrusion.Operario2 = detalleExtrusion.UsuarioOperario2?.CodigoUsuario;
 
             await ExtrusionService.GuardarLineaInyeccionExtrusion(OrdenExtrusion.DocEntry, detalleExtrusion);
 
@@ -280,6 +306,8 @@
             {
                 detalleExtrusion.MotiMPesoRechReciclable = detalleExtrusion.MotPesoRechReciclable?.Codigo;
                 detalleExtrusion.MotiMPesoRechNoReciclable = detalleExtrusion.MotPesoRechNoReciclable?.Codigo;
+                detalleExtrusion.Operario = detalleExtrusion.UsuarioOperario?.CodigoUsuario;
+                detalleExtrusion.Operario2 = detalleExtrusion.UsuarioOperario2?.CodigoUsuario;
 
                 await ExtrusionService.FinalizarLineaInyeccionExtrusion(OrdenExtrusion.CodArticuloOV, OrdenExtrusion.CodArticuloIE, detalleExtrusion, "EXTRUSION");
 
@@ -314,6 +342,8 @@
         {
             det.MotPesoRechReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechReciclable);
             det.MotPesoRechNoReciclable = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiMPesoRechNoReciclable);
+            det.UsuarioOperario = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario);
+            det.UsuarioOperario2 = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario2);
         }
     }
 
@@ -339,6 +369,21 @@
                 (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
                 (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
             .OrderBy(a => a.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private Task<IEnumerable<Usuario>> BuscarOperarios(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(operarios.AsEnumerable());
+
+        var resultado = operarios
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.CodigoUsuario) && a.CodigoUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.NombreUsuario) && a.NombreUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.CodigoUsuario)
             .Take(20);
 
         return Task.FromResult(resultado);
