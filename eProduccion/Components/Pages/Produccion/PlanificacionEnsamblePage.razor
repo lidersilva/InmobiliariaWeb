@@ -1,0 +1,88 @@
+﻿@page "/planificacionensamble"
+@using eProduccion.Components.Dialogs
+@using eProduccion.Models
+@using eProduccion.Utility
+@using eProduccion.Data.Produccion
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject PlanificacionEnsambleService PlanificacionEnsambleService
+
+<PageTitle>eProducci&oacute;n | Planificaci&oacute;n ensamble</PageTitle>
+
+<div class="row">
+    <div class="col-12">
+        <div class="p-4">
+            <div class="table-responsive">
+                <MudTable Items="@listaOV" MultiSelection="true" Filter="FiltrarTabla" @bind-SelectedItems="filasSeleccionadas" Class="w-100" SelectOnRowClick="false">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Planificación ensamble</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Fecha OV</MudTh>
+                        <MudTh>Serie</MudTh>
+                        <MudTh>DocNum OV</MudTh>
+                        <MudTh>Código</MudTh>
+                        <MudTh>Artículo</MudTh>
+                        <MudTh>Cantidad OV</MudTh>
+                        <MudTh>Acciones</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Fecha OV">@context.FechaOV.ToString("dd/MM/yyyy")</MudTd>
+                        <MudTd DataLabel="Serie">@context.Serie</MudTd>
+                        <MudTd DataLabel="DocNum OV">@context.DocNumOV</MudTd>
+                        <MudTd DataLabel="Código" Class="text-nowrap">@context.CodArticulo</MudTd>
+                        <MudTd DataLabel="Artículo" Class="text-nowrap">@context.Articulo</MudTd>
+                        <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
+                        <MudTd DataLabel="Acciones">
+                            <MudTooltip Text="Cargar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" />
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+                    </PagerContent>
+                </MudTable>
+            </div>
+            <MudText>@filasSeleccionadas?.Count filas seleccionadas</MudText>
+            <div class="d-flex justify-end mt-4">
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Disabled="@(!filasSeleccionadas.Any())">Entregar</MudButton>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private PlanificacionEnsamble[]? listaOV;
+    private HashSet<PlanificacionEnsamble> filasSeleccionadas = new HashSet<PlanificacionEnsamble>();
+    private string textoBusqueda = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            listaOV = await PlanificacionEnsambleService.ObtenerOV();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private bool FiltrarTabla(PlanificacionEnsamble item) => AplicarFiltroTabla(item, textoBusqueda);
+
+    private bool AplicarFiltroTabla(PlanificacionEnsamble item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        return
+            item.FechaOV.ToString("dd/MM/yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrEmpty(item.Serie) && item.Serie.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            item.DocNumOV.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrEmpty(item.CodArticulo) && item.CodArticulo.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrEmpty(item.Articulo) && item.Articulo.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+    }
+}
