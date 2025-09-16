@@ -29,7 +29,8 @@ namespace eProduccion.Data.Produccion
                 TP.""U_DOCNUMOV"", 
                 TS.""SeriesName"", 
                 TI.""U_ESTADO"", 
-                (SELECT IFNULL(x.""U_EP_CPM"", 0) FROM ""{_connectionService.DataBase}"".OITM x WHERE x.""ItemCode""=TI.""U_CODSUBART"") CAVREALES
+                (SELECT IFNULL(x.""U_EP_CPM"", 0) FROM ""{_connectionService.DataBase}"".OITM x WHERE x.""ItemCode""=TI.""U_CODSUBART"") CAVREALES,
+                TI.""U_CODEPLANIOT""
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_CAB"" TI 
                 JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TI.""U_CODEPLANIOT""=TP.""Code"" 
                 JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 
@@ -54,6 +55,7 @@ namespace eProduccion.Data.Produccion
                 che.SerieOV = reader["SeriesName"].ToString();
                 che.EstadoOT = reader["U_ESTADO"].ToString();
                 che.CavidadesReales = int.Parse(reader["CAVREALES"].ToString());
+                che.CodePlanificacionOT = int.Parse(reader["U_CODEPLANIOT"].ToString());
                 list.Add(che);
             }
 
@@ -233,7 +235,7 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloIE, OTInyeccionExtrusionDet detInyeccionExtrusion, string estacion)
+        public async Task FinalizarLineaInyeccionExtrusion(string codArticuloOV, string codArticuloIE, OTInyeccionExtrusionDet detInyeccionExtrusion, string estacion, int codePlanificacionOT)
         {
             var listLineasAsiento = new List<AsientoDet>();
             int nroAsiento = 0;
@@ -397,6 +399,11 @@ namespace eProduccion.Data.Produccion
             int docEntryEntrada = int.Parse(jObjectEntrada["DocEntry"].ToString());
 
             ActualizarLineaInyeccionFinalizacion(detInyeccionExtrusion.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detInyeccionExtrusion);
+
+            if (ProcesarEnsamblado(codArticuloOV, codArticuloIE))
+            {
+                GenerarOTEnsamblado(codePlanificacionOT);
+            }
         }
 
         public List<ListaMaterialesDet> ObtenerListaMateriales(string codArticuloOV, string codArticuloI, string estacion)
@@ -686,6 +693,75 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return listMotivos;
+        }
+
+        private bool ProcesarEnsamblado(string codArticuloOV, string codArticuloI)
+        {
+            var conEnsamblado = false;
+
+            var query = $@"
+                SELECT 
+                T0.""SeqNum""
+                FROM ""{_connectionService.DataBase}"".ITT2 T0 
+                WHERE T0.""Father""='{codArticuloOV}' 
+                AND T0.""SeqNum"" = (
+                        SELECT MAX(x.""SeqNum"") + 1
+                        FROM ""{_connectionService.DataBase}"".ITT2 x
+                        WHERE x.""Father"" = T0.""Father""
+                          AND x.""U_CodAcabado"" = '{codArticuloI}'
+                        )";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                conEnsamblado = true;
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return conEnsamblado;
+        }
+
+        private int ObtenerCabeceraEnsamblado(int codePlanificacionOT)
+        {
+            var OTEnsamblado = 0;
+
+            var query = $@"SELECT ""DocEntry"" FROM ""{_connectionService.DataBase}"".""@EEP_ENSAM_CAB"" WHERE ""U_CODEPLANIOT""={codePlanificacionOT} ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                OTEnsamblado = int.Parse(reader["DocEntry"].ToString()); ;
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return OTEnsamblado;
+        }
+
+        private void GenerarOTEnsamblado(int codePlanificacionOT)
+        {
+            var otEnsamblado = ObtenerCabeceraEnsamblado(codePlanificacionOT);
+
+            var method = otEnsamblado != 0 ? Method.Patch : Method.Post;
+
+            var entity = otEnsamblado != 0 ? $"EEP_ENSAM_CAB({otEnsamblado})" : $"EEP_ENSAM_CAB";
+
+
+            if (otEnsamblado == 0)
+            {
+
+
+
+
+
+
+
+            }
         }
     }
 }

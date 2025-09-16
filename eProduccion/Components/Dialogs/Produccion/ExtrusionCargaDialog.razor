@@ -340,7 +340,7 @@
                 detalleExtrusion.Operario = detalleExtrusion.UsuarioOperario?.CodigoUsuario;
                 detalleExtrusion.Operario2 = detalleExtrusion.UsuarioOperario2?.CodigoUsuario;
 
-                await ExtrusionService.FinalizarLineaInyeccionExtrusion(OrdenExtrusion.CodArticuloOV, OrdenExtrusion.CodArticuloIE, detalleExtrusion, "EXTRUSION");
+                await ExtrusionService.FinalizarLineaInyeccionExtrusion(OrdenExtrusion.CodArticuloOV, OrdenExtrusion.CodArticuloIE, detalleExtrusion, "EXTRUSION", OrdenExtrusion.CodePlanificacionOT);
 
                 await CargarDetallesOTExtrusion();
 

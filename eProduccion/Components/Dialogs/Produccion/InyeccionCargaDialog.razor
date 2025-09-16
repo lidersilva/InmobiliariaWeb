@@ -317,7 +317,7 @@
                 detalleInyeccion.MotiMPesoRechNoReciclable = detalleInyeccion.MotPesoRechNoReciclable?.Codigo;
                 detalleInyeccion.Operario = detalleInyeccion.UsuarioOperario?.CodigoUsuario;
 
-                await InyeccionService.FinalizarLineaInyeccionExtrusion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloIE, detalleInyeccion, "INYECCION");
+                await InyeccionService.FinalizarLineaInyeccionExtrusion(OrdenInyeccion.CodArticuloOV, OrdenInyeccion.CodArticuloIE, detalleInyeccion, "INYECCION", OrdenInyeccion.CodePlanificacionOT);
 
                 await CargarDetallesOTInyeccion();
 

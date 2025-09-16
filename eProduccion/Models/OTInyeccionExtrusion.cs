@@ -13,6 +13,7 @@
         public string SerieOV { get; set; }
         public string EstadoOT {  get; set; }
         public int CavidadesReales {  get; set; }
+        public int CodePlanificacionOT { get; set; }
         public List<OTInyeccionExtrusionDet> OTInyeccionExtrusionDetalle {  get; set; }
     }
 }
