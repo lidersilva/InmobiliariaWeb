@@ -402,7 +402,7 @@ namespace eProduccion.Data.Produccion
 
             if (ProcesarEnsamblado(codArticuloOV, codArticuloIE))
             {
-                GenerarOTEnsamblado(codePlanificacionOT);
+                GenerarOTEnsamblado(codePlanificacionOT, detInyeccionExtrusion.CantAprobadas, estacion, detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, codArticuloIE);
             }
         }
 
@@ -743,25 +743,57 @@ namespace eProduccion.Data.Produccion
             return OTEnsamblado;
         }
 
-        private void GenerarOTEnsamblado(int codePlanificacionOT)
+        private void GenerarOTEnsamblado(int codePlanificacionOT, int cantAprobadas, string estacion, int docEntryOT, int lineIdOT, string codArticuloIE)
         {
             var otEnsamblado = ObtenerCabeceraEnsamblado(codePlanificacionOT);
 
             var method = otEnsamblado != 0 ? Method.Patch : Method.Post;
-
             var entity = otEnsamblado != 0 ? $"EEP_ENSAM_CAB({otEnsamblado})" : $"EEP_ENSAM_CAB";
-
+            dynamic body = null;
 
             if (otEnsamblado == 0)
             {
-
-
-
-
-
-
-
+                body = new
+                {
+                    U_CODEPLANIOT = codePlanificacionOT,
+                    EEP_ENSAM_DETCollection = new[]
+                    {
+                        new
+                        {
+                            U_CANTPROD = cantAprobadas,
+                            U_CANTPRODKG = 0,
+                            U_CANTSOLICITADA = 0,
+                            U_ESTANTERIOR = estacion,
+                            U_OT = docEntryOT,
+                            U_LINEIDOT = lineIdOT,
+                            U_CODSUBART = codArticuloIE,
+                            U_ESTADO = "Pendiente",
+                        }
+                    }
+                };
             }
+            else
+            {
+                body = new
+                {
+                    EEP_ENSAM_DETCollection = new[]
+                    {
+                        new
+                        {
+                            U_CANTPROD = cantAprobadas,
+                            U_CANTPRODKG = 0,
+                            U_CANTSOLICITADA = 0,
+                            U_ESTANTERIOR = estacion,
+                            U_OT = docEntryOT,
+                            U_LINEIDOT = lineIdOT,
+                            U_CODSUBART = codArticuloIE,
+                            U_ESTADO = "Pendiente",
+                        }
+                    }
+                };
+            }
+
+            _connectionService.SetEntitySL(method, entity, body);
         }
     }
 }
