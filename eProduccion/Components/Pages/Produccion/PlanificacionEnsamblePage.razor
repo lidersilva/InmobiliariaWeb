@@ -1,5 +1,5 @@
 ﻿@page "/planificacionensamble"
-@using eProduccion.Components.Dialogs
+@using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
@@ -37,7 +37,7 @@
                         <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
                         <MudTd DataLabel="Acciones">
                             <MudTooltip Text="Cargar">
-                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick='() => AbrirModalCargarEnsamble(context)' />
                             </MudTooltip>
                         </MudTd>
                     </RowTemplate>
@@ -63,12 +63,30 @@
     {
         try
         {
-            listaOV = await PlanificacionEnsambleService.ObtenerOV();
+            listaOV = await PlanificacionEnsambleService.ObtenerCabeceraEnsamble();
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
+    }
+
+    private async Task AbrirModalCargarEnsamble(PlanificacionEnsamble ordenEnsamble)
+    {
+        var parameters = new DialogParameters
+        {
+            { "OrdenEnsamble", ordenEnsamble },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            FullWidth = true,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<EnsambladoCargaDialog>("", parameters, options);
     }
 
     private bool FiltrarTabla(PlanificacionEnsamble item) => AplicarFiltroTabla(item, textoBusqueda);

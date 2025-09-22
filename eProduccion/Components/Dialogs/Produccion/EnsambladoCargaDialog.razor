@@ -1,5 +1,101 @@
-﻿<h3>EnsambladoCargaDialog</h3>
+﻿@using eProduccion.Data.Produccion
+@using eProduccion.Models
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject PlanificacionEnsambleService PlanificacionEnsambleService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Carga Ensamble</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTable T="PlanificacionEnsambleDet" Items="@detallesEnsamble" MultiSelection="true" @bind-SelectedItems="filasSeleccionadas" SelectOnRowClick="false">
+            <HeaderContent>
+                <MudTh>OT</MudTh>
+                <MudTh># art. producido</MudTh>
+                <MudTh>Artículo producido</MudTh>
+                <MudTh>Cant. producida</MudTh>
+                <MudTh>Cant. producida KG</MudTh>
+                <MudTh Class="text-nowrap">Cant. a solicitar</MudTh>
+                <MudTh>Lote</MudTh>
+                <MudTh>Cant. disponible</MudTh>
+                <MudTh>Cant. solicitada</MudTh>
+                <MudTh>Total stock</MudTh>
+                <MudTh>Estado</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="OT">@context.OT</MudTd>
+                <MudTd DataLabel="# art. producido" Class="text-nowrap">@context.CodArticuloI</MudTd>
+                <MudTd DataLabel="Artículo producido" Class="text-nowrap">@context.ArticuloI</MudTd>
+                <MudTd DataLabel="Cant. producida">@context.CantProducida</MudTd>
+                <MudTd DataLabel="Cant. producida KG">@context.CantProducidaKG</MudTd>
+                <MudTd DataLabel="Cant. a solicitar">
+                    <MudNumericField T="int" @bind-Value="@context.CantSolicitar" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Lote" Style="min-width: 200px;">
+                    <MudTextField T="string" @bind-Value="@context.Lote" Label="Lote" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Class="mud-width-full" Style="cursor: pointer;" @onclick='() => AbrirModalLotes(context)' />
+                </MudTd>
+                <MudTd DataLabel="Cant. disponible">@context.CantDisponible</MudTd>
+                <MudTd DataLabel="Cant. solicitada">@context.CantSolicitada</MudTd>
+                <MudTd DataLabel="Total stock">@context.Stock</MudTd>
+                <MudTd DataLabel="Estado">@context.Estado</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton>Cargar</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
+    public PlanificacionEnsamble OrdenEnsamble { get; set; }
+
+    private HashSet<PlanificacionEnsambleDet> filasSeleccionadas = new HashSet<PlanificacionEnsambleDet>();
+    List<PlanificacionEnsambleDet> detallesEnsamble = new();
+    PlanificacionEnsambleDet nuevoDetalle = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            detallesEnsamble = await PlanificacionEnsambleService.ObtenerDetalleEnsamble(OrdenEnsamble.DocEntry);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalLotes(PlanificacionEnsambleDet planificacionEnsambleDet)
+    {
+        var parameters = new DialogParameters
+        {
+            { "CodArticulo", planificacionEnsambleDet.CodArticuloI },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<LoteDialog>("", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Lote loteSeleccionado)
+        {
+            planificacionEnsambleDet.Lote = loteSeleccionado.NroLote;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
 }

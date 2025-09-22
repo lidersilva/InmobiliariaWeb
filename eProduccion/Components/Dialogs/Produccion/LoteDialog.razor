@@ -1,0 +1,57 @@
+﻿@using eProduccion.Data.Produccion
+@using eProduccion.Models
+@inject ISnackbar Snackbar
+@inject PlanificacionEnsambleService PlanificacionEnsambleService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Lote</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTable T="Lote" Items="@lotes" Hover="true">
+            <HeaderContent>
+                <MudTh>Lote</MudTh>
+                <MudTh>Cantidad</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Lote" @onclick="() => SeleccionarLote(context)" Style="cursor: pointer;">@context.NroLote</MudTd>
+                <MudTd DataLabel="Cantidad">@context.Cantidad</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string CodArticulo { get; set; }
+
+    List<Lote> lotes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            lotes = await PlanificacionEnsambleService.ObtenerLotesEnsamble(CodArticulo, "01");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void SeleccionarLote(Lote loteSeleccionado)
+    {
+        MudDialog.Close(DialogResult.Ok(loteSeleccionado));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
