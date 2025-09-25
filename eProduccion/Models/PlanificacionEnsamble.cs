@@ -10,6 +10,7 @@
         public string Articulo { get; set; }
         public double CantidadOV { get; set; }
         public string Serie { get; set; }
+        public string EstacionAnterior { get; set; }
         public List<PlanificacionEnsambleDet> PlanificacionEnsambleDetalle { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace eProduccion.Data.Produccion
     {
         private readonly ConnectionService _connectionService = connectionService;
 
-        public Task<PlanificacionEnsamble[]> ObtenerCabeceraEnsamble()
+        public Task<PlanificacionEnsamble[]> ObtenerPlanificacionEnsamble()
         {
             var list = new List<PlanificacionEnsamble>();
 
@@ -23,7 +23,8 @@ namespace eProduccion.Data.Produccion
                 TP.""U_DOCNUMOV"", 
                 TP.""U_CODARTICULO"", 
                 TA.""ItemName"", 
-                TP.""U_CANTIDADOV""
+                TP.""U_CANTIDADOV"",
+                TE.""U_ESTANTERIOR""
                 FROM ""{_connectionService.DataBase}"".""@EEP_ENSAM_CAB"" TE
                 JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TE.""U_CODEPLANIOT""=TP.""Code""
                 JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 

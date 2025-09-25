@@ -26,6 +26,7 @@
                         <MudTh>Código</MudTh>
                         <MudTh>Artículo</MudTh>
                         <MudTh>Cantidad OV</MudTh>
+                        <MudTh>Estación anterior</MudTh>
                         <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
@@ -35,6 +36,7 @@
                         <MudTd DataLabel="Código" Class="text-nowrap">@context.CodArticulo</MudTd>
                         <MudTd DataLabel="Artículo" Class="text-nowrap">@context.Articulo</MudTd>
                         <MudTd DataLabel="Cantidad OV">@context.CantidadOV</MudTd>
+                        <MudTd DataLabel="Estación anterior">@context.EstacionAnterior</MudTd>
                         <MudTd DataLabel="Acciones">
                             <MudTooltip Text="Cargar">
                                 <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick='() => AbrirModalCargarEnsamble(context)' />
@@ -58,7 +60,7 @@
     {
         try
         {
-            listaOV = await PlanificacionEnsambleService.ObtenerCabeceraEnsamble();
+            listaOV = await PlanificacionEnsambleService.ObtenerPlanificacionEnsamble();
         }
         catch (Exception ex)
         {

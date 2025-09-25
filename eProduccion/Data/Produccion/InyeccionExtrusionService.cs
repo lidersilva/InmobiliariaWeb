@@ -402,7 +402,7 @@ namespace eProduccion.Data.Produccion
 
             if (ProcesarEnsamblado(codArticuloOV, codArticuloIE))
             {
-                GenerarOTEnsamblado(codePlanificacionOT, detInyeccionExtrusion.CantAprobadas, estacion, detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, codArticuloIE);
+                GenerarOrdenPlanifEnsamblado(codePlanificacionOT, detInyeccionExtrusion.CantAprobadas, estacion, detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, codArticuloIE);
             }
         }
 
@@ -724,11 +724,11 @@ namespace eProduccion.Data.Produccion
             return conEnsamblado;
         }
 
-        private int ObtenerCabeceraEnsamblado(int codePlanificacionOT)
+        private int ObtenerPlanifEnsamblado(int codePlanificacionOT, string estacion)
         {
             var OTEnsamblado = 0;
 
-            var query = $@"SELECT ""DocEntry"" FROM ""{_connectionService.DataBase}"".""@EEP_ENSAM_CAB"" WHERE ""U_CODEPLANIOT""={codePlanificacionOT} ";
+            var query = $@"SELECT ""DocEntry"" FROM ""{_connectionService.DataBase}"".""@EEP_ENSAM_CAB"" WHERE ""U_CODEPLANIOT""={codePlanificacionOT} AND ""U_ESTANTERIOR""='{estacion}' ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -743,9 +743,9 @@ namespace eProduccion.Data.Produccion
             return OTEnsamblado;
         }
 
-        private void GenerarOTEnsamblado(int codePlanificacionOT, int cantAprobadas, string estacion, int docEntryOT, int lineIdOT, string codArticuloIE)
+        private void GenerarOrdenPlanifEnsamblado(int codePlanificacionOT, int cantAprobadas, string estacion, int docEntryOT, int lineIdOT, string codArticuloIE)
         {
-            var otEnsamblado = ObtenerCabeceraEnsamblado(codePlanificacionOT);
+            var otEnsamblado = ObtenerPlanifEnsamblado(codePlanificacionOT, estacion);
 
             var method = otEnsamblado != 0 ? Method.Patch : Method.Post;
             var entity = otEnsamblado != 0 ? $"EEP_ENSAM_CAB({otEnsamblado})" : $"EEP_ENSAM_CAB";
@@ -756,6 +756,7 @@ namespace eProduccion.Data.Produccion
                 body = new
                 {
                     U_CODEPLANIOT = codePlanificacionOT,
+                    U_ESTANTERIOR = estacion,
                     EEP_ENSAM_DETCollection = new[]
                     {
                         new
@@ -763,7 +764,6 @@ namespace eProduccion.Data.Produccion
                             U_CANTPROD = cantAprobadas,
                             U_CANTPRODKG = 0,
                             U_CANTSOLICITADA = 0,
-                            U_ESTANTERIOR = estacion,
                             U_OT = docEntryOT,
                             U_LINEIDOT = lineIdOT,
                             U_CODSUBART = codArticuloIE,
@@ -783,7 +783,6 @@ namespace eProduccion.Data.Produccion
                             U_CANTPROD = cantAprobadas,
                             U_CANTPRODKG = 0,
                             U_CANTSOLICITADA = 0,
-                            U_ESTANTERIOR = estacion,
                             U_OT = docEntryOT,
                             U_LINEIDOT = lineIdOT,
                             U_CODSUBART = codArticuloIE,
