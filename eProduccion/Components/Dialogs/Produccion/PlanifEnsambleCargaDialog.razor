@@ -47,7 +47,7 @@
         <MudText>@filasSeleccionadas?.Count filas seleccionadas</MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton>Generar OT</MudButton>
+        <MudButton @onclick="IniciarOT" Disabled="@(!filasSeleccionadas.Any())">Generar OT</MudButton>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
     </DialogActions>
 </MudDialog>
@@ -95,6 +95,24 @@
         if (!result.Canceled && result.Data is Lote loteSeleccionado)
         {
             planificacionEnsambleDet.Lote = loteSeleccionado.NroLote;
+        }
+    }
+
+    private async Task IniciarOT()
+    {
+        try
+        {
+            await PlanificacionEnsambleService.GenerarOT(filasSeleccionadas.ToList());
+
+            detallesEnsamble = await PlanificacionEnsambleService.ObtenerDetalleEnsamble(OrdenEnsamble.DocEntry);
+
+            StateHasChanged();
+
+            Snackbar.Add($"Órden de trabajo creada correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
     }
 

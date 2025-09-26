@@ -83,7 +83,7 @@
             BackdropClick = false,
         };
 
-        var dialog = await DialogService.ShowAsync<EnsambladoCargaDialog>("", parameters, options);
+        var dialog = await DialogService.ShowAsync<PlanifEnsambleCargaDialog>("", parameters, options);
     }
 
     private bool FiltrarTabla(PlanificacionEnsamble item) => AplicarFiltroTabla(item, textoBusqueda);

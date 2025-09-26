@@ -4,6 +4,7 @@ using RestSharp;
 using System.Data;
 using System.Data.Odbc;
 using System.Globalization;
+using System.Text;
 
 namespace eProduccion.Data.Produccion
 {
@@ -136,6 +137,27 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return Task.FromResult(list.ToList());
+        }
+
+        public async Task GenerarOT(List<PlanificacionEnsambleDet> listPlanifEnsambleDet)
+        {
+            StringBuilder bodyBatch = new StringBuilder();
+
+            var method = Method.Post;
+            var entity = $"$batch";
+
+            bodyBatch.AppendLine();
+            bodyBatch.AppendLine("--Batch_Boundary_EEP");
+            bodyBatch.AppendLine("content-type: multipart/mixed;boundary=changeset_EEP");
+            bodyBatch.AppendLine();
+
+            
+
+            bodyBatch.AppendLine();
+            bodyBatch.AppendLine("--changeset_EEP--");
+            bodyBatch.AppendLine("--Batch_Boundary_EEP--");
+
+            _connectionService.SetEntitySLBatch(method, entity, bodyBatch);
         }
     }
 }
