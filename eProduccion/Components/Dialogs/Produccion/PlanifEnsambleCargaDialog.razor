@@ -102,7 +102,7 @@
     {
         try
         {
-            await PlanificacionEnsambleService.GenerarOT(filasSeleccionadas.ToList());
+            await PlanificacionEnsambleService.GenerarOT(filasSeleccionadas.ToList(), OrdenEnsamble.CodArticulo, OrdenEnsamble.CodePlaniOT, OrdenEnsamble.DocEntry);
 
             detallesEnsamble = await PlanificacionEnsambleService.ObtenerDetalleEnsamble(OrdenEnsamble.DocEntry);
 

@@ -1,5 +1,6 @@
 ﻿using eProduccion.Data.Configuracion;
 using eProduccion.Models;
+using eProduccion.Utility;
 using RestSharp;
 using System.Data;
 using System.Data.Odbc;
@@ -25,7 +26,8 @@ namespace eProduccion.Data.Produccion
                 TP.""U_CODARTICULO"", 
                 TA.""ItemName"", 
                 TP.""U_CANTIDADOV"",
-                TE.""U_ESTANTERIOR""
+                TE.""U_ESTANTERIOR"",
+                TE.""U_CODEPLANIOT""
                 FROM ""{_connectionService.DataBase}"".""@EEP_ENSAM_CAB"" TE
                 JOIN ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" TP ON TE.""U_CODEPLANIOT""=TP.""Code""
                 JOIN ""{_connectionService.DataBase}"".NNM1 TS ON TP.""U_CODSERIE""=TS.""Series"" 
@@ -48,6 +50,8 @@ namespace eProduccion.Data.Produccion
                 che.CodArticulo = reader["U_CODARTICULO"].ToString();
                 che.Articulo = reader["ItemName"].ToString();
                 che.CantidadOV = double.Parse(reader["U_CANTIDADOV"].ToString());
+                che.EstacionAnterior = reader["U_ESTANTERIOR"].ToString();
+                che.CodePlaniOT = int.Parse(reader["U_CODEPLANIOT"].ToString());
                 list.Add(che);
             }
 
@@ -62,6 +66,7 @@ namespace eProduccion.Data.Produccion
 
             var query = $@"
                 SELECT
+                TD.""LineId"",
                 TS.""SeriesName"", 
                 TP.""U_DOCNUMOV"",
                 TP.""U_FECHAOV"",
@@ -87,6 +92,7 @@ namespace eProduccion.Data.Produccion
             while (reader.Read())
             {
                 var che = new PlanificacionEnsambleDet();
+                che.LineId = int.Parse(reader["LineId"].ToString());
                 che.SerieOV = reader["SeriesName"].ToString();
                 che.DocNumOV = int.Parse(reader["U_DOCNUMOV"].ToString());
                 che.FechaOV = DateTime.Parse(reader["U_FECHAOV"].ToString());
@@ -97,7 +103,7 @@ namespace eProduccion.Data.Produccion
                 che.ArticuloI = reader["ItemName"].ToString();
                 che.Stock = double.Parse(reader["Stock"].ToString());
                 che.Estado = reader["U_ESTADO"].ToString();
-                che.CantSolicitada = double.Parse(reader["U_CANTSOLICITADA"].ToString());
+                che.CantSolicitada = int.Parse(reader["U_CANTSOLICITADA"].ToString());
                 che.CantDisponible = che.CantProducida - che.CantSolicitada;
                 list.Add(che);
             }
@@ -139,7 +145,7 @@ namespace eProduccion.Data.Produccion
             return Task.FromResult(list.ToList());
         }
 
-        public async Task GenerarOT(List<PlanificacionEnsambleDet> listPlanifEnsambleDet)
+        public async Task GenerarOT(List<PlanificacionEnsambleDet> listPlanifEnsambleDet, string codigoArticuloOV, int codePlanificacionOT, int docEntryOT)
         {
             StringBuilder bodyBatch = new StringBuilder();
 
@@ -151,13 +157,125 @@ namespace eProduccion.Data.Produccion
             bodyBatch.AppendLine("content-type: multipart/mixed;boundary=changeset_EEP");
             bodyBatch.AppendLine();
 
-            
+            // Generar OT según la lista de materiales
+            bodyBatch.AppendLine(GenerarOTSegunListaMateriales(listPlanifEnsambleDet, codigoArticuloOV, codePlanificacionOT));
+
+            // Actualizar líneas iniciadas del detalle de planificación de ensamble
+            bodyBatch.AppendLine(ActualizarLineaPlanificacionEnsamble(listPlanifEnsambleDet, docEntryOT));
 
             bodyBatch.AppendLine();
             bodyBatch.AppendLine("--changeset_EEP--");
             bodyBatch.AppendLine("--Batch_Boundary_EEP--");
 
             _connectionService.SetEntitySLBatch(method, entity, bodyBatch);
+        }
+
+        private string GenerarOTSegunListaMateriales(List<PlanificacionEnsambleDet> listPlanifEnsambleDet, string codigoArticuloOV, int codePlanificacionOT)
+        {
+            StringBuilder bodyBatch = new StringBuilder();
+
+            var sigEtapaRuta = ObtenerEtapasRuta(codigoArticuloOV);
+
+            if (sigEtapaRuta.EtapaRuta == "09")
+            {
+                bodyBatch.AppendLine("--changeset_EEP");
+                bodyBatch.AppendLine("content-type: application/http");
+                bodyBatch.AppendLine("content-transfer-encoding:binary");
+                bodyBatch.AppendLine();
+                bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_ENSAM_CAB");
+                bodyBatch.AppendLine();
+
+                var listRegistroEnsamblado = new List<dynamic>();
+                foreach (var i in listPlanifEnsambleDet)
+                {
+                    var bodyDet = new
+                    {
+                        U_CODSUBART = sigEtapaRuta.SubProducto,
+                        U_LOTE = i.Lote,
+                        U_CANTIDAD = i.CantSolicitar,
+                    };
+
+                    listRegistroEnsamblado.Add(bodyDet);
+                }
+
+                var body = new
+                {
+                    U_CODEPLANIOT = codePlanificacionOT,
+                    U_ESTACION = "ARMADO",
+                    U_FECHAOT = DateTime.Now.ToString("yyyy-MM-dd"),
+                    U_USEROT = _connectionService.UserName,
+                    EEP_REG_ENSAM_DETCollection = listRegistroEnsamblado,
+                };
+
+                bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
+                bodyBatch.AppendLine();
+            }
+
+            return bodyBatch.ToString();
+        }
+
+        private ListaMateriales ObtenerEtapasRuta(string codigoArticulo)
+        {
+            var etapaRuta = new ListaMateriales();
+
+            var query = $@"
+                SELECT TOP 1
+                    T1.""Code"", 
+                    T0.""U_CodAcabado""
+                FROM ""{_connectionService.DataBase}"".ITT2 T0 
+                JOIN ""{_connectionService.DataBase}"".ORST T1 ON T0.""StgEntry"" = T1.""AbsEntry""
+                WHERE 
+                    T0.""Father"" = '{codigoArticulo}'
+                    AND T0.""U_Tipo"" = 'E'
+                ORDER BY T0.""SeqNum"" ASC ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                etapaRuta.EtapaRuta = reader["Code"].ToString();
+                etapaRuta.SubProducto = reader["U_CodAcabado"].ToString();
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return etapaRuta;
+        }
+
+        private string ActualizarLineaPlanificacionEnsamble(List<PlanificacionEnsambleDet> listPlanifEnsambleDet, int docEntryOT)
+        {
+            StringBuilder bodyBatch = new StringBuilder();
+
+            bodyBatch.AppendLine("--changeset_EEP");
+            bodyBatch.AppendLine("content-type: application/http");
+            bodyBatch.AppendLine("content-transfer-encoding:binary");
+            bodyBatch.AppendLine();
+            bodyBatch.AppendLine($"PATCH /b1s/v1/EEP_ENSAM_CAB({docEntryOT})");
+            bodyBatch.AppendLine();
+
+            var listRegistroEnsamblado = new List<dynamic>();
+            foreach (var i in listPlanifEnsambleDet)
+            {
+                var bodyDet = new
+                {
+                    LineId = i.LineId,
+                    U_ESTADO = "En proceso",
+                    U_CANTSOLICITADA = i.CantSolicitada + i.CantSolicitar,
+                };
+
+                listRegistroEnsamblado.Add(bodyDet);
+            }
+
+            var body = new
+            {
+                EEP_ENSAM_DETCollection = listRegistroEnsamblado,
+            };
+
+            bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
+            bodyBatch.AppendLine();
+
+            return bodyBatch.ToString();
         }
     }
 }

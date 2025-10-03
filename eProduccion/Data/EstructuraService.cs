@@ -128,6 +128,7 @@ namespace eProduccion.Data
                 new () { Name = "CCP11", Type = TipoCampo.Float, Size = 10, Description = "Metros por turno real", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CCP12", Type = TipoCampo.Float, Size = 10, Description = "Metros por turno", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
                 // Registro paradas
                 new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación de trabajo", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
@@ -158,6 +159,9 @@ namespace eProduccion.Data
                 // OT Ensamble
                 new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación de trabajo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "FECHAOT", Type = TipoCampo.Date, Size = 10, Description = "Fecha OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario creador OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 // OT Ensamble Det.
                 new () { Name = "NROCONTEN", Type = TipoCampo.Alpha, Size = 50, Description = "Nro. contenedor", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "NROMAQUI", Type = TipoCampo.Alpha, Size = 25, Description = "Nro. máquina", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
@@ -177,7 +181,10 @@ namespace eProduccion.Data
                 new () { Name = "DESALIDA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry salida", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado línea", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "NROASIENTO", Type = TipoCampo.Numeric, Size = 11, Description = "Número asiento", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
+                // OT Registro Ensamble Det.
+                new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTIDAD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
 
                 // Maestro paradas/motivos defectos
