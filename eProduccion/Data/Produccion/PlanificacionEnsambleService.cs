@@ -190,7 +190,7 @@ namespace eProduccion.Data.Produccion
                 {
                     var bodyDet = new
                     {
-                        U_CODSUBART = sigEtapaRuta.SubProducto,
+                        U_CODSUBART = i.CodArticuloI,
                         U_LOTE = i.Lote,
                         U_CANTIDAD = i.CantSolicitar,
                     };
@@ -204,6 +204,7 @@ namespace eProduccion.Data.Produccion
                     U_ESTACION = "ARMADO",
                     U_FECHAOT = DateTime.Now.ToString("yyyy-MM-dd"),
                     U_USEROT = _connectionService.UserName,
+                    U_CODSUBART = sigEtapaRuta.SubProducto,
                     EEP_REG_ENSAM_DETCollection = listRegistroEnsamblado,
                 };
 
