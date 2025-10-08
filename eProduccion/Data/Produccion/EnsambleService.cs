@@ -1,5 +1,6 @@
 ﻿using eProduccion.Models;
 using System.Data.Odbc;
+using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
@@ -46,6 +47,75 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return Task.FromResult(list.ToList());
+        }
+
+        public Task<List<OTEnsambleDet>> ObtenerDetalleOTEnsamblado(int docEntryOT)
+        {
+            var list = new List<OTEnsambleDet>();
+
+            var query = $@"
+                SELECT 
+                    ""LineId"",
+                    ""U_NROCONTEN"",
+                    ""U_NROMAQUI"",
+                    ""U_FECHAPROC"",
+                    ""U_HORAINI"",
+                    ""U_HORAFIN"",
+                    ""U_TURNO"",
+                    ""U_OPERARIO"",
+                    ""U_OPERARIO2"",
+                    IFNULL(""U_CANTAPROB"", 0) ""U_CANTAPROB"",
+                    IFNULL(""U_CANTPRODKG"", 0) ""U_CANTPRODKG"",
+                    IFNULL(""U_CCP1"", 0) ""U_CCP1"",
+                    IFNULL(""U_CANTAPROBD"", 0) ""U_CANTAPROBD"",
+                    ""U_OBS"",
+                    ""U_LIBERADO"",
+                    IFNULL(TS.""DocNum"", 0) ""DocNumSalida"",
+                    IFNULL(TD.""U_NROASIENTO"", 0) ""U_NROASIENTO"",
+                    IFNULL(TE.""DocNum"", 0) ""DocNumEntrada"",
+                    ""U_ESTADO""
+                FROM ""{_connectionService.DataBase}"".""@EEP_OT_ENSAM_DET"" TD
+                LEFT JOIN  ""{_connectionService.DataBase}"".OIGE TS ON TD.""U_DESALIDA""=TS.""DocEntry""
+                LEFT JOIN  ""{_connectionService.DataBase}"".OIGN TE ON TD.""U_DEENTRADA""=TE.""DocEntry""
+                WHERE TD.""DocEntry"" = {docEntryOT}
+                ORDER BY ""LineId""";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new OTEnsambleDet();
+                che.DocEntry = docEntryOT;
+                che.LineId = int.Parse(reader["LineId"].ToString());
+                che.NroContenedor = reader["U_NROCONTEN"].ToString();
+                che.NroMaquina = reader["U_NROMAQUI"].ToString();
+                che.Fecha = DateTime.Parse(reader["U_FECHAPROC"].ToString());
+                var horaInicioString = reader["U_HORAINI"].ToString().PadLeft(4, '0');
+                if (!string.IsNullOrWhiteSpace(horaInicioString) && horaInicioString.Length == 4)
+                    che.HoraInicio = DateTime.ParseExact(horaInicioString, "HHmm", CultureInfo.InvariantCulture);
+                var horaFinString = reader["U_HORAFIN"].ToString().PadLeft(4, '0');
+                if (!string.IsNullOrWhiteSpace(horaFinString) && horaFinString.Length == 4)
+                    che.HoraFin = DateTime.ParseExact(horaFinString, "HHmm", CultureInfo.InvariantCulture);
+                che.Turno = reader["U_TURNO"].ToString();
+                che.Operario = reader["U_OPERARIO"].ToString();
+                che.Operario2 = reader["U_OPERARIO2"].ToString();
+                che.CantAprobadas = int.Parse(reader["U_CANTAPROB"].ToString());
+                che.CantAprobadasKG = double.Parse(reader["U_CANTPRODKG"].ToString());
+                che.PesoPiezaG = double.Parse(reader["U_CCP1"].ToString());
+                che.CantAprobadasDesvio = int.Parse(reader["U_CANTAPROBD"].ToString());
+                che.Observaciones = reader["U_OBS"].ToString();
+                che.Liberado = reader["U_LIBERADO"].ToString() == "Y";
+                che.DocNumSalida = int.Parse(reader["DocNumSalida"].ToString());
+                che.Asiento = int.Parse(reader["U_NROASIENTO"].ToString());
+                che.DocNumEntrada = int.Parse(reader["DocNumEntrada"].ToString());
+                che.EstadoLinea = reader["U_ESTADO"].ToString();
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return Task.FromResult(list);
         }
     }
 }

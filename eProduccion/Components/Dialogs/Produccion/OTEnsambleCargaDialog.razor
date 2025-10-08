@@ -292,7 +292,7 @@
 
     private async Task CargarDetallesOTEnsamble()
     {
-        //detallesEnsamble = await InyeccionService.ObtenerDetalleInyeccionExtrusion(OTEnsamble.DocEntry);
+        detallesEnsamble = await EnsambleService.ObtenerDetalleOTEnsamblado(OTEnsamble.DocEntry);
 
         foreach (var det in detallesEnsamble)
         {
