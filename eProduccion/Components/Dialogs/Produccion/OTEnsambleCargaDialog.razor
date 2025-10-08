@@ -1,0 +1,332 @@
+﻿@using eProduccion.Data.GestionAccesos
+@using eProduccion.Data.Produccion
+@using eProduccion.Models
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject EnsambleService EnsambleService
+@inject UsuarioSistemaService UsuarioSistemaService
+@inject UserSession UserSession
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Carga OT Ensamble</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTable T="OTEnsambleDet" Items="@detallesEnsamble">
+            <HeaderContent>
+                <MudTh>Nro. contenedor</MudTh>
+                <MudTh>Nro. máquina</MudTh>
+                <MudTh>Fecha</MudTh>
+                <MudTh>Hora inicio</MudTh>
+                <MudTh>Hora fin</MudTh>
+                <MudTh>Turno</MudTh>
+                <MudTh>Operario</MudTh>
+                <MudTh Class="text-nowrap">Operario 2</MudTh>
+                <MudTh>Cant. aprobadas</MudTh>
+                <MudTh>Cant. aprobadas KG</MudTh>
+                <MudTh>Peso pieza (G)</MudTh>
+                <MudTh>Cant. aprobadas desvío</MudTh>
+                <MudTh>Observaciones</MudTh>
+                <MudTh>Liberado producción</MudTh>
+                <MudTh>DocNum salida</MudTh>
+                <MudTh>Asiento</MudTh>
+                <MudTh>DocNum entrada</MudTh>
+                <MudTh>Acciones</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nro. contenedor" Style="min-width: 110px;">
+                    <MudTextField T="string" @bind-Value="@context.NroContenedor" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Nro. máquina" Style="min-width: 110px;">
+                    <MudTextField T="string" @bind-Value="@context.NroMaquina" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Fecha" Style="min-width: 200px;">
+                    <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" Disabled="@(context.LineId > 0)" />
+                </MudTd>
+                <MudTd DataLabel="Hora inicio">@context.HoraInicio.ToString("HH:mm")</MudTd>
+                <MudTd DataLabel="Hora fin">@context.HoraFin.ToString("HH:mm")</MudTd>
+                <MudTd DataLabel="Turno" Style="min-width: 150px;">
+                    <MudSelect T="string" @bind-Value="@context.Turno" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
+                        <MudSelectItem Value="@("TM")">TM - Mañana</MudSelectItem>
+                        <MudSelectItem Value="@("TT")">TT - Tarde</MudSelectItem>
+                        <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
+                    </MudSelect>
+                </MudTd>
+                <MudTd DataLabel="Operario" Style="min-width: 220px;">
+                    <MudAutocomplete T="Usuario"
+                                     SearchFunc="BuscarOperarios"
+                                     ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                     @bind-Value="@context.UsuarioOperario"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
+                <MudTd DataLabel="Operario 2" Style="min-width: 220px;">
+                    <MudAutocomplete T="Usuario"
+                                     SearchFunc="BuscarOperarios"
+                                     ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                     @bind-Value="@context.UsuarioOperario2"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTd>
+                <MudTd DataLabel="Cant. aprobadas">
+                    <MudNumericField T="int" @bind-Value="@context.CantAprobadas" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Cant. aprobadas KG">
+                    <MudNumericField T="double" @bind-Value="@context.CantAprobadasKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Peso pieza (G)" Style="min-width: 110px;">
+                    <MudNumericField T="double" @bind-Value="@context.PesoPiezaG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Cant. aprobadas desvío">
+                    <MudNumericField T="int" @bind-Value="@context.CantAprobadasDesvio" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Observaciones" Style="min-width: 250px;">
+                    <MudTextField T="string" @bind-Value="@context.Observaciones" Variant="Variant.Outlined" Class="w-100" Margin="Margin.Dense" />
+                </MudTd>
+                <MudTd DataLabel="Liberado producción"><input type="checkbox" class="form-check-input" @bind="context.Liberado"></MudTd>
+                <MudTd DataLabel="DocNum salida">@context.DocNumSalida</MudTd>
+                <MudTd DataLabel="Asiento">@context.Asiento</MudTd>
+                <MudTd DataLabel="DocNum entrada">@context.DocNumEntrada</MudTd>
+                <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                    <MudTooltip Text="Guardar">
+                        <MudIconButton Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Class="mr-2" @onclick='() => GuardarLineaEnsamble(context)' Disabled="@(context.EstadoLinea == "Iniciado" || context.EstadoLinea == "Finalizado")" />
+                    </MudTooltip>
+                    <MudTooltip Text="Inicio">
+                        <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => RegistrarInicio(context)' Disabled="@(context.LineId == 0 || context.EstadoLinea != "Pendiente")" />
+                    </MudTooltip>
+                    <MudTooltip Text="Parada">
+                        <MudIconButton Icon="@Icons.Material.Filled.PauseCircle" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalParada(context)' Disabled="@(context.EstadoLinea != "Iniciado")" />
+                    </MudTooltip>
+                    <MudTooltip Text="Imprimir">
+                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
+                    </MudTooltip>
+                    <MudTooltip Text="Recibir">
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalRecibir(context)' Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Estacion { get; set; }
+    [Parameter]
+    public OTEnsamble OTEnsamble { get; set; }
+
+    private List<Usuario> operarios;
+    private Usuario operarioSeleccionado;
+    private Usuario operario2Seleccionado;
+    List<OTEnsambleDet> detallesEnsamble = new();
+    OTEnsambleDet nuevoDetalle = null;
+    private string UserName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
+
+            await CargarDetallesOTEnsamble();
+
+            // Si no hay datos cargados, se agrega una línea vacía editable
+            if (detallesEnsamble.Count == 0)
+            {
+                nuevoDetalle = new OTEnsambleDet
+                {
+                    Fecha = DateTime.Today,
+                    Turno = ObtenerTurnoSegunHoraSistema(),
+                };
+
+                detallesEnsamble.Add(nuevoDetalle);
+            }
+            else if (detallesEnsamble.LastOrDefault()?.EstadoLinea == "Finalizado")
+            {
+                var ultimaCarga = detallesEnsamble.Where(x => x.Operario == @UserSession.UserName && x.Turno == ObtenerTurnoSegunHoraSistema() && x.Fecha == DateTime.Today).LastOrDefault();
+
+                nuevoDetalle = new OTEnsambleDet
+                {
+                    Fecha = DateTime.Today,
+                    Turno = ObtenerTurnoSegunHoraSistema(),
+                };
+
+                if (ultimaCarga != null)
+                    nuevoDetalle.PesoPiezaG = ultimaCarga.PesoPiezaG;
+
+                detallesEnsamble.Add(nuevoDetalle);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task GuardarLineaEnsamble(OTEnsambleDet detalleEnsamble)
+    {
+        try
+        {
+            detalleEnsamble.Operario = detalleEnsamble.UsuarioOperario?.CodigoUsuario;
+            detalleEnsamble.Operario2 = detalleEnsamble.UsuarioOperario2?.CodigoUsuario;
+
+            //await InyeccionService.GuardarLineaInyeccionExtrusion(OTEnsamble.DocEntry, detalleEnsamble);
+
+            await CargarDetallesOTEnsamble();
+
+            StateHasChanged();
+
+            Snackbar.Add($"Línea guardada correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task RegistrarInicio(OTEnsambleDet detalleEnsamble)
+    {
+        try
+        {
+            //await InyeccionService.RegistrarInicioInyeccionExtrusion(OTEnsamble.DocEntry, detalleEnsamble);
+
+            await CargarDetallesOTEnsamble();
+
+            StateHasChanged();
+
+            Snackbar.Add($"Línea iniciada correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalParada(OTEnsambleDet detalleEnsamble)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Estacion", Estacion },
+            { "DocEntryParam", detalleEnsamble.DocEntry },
+            { "LineIdParam", detalleEnsamble.LineId },
+            { "NroMaquinaParam", detalleEnsamble.NroMaquina },
+            { "TurnoParam", detalleEnsamble.Turno },
+            { "Operario", detalleEnsamble.Operario },
+            { "Operario2", detalleEnsamble.Operario2 },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = false,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
+    }
+
+    private async Task AbrirModalRecibir(OTEnsambleDet detalleEnsamble)
+    {
+        var parameters = new DialogParameters
+        {
+            { "MensajeFinalizar", $"¿Está seguro de proceder a Recibir/Emitir artículos?. Esto generará procesos de Emisión, Recibos y Asientos contables en SAP B1." },
+            { "TextoBoton", "Recibir" }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<FinalizarDialog>("Recibir artículos", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                detalleEnsamble.Operario = detalleEnsamble.UsuarioOperario?.CodigoUsuario;
+                detalleEnsamble.Operario2 = detalleEnsamble.UsuarioOperario2?.CodigoUsuario;
+
+                //await InyeccionService.FinalizarLineaInyeccionExtrusion(OTEnsamble.CodArticuloOV, OTEnsamble.CodArticuloIE, detalleEnsamble, Estacion, OTEnsamble.CodePlanificacionOT);
+
+                await CargarDetallesOTEnsamble();
+
+                if (detallesEnsamble.LastOrDefault()?.EstadoLinea == "Finalizado")
+                {
+                    var ultimaCarga = detallesEnsamble.Where(x => x.Operario == @UserSession.UserName && x.Turno == ObtenerTurnoSegunHoraSistema() && x.Fecha == DateTime.Today).LastOrDefault();
+
+                    nuevoDetalle = new OTEnsambleDet
+                    {
+                        Fecha = DateTime.Today,
+                        Turno = ObtenerTurnoSegunHoraSistema(),
+                    };
+
+                    if (ultimaCarga != null)
+                        nuevoDetalle.PesoPiezaG = ultimaCarga.PesoPiezaG;
+
+                    detallesEnsamble.Add(nuevoDetalle);
+                }
+
+                StateHasChanged();
+
+                Snackbar.Add($"Documentos registrados en SAP correctamente", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task CargarDetallesOTEnsamble()
+    {
+        //detallesEnsamble = await InyeccionService.ObtenerDetalleInyeccionExtrusion(OTEnsamble.DocEntry);
+
+        foreach (var det in detallesEnsamble)
+        {
+            det.UsuarioOperario = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario);
+            det.UsuarioOperario2 = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario2);
+        }
+    }
+
+    private string ObtenerTurnoSegunHoraSistema()
+    {
+        var horaActual = DateTime.Now.TimeOfDay;
+
+        if (horaActual >= TimeSpan.FromHours(6) && horaActual < TimeSpan.FromHours(14))
+            return "TM";
+        if (horaActual >= TimeSpan.FromHours(14) && horaActual < TimeSpan.FromHours(22))
+            return "TT";
+        else
+            return "TN";
+    }
+
+    private Task<IEnumerable<Usuario>> BuscarOperarios(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(operarios.AsEnumerable());
+
+        var resultado = operarios
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.CodigoUsuario) && a.CodigoUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.NombreUsuario) && a.NombreUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.CodigoUsuario)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

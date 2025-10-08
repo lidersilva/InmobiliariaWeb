@@ -37,7 +37,7 @@
                         <MudTd DataLabel="Artículo OT" Class="text-nowrap">@context.ArticuloEnsamble</MudTd>
                         <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
                             <MudTooltip Text="Cargar">
-                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalCargarOTEnsamble(context)' />
                             </MudTooltip>
                             <MudTooltip Text="Cancelar">
                                 <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" Class="mr-2" />
@@ -70,6 +70,25 @@
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
+    }
+
+    private async Task AbrirModalCargarOTEnsamble(OTEnsamble otEnsamble)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Estacion", "ARMADO" },
+            { "OTEnsamble", otEnsamble },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            FullWidth = true,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<OTEnsambleCargaDialog>("", parameters, options);
     }
 
     private bool FiltrarTabla(OTEnsamble item) => AplicarFiltroTabla(item, textoBusqueda);
