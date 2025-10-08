@@ -1,4 +1,5 @@
 ﻿using eProduccion.Models;
+using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
 
@@ -116,6 +117,59 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return Task.FromResult(list);
+        }
+
+        public async Task RegistrarInicioLineaEnsamblado(int docEntryOT, OTEnsambleDet detOTEnsamble)
+        {
+            var method = Method.Patch;
+            var entity = $"EEP_OT_ENSAM_CAB({docEntryOT})";
+
+            var body = new
+            {
+                EEP_OT_ENSAM_DETCollection = new[]
+                {
+                    new
+                    {
+                        LineId = detOTEnsamble.LineId,
+                        U_HORAINI = DateTime.Now.ToString("HHmm"),
+                        U_ESTADO = "Iniciado",
+                    }
+                }
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public async Task GuardarLineaEnsamblado(int docEntryOT, OTEnsambleDet detOTEnsamble)
+        {
+            var method = Method.Patch;
+            var entity = $"EEP_OT_ENSAM_CAB({docEntryOT})";
+
+            var body = new
+            {
+                EEP_OT_ENSAM_DETCollection = new[]
+                {
+                    new
+                    {
+                        LineId = detOTEnsamble.LineId,
+                        U_NROCONTEN = detOTEnsamble.NroContenedor,
+                        U_NROMAQUI = detOTEnsamble.NroMaquina,
+                        U_FECHAPROC = detOTEnsamble.Fecha,
+                        U_TURNO = detOTEnsamble.Turno,
+                        U_OPERARIO = detOTEnsamble.Operario,
+                        U_OPERARIO2 = detOTEnsamble.Operario2,
+                        U_CANTAPROB = detOTEnsamble.CantAprobadas,
+                        U_CANTPRODKG = detOTEnsamble.CantAprobadasKG,
+                        U_CCP1 = detOTEnsamble.PesoPiezaG,
+                        U_CANTAPROBD = detOTEnsamble.CantAprobadasDesvio,
+                        U_OBS = detOTEnsamble.Observaciones,
+                        U_ESTADO = "Pendiente",
+                        U_LIBERADO = detOTEnsamble.Liberado ? "Y" : "N",
+                    }
+                }
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
         }
     }
 }

@@ -165,8 +165,6 @@ namespace eProduccion.Data.Produccion
 
         public async Task RegistrarInicioInyeccionExtrusion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
-            var fechaActual = DateTime.Now;
-
             var method = Method.Patch;
             var entity = $"EEP_OT_INYEX_CAB({docEntryOT})";
 
@@ -177,7 +175,7 @@ namespace eProduccion.Data.Produccion
                     new
                     {
                         LineId = detInyeccionExtrusion.LineId,
-                        U_HORAINI = fechaActual.ToString("HHmm"),
+                        U_HORAINI = DateTime.Now.ToString("HHmm"),
                         U_ESTADO = "Iniciado",
                     }
                 }
@@ -188,8 +186,6 @@ namespace eProduccion.Data.Produccion
 
         public async Task GuardarLineaInyeccionExtrusion(int docEntryOT, OTInyeccionExtrusionDet detInyeccionExtrusion)
         {
-            var fechaActual = DateTime.Now;
-
             var method = Method.Patch;
             var entity = $"EEP_OT_INYEX_CAB({docEntryOT})";
 

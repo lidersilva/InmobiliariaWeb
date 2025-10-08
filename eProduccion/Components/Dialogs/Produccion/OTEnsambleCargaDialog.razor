@@ -183,7 +183,7 @@
             detalleEnsamble.Operario = detalleEnsamble.UsuarioOperario?.CodigoUsuario;
             detalleEnsamble.Operario2 = detalleEnsamble.UsuarioOperario2?.CodigoUsuario;
 
-            //await InyeccionService.GuardarLineaInyeccionExtrusion(OTEnsamble.DocEntry, detalleEnsamble);
+            await EnsambleService.GuardarLineaEnsamblado(OTEnsamble.DocEntry, detalleEnsamble);
 
             await CargarDetallesOTEnsamble();
 
@@ -201,7 +201,7 @@
     {
         try
         {
-            //await InyeccionService.RegistrarInicioInyeccionExtrusion(OTEnsamble.DocEntry, detalleEnsamble);
+            await EnsambleService.RegistrarInicioLineaEnsamblado(OTEnsamble.DocEntry, detalleEnsamble);
 
             await CargarDetallesOTEnsamble();
 
