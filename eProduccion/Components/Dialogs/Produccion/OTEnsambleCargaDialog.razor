@@ -101,6 +101,9 @@
                     <MudTooltip Text="Parada">
                         <MudIconButton Icon="@Icons.Material.Filled.PauseCircle" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalParada(context)' Disabled="@(context.EstadoLinea != "Iniciado")" />
                     </MudTooltip>
+                    <MudTooltip Text="Cargar">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalRegistroEnsamble(context)' />
+                    </MudTooltip>
                     <MudTooltip Text="Imprimir">
                         <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
                     </MudTooltip>
@@ -237,6 +240,24 @@
         };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
+    }
+
+    private async Task AbrirModalRegistroEnsamble(OTEnsambleDet detalleEnsamble)
+    {
+        var parameters = new DialogParameters
+        {
+            { "DetalleEnsamble", detalleEnsamble },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            FullWidth = true,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<RegistroEnsambleDialog>("", parameters, options);
     }
 
     private async Task AbrirModalRecibir(OTEnsambleDet detalleEnsamble)

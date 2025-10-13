@@ -171,5 +171,42 @@ namespace eProduccion.Data.Produccion
 
             _connectionService.SetEntitySL(method, entity, body);
         }
+
+        public Task<List<RegistroEnsambleDet>> ObtenerDetalleRegistroEnsamblado(int docEntryOT)
+        {
+            var list = new List<RegistroEnsambleDet>();
+
+            var query = $@"
+                SELECT
+                TD.""LineId"",
+                TD.""U_CODSUBART"",
+                TA.""ItemName"",
+                TD.""U_LOTE"",
+                TD.""U_CANTIDAD"",
+                TD.""U_TIPO""
+                FROM ""{_connectionService.DataBase}"".""@EEP_REG_ENSAM_DET"" TD
+                JOIN ""{_connectionService.DataBase}"".OITM TA ON TD.""U_CODSUBART""=TA.""ItemCode""
+                WHERE TD.""DocEntry""={docEntryOT}
+                ORDER BY TD.""LineId"" ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new RegistroEnsambleDet();
+                che.LineId = int.Parse(reader["LineId"].ToString());
+                che.CodArticulo = reader["U_CODSUBART"].ToString();
+                che.Articulo = reader["ItemName"].ToString();
+                che.Lote = reader["U_LOTE"].ToString();
+                che.Cantidad = int.Parse(reader["U_CANTIDAD"].ToString());
+                che.Tipo = reader["U_TIPO"].ToString();
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return Task.FromResult(list);
+        }
     }
 }

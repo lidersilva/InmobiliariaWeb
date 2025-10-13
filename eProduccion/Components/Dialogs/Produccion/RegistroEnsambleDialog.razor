@@ -1,0 +1,77 @@
+﻿@using eProduccion.Data.GestionAccesos
+@using eProduccion.Data.Produccion
+@using eProduccion.Models
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject EnsambleService EnsambleService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Registro Ensamble</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTable T="RegistroEnsambleDet" Items="@detallesRegEnsamble">
+            <ToolBarContent>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@AgregarLinea">Agregar línea</MudButton>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Código</MudTh>
+                <MudTh>Artículo</MudTh>
+                <MudTh>Lote</MudTh>
+                <MudTh>Tipo</MudTh>
+                <MudTh>Cantidad</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Código">@context.CodArticulo</MudTd>
+                <MudTd DataLabel="Artículo">@context.Articulo</MudTd>
+                <MudTd DataLabel="Lote">@context.Lote</MudTd>
+                <MudTd DataLabel="Tipo">@context.Tipo</MudTd>
+                <MudTd DataLabel="Cantidad">@context.Cantidad</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton>Guardar</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public OTEnsambleDet DetalleEnsamble { get; set; }
+
+    List<RegistroEnsambleDet> detallesRegEnsamble = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            detallesRegEnsamble = await EnsambleService.ObtenerDetalleRegistroEnsamblado(DetalleEnsamble.DocEntry);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void AgregarLinea()
+    {
+        detallesRegEnsamble.Add(new RegistroEnsambleDet
+        {
+            CodArticulo = "",
+            Articulo = "",
+            Lote = "",
+            Tipo = "",
+            Cantidad = 0,
+        });
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
