@@ -77,7 +77,7 @@
         </MudTable>
     </DialogContent>
     <DialogActions>
-        <MudButton>Guardar</MudButton>
+        <MudButton @onclick="GuardarRegistroEnsamble">Guardar</MudButton>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
     </DialogActions>
 </MudDialog>
@@ -143,6 +143,24 @@
         {
             detalleRegistroEnsamble.CodArticulo = articuloSeleccionado.Item;
             detalleRegistroEnsamble.Articulo = articuloSeleccionado.Descripcion;
+        }
+    }
+
+    private async Task GuardarRegistroEnsamble()
+    {
+        try
+        {
+            await EnsambleService.GuardarRegistroEnsamblado(OTEnsamble.DocEntry, detallesRegEnsamble);
+
+            detallesRegEnsamble = await EnsambleService.ObtenerDetalleRegistroEnsamblado(DetalleEnsamble.DocEntry);
+
+            StateHasChanged();
+
+            Snackbar.Add($"Registros guardados correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
     }
 

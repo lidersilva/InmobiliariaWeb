@@ -238,5 +238,33 @@ namespace eProduccion.Data.Produccion
 
             return codArticuloOV;
         }
+
+        public async Task GuardarRegistroEnsamblado(int docEntryOT, List<RegistroEnsambleDet> registroEnsamble)
+        {
+            var method = Method.Patch;
+            var entity = $"EEP_OT_ENSAM_CAB({docEntryOT})";
+
+            var listRegistroEnsamblado = new List<dynamic>();
+            foreach (var i in registroEnsamble)
+            {
+                var bodyDet = new
+                {
+                    LineId = i.LineId,
+                    U_CODSUBART = i.CodArticulo,
+                    U_LOTE = i.Lote,
+                    U_CANTIDAD = i.Cantidad,
+                    U_TIPO = i.Tipo,
+                };
+
+                listRegistroEnsamblado.Add(bodyDet);
+            }
+
+            var body = new
+            {
+                EEP_REG_ENSAM_DETCollection = listRegistroEnsamblado
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
     }
 }
