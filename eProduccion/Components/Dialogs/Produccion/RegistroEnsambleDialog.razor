@@ -36,7 +36,7 @@
                 <MudTd DataLabel="Lote">
                     @if (context.LineaNueva)
                     {
-                        <MudTextField @bind-Value="@context.Lote" Inmediate="true" />
+                        <MudTextField T="string" @bind-Value="@context.Lote" Label="Lote" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Class="mud-width-full" Style="cursor: pointer;" @onclick='() => AbrirModalLotes(context)' />
                     }
                     else
                     {
@@ -143,6 +143,29 @@
         {
             detalleRegistroEnsamble.CodArticulo = articuloSeleccionado.Item;
             detalleRegistroEnsamble.Articulo = articuloSeleccionado.Descripcion;
+        }
+    }
+
+    private async Task AbrirModalLotes(RegistroEnsambleDet detalleRegistroEnsamble)
+    {
+        var parameters = new DialogParameters
+        {
+            { "CodArticulo", detalleRegistroEnsamble.CodArticulo },
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<LoteDialog>("", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Lote loteSeleccionado)
+        {
+            detalleRegistroEnsamble.Lote = loteSeleccionado.NroLote;
         }
     }
 
