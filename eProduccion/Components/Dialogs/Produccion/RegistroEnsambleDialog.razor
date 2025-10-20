@@ -20,6 +20,7 @@
                 <MudTh>Lote</MudTh>
                 <MudTh>Tipo</MudTh>
                 <MudTh>Cantidad</MudTh>
+                <MudTh>Cant. reprocesado</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Código" Style="min-width: 200px;">
@@ -68,6 +69,16 @@
                     else
                     {
                         @context.Cantidad
+                    }
+                </MudTd>
+                <MudTd DataLabel="Cant. reprocesado">
+                    @if (context.LineaNueva)
+                    {
+                        <MudTextField @bind-Value="@context.CantidadReproceso" Inmediate="true" />
+                    }
+                    else
+                    {
+                        @context.CantidadReproceso
                     }
                 </MudTd>
             </RowTemplate>

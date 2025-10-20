@@ -186,6 +186,7 @@ namespace eProduccion.Data
                 new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CANTIDAD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "TIPO", Type = TipoCampo.Alpha, Size = 20, Description = "Tipo registro", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTREP", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad reproceso", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
 
                 // Maestro paradas/motivos defectos

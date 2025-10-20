@@ -8,6 +8,7 @@
         public string Lote { get; set; }
         public string Tipo { get; set; }
         public int Cantidad { get; set; }
+        public int CantidadReproceso { get; set; }
         public bool LineaNueva { get; set; } = false;
     }
 }
