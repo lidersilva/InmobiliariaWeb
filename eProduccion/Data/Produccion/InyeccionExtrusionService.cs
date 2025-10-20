@@ -409,6 +409,7 @@ namespace eProduccion.Data.Produccion
             var query = $@"
                 SELECT 
                     T1.""Code"", 
+                    T1.""ItemName"", 
                     T1.""Quantity"", 
                     T1.""Type"" 
                 FROM ""{_connectionService.DataBase}"".OITT T0
@@ -418,7 +419,7 @@ namespace eProduccion.Data.Produccion
                 WHERE T0.""Code""='{codArticuloOV}'
                 AND T3.""Code""='{estacion}'
                 AND T2.""U_CodAcabado""='{codArticuloI}' 
-                GROUP BY T1.""Code"", T1.""Quantity"", T1.""Type"" ";
+                GROUP BY T1.""Code"", T1.""ItemName"", T1.""Quantity"", T1.""Type"" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -427,6 +428,7 @@ namespace eProduccion.Data.Produccion
             {
                 var che = new ListaMaterialesDet();
                 che.Item = reader["Code"].ToString();
+                che.Descripcion = reader["ItemName"].ToString();
                 che.Cantidad = double.Parse(reader["Quantity"].ToString());
                 che.TipoItem = int.Parse(reader["Type"].ToString());
                 list.Add(che);

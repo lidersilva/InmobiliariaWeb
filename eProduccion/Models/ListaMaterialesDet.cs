@@ -3,6 +3,7 @@
     public class ListaMaterialesDet
     {
         public string Item {  get; set; }
+        public string Descripcion { get; set; }
         public double Cantidad { get; set; }
         public int TipoItem { get; set; }
     }

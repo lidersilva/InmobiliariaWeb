@@ -1,0 +1,61 @@
+﻿@using eProduccion.Data.Produccion
+@using eProduccion.Models
+@inject ISnackbar Snackbar
+@inject EnsambleService EnsambleService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="mb-0">Artículo</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTable T="ListaMaterialesDet" Items="@articulos" Hover="true">
+            <HeaderContent>
+                <MudTh>Código</MudTh>
+                <MudTh>Descripción</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Código" @onclick="() => SeleccionarArticulo(context)" Style="cursor: pointer;">@context.Item</MudTd>
+                <MudTd DataLabel="Descripción">@context.Descripcion</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Estacion { get; set; }
+    [Parameter]
+    public int CodePlanificacionOT { get; set; }
+    [Parameter]
+    public string CodSubArticulo { get; set; }
+
+    List<ListaMaterialesDet> articulos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            articulos = await EnsambleService.ObtenerArticulosListaMateriales(Estacion, CodePlanificacionOT, CodSubArticulo);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void SeleccionarArticulo(ListaMaterialesDet articuloSeleccionado)
+    {
+        MudDialog.Close(DialogResult.Ok(articuloSeleccionado));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

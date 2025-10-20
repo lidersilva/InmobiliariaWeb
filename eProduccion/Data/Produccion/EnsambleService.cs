@@ -1,13 +1,15 @@
-﻿using eProduccion.Models;
+﻿using eProduccion.Data.GestionAccesos;
+using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
-    public class EnsambleService(ConnectionService connectionService)
+    public class EnsambleService(ConnectionService connectionService, InyeccionExtrusionService inyeccionExtrusionService)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly InyeccionExtrusionService _inyeccionExtrusionService = inyeccionExtrusionService;
 
         public Task<List<OTEnsamble>> ObtenerOTEnsamblado(string estacion)
         {
@@ -207,6 +209,34 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return Task.FromResult(list);
+        }
+
+        public Task<List<ListaMaterialesDet>> ObtenerArticulosListaMateriales(string estacion, int codePlanificacionOT, string codSubArticulo)
+        {
+            var codArticuloOV = ObtenerCodArticuloOV(codePlanificacionOT);
+
+            var listaArticulos = _inyeccionExtrusionService.ObtenerListaMateriales(codArticuloOV, codSubArticulo, "09").Where(x => x.TipoItem == 4);
+
+            return Task.FromResult(listaArticulos.ToList());
+        }
+
+        private string ObtenerCodArticuloOV(int codePlanificacionOT)
+        {
+            var codArticuloOV = "";
+
+            var query = $@"SELECT ""U_CODARTICULO"" FROM ""{_connectionService.DataBase}"".""@EEP_PLANI_OT"" WHERE ""Code""={codePlanificacionOT} ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                codArticuloOV = reader["U_CODARTICULO"].ToString();
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return codArticuloOV;
         }
     }
 }
