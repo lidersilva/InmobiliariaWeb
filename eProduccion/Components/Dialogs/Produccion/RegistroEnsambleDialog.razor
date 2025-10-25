@@ -4,6 +4,7 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject EnsambleService EnsambleService
+@inject UsuarioSistemaService UsuarioSistemaService
 
 <MudDialog>
     <TitleContent>
@@ -21,6 +22,8 @@
                 <MudTh>Tipo</MudTh>
                 <MudTh>Cantidad</MudTh>
                 <MudTh>Cant. reprocesado</MudTh>
+                <MudTh>Operario</MudTh>
+                <MudTh Class="text-nowrap">Operario 2</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Código" Style="min-width: 200px;">
@@ -33,8 +36,8 @@
                         @context.CodArticulo
                     }
                 </MudTd>
-                <MudTd DataLabel="Artículo">@context.Articulo</MudTd>
-                <MudTd DataLabel="Lote">
+                <MudTd DataLabel="Artículo" Class="text-nowrap">@context.Articulo</MudTd>
+                <MudTd DataLabel="Lote" Class="text-nowrap">
                     @if (context.LineaNueva)
                     {
                         <MudTextField T="string" @bind-Value="@context.Lote" Label="Lote" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Class="mud-width-full" Style="cursor: pointer;" @onclick='() => AbrirModalLotes(context)' />
@@ -44,7 +47,7 @@
                         @context.Lote
                     }
                 </MudTd>
-                <MudTd DataLabel="Tipo">
+                <MudTd DataLabel="Tipo" Style="min-width: 200px;">
                     @if (context.LineaNueva)
                     {
                         <MudSelect T="string" @bind-Value="@context.Tipo" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
@@ -81,6 +84,40 @@
                         @context.CantidadReproceso
                     }
                 </MudTd>
+                <MudTd DataLabel="Operario" Style="min-width: 220px;">
+                    @if (context.LineaNueva)
+                    {
+                        <MudAutocomplete T="Usuario"
+                                         SearchFunc="BuscarOperarios"
+                                         ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                         @bind-Value="@context.UsuarioOperario"
+                                         CoerceText="true"
+                                         Clearable="true"
+                                         ResetValueOnEmptyText="true"
+                                         Dense="true" />
+                    }
+                    else
+                    {
+                        @context.Operario
+                    }
+                </MudTd>
+                <MudTd DataLabel="Operario 2" Style="min-width: 220px;">
+                    @if (context.LineaNueva)
+                    {
+                        <MudAutocomplete T="Usuario"
+                                         SearchFunc="BuscarOperarios"
+                                         ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                         @bind-Value="@context.UsuarioOperario2"
+                                         CoerceText="true"
+                                         Clearable="true"
+                                         ResetValueOnEmptyText="true"
+                                         Dense="true" />
+                    }
+                    else
+                    {
+                        @context.Operario2
+                    }
+                </MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
@@ -105,11 +142,16 @@
     public OTEnsambleDet DetalleEnsamble { get; set; }
 
     List<RegistroEnsambleDet> detallesRegEnsamble = new();
+    private List<Usuario> operarios;
+    // private Usuario operarioSeleccionado;
+    // private Usuario operario2Seleccionado;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
+
             detallesRegEnsamble = await EnsambleService.ObtenerDetalleRegistroEnsamblado(DetalleEnsamble.DocEntry);
         }
         catch (Exception ex)
@@ -184,6 +226,12 @@
     {
         try
         {
+            foreach (var detalle in detallesRegEnsamble)
+            {
+                detalle.Operario = detalle.UsuarioOperario?.CodigoUsuario;
+                detalle.Operario2 = detalle.UsuarioOperario2?.CodigoUsuario;
+            }
+
             await EnsambleService.GuardarRegistroEnsamblado(OTEnsamble.DocEntry, detallesRegEnsamble);
 
             detallesRegEnsamble = await EnsambleService.ObtenerDetalleRegistroEnsamblado(DetalleEnsamble.DocEntry);
@@ -196,6 +244,21 @@
         {
             Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
+    }
+
+    private Task<IEnumerable<Usuario>> BuscarOperarios(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(operarios.AsEnumerable());
+
+        var resultado = operarios
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.CodigoUsuario) && a.CodigoUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.NombreUsuario) && a.NombreUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.CodigoUsuario)
+            .Take(20);
+
+        return Task.FromResult(resultado);
     }
 
     private void Cancel() => MudDialog.Cancel();

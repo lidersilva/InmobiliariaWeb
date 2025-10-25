@@ -132,7 +132,9 @@ namespace eProduccion.Data.Produccion
                 TD.""U_LOTE"",
                 TD.""U_CANTIDAD"",
                 TD.""U_TIPO"",
-                IFNULL(TD.""U_CANTREP"", 0) ""U_CANTREP""
+                IFNULL(TD.""U_CANTREP"", 0) ""U_CANTREP"",
+                TD.""U_OPERARIO"",
+                TD.""U_OPERARIO2""
                 FROM ""{_connectionService.DataBase}"".""@EEP_REG_ENSAM_DET"" TD
                 JOIN ""{_connectionService.DataBase}"".OITM TA ON TD.""U_CODSUBART""=TA.""ItemCode""
                 WHERE TD.""DocEntry""={docEntryOT}
@@ -151,6 +153,8 @@ namespace eProduccion.Data.Produccion
                 che.Cantidad = int.Parse(reader["U_CANTIDAD"].ToString());
                 che.Tipo = reader["U_TIPO"].ToString();
                 che.CantidadReproceso = int.Parse(reader["U_CANTREP"].ToString());
+                che.Operario = reader["U_OPERARIO"].ToString();
+                che.Operario2 = reader["U_OPERARIO2"].ToString();
                 list.Add(che);
             }
 
@@ -256,6 +260,8 @@ namespace eProduccion.Data.Produccion
                     U_CANTIDAD = i.Cantidad,
                     U_TIPO = i.Tipo,
                     U_CANTREP = i.CantidadReproceso,
+                    U_OPERARIO = i.Operario,
+                    U_OPERARIO2 = i.Operario2,
                 };
 
                 listRegistroEnsamblado.Add(bodyDet);
