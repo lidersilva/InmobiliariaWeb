@@ -282,7 +282,7 @@
                 detalleEnsamble.Operario = detalleEnsamble.UsuarioOperario?.CodigoUsuario;
                 detalleEnsamble.Operario2 = detalleEnsamble.UsuarioOperario2?.CodigoUsuario;
 
-                //await InyeccionService.FinalizarLineaInyeccionExtrusion(OTEnsamble.CodArticuloOV, OTEnsamble.CodArticuloIE, detalleEnsamble, Estacion, OTEnsamble.CodePlanificacionOT);
+                await EnsambleService.FinalizarLineaEnsamble(OTEnsamble.CodArticuloOV, OTEnsamble.ArticuloEnsamble, detalleEnsamble, Estacion, OTEnsamble.CodePlanificacionOT);
 
                 await CargarDetallesOTEnsamble();
 

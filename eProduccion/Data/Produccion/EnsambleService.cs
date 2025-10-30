@@ -1,13 +1,18 @@
-﻿using eProduccion.Models;
+﻿using eProduccion.Data.Configuracion;
+using eProduccion.Integration;
+using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace eProduccion.Data.Produccion
 {
-    public class EnsambleService(ConnectionService connectionService, InyeccionExtrusionService inyeccionExtrusionService)
+    public class EnsambleService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion, InyeccionExtrusionService inyeccionExtrusionService)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly SBOIntegration _sboIntegration = sboIntegration;
+        private readonly ParametrizacionService _parametrizacion = parametrizacion;
         private readonly InyeccionExtrusionService _inyeccionExtrusionService = inyeccionExtrusionService;
 
         public Task<List<OTEnsamble>> ObtenerOTEnsamblado(string estacion)
@@ -270,6 +275,145 @@ namespace eProduccion.Data.Produccion
             var body = new
             {
                 EEP_REG_ENSAM_DETCollection = listRegistroEnsamblado
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public async Task FinalizarLineaEnsamble(string codArticuloOV, string codArticuloEnsamble, OTEnsambleDet detEnsamble, string estacion, int codePlanificacionOT)
+        {
+            var listLineasAsiento = new List<AsientoDet>();
+            var listRegistroEnsamblado = new List<RegistroEnsambleDet>();
+            int nroAsiento = 0;
+            double totalDebitoRecurso = 0;
+
+            var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
+            listRegistroEnsamblado = await ObtenerDetalleRegistroEnsamblado(detEnsamble.DocEntry);
+
+            string etapaRuta = estacion == "ARMADO" ? "09" : "";
+            string comentarioEstacion = estacion == "ARMADO" ? "Armado" : "";
+            string almacenSalida = estacion == "ARMADO" ? parametrizacion.AlmacenSalidaIny : parametrizacion.AlmacenSalidaExt;
+
+            int cantidadRecibir = detEnsamble.CantAprobadas + detEnsamble.CantAprobadasDesvio;
+
+            var listaMateriales = inyeccionExtrusionService.ObtenerListaMateriales(codArticuloOV, codArticuloEnsamble, etapaRuta);
+
+            // Salida
+            var listaSalidaDet = new List<EntradaSalidaDet>();
+            foreach (var i in listaMateriales)
+            {
+                if (i.TipoItem == 4)
+                {
+                    var lotes = inyeccionExtrusionService.ObtenerLotesSalida(i.Item, almacenSalida);
+
+                    var che = new EntradaSalidaDet();
+                    che.Articulo = i.Item;
+                    che.Cantidad = cantidadRecibir * i.Cantidad;
+                    che.LoteDetalle = inyeccionExtrusionService.CalcularLotesAConsumir(che.Cantidad, lotes);
+                    listaSalidaDet.Add(che);
+                }
+            }
+
+            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(detEnsamble.DocEntry, detEnsamble.LineId, listaSalidaDet, parametrizacion.CtaProduccionCurso, almacenSalida, comentarioEstacion);
+            int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
+            int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
+            int nroAsientoSalida = int.Parse(jObjectSalida["TransNum"].ToString());
+
+            //Asiento
+            if (listaMateriales.Any(x => x.TipoItem == 290))
+            {
+                totalDebitoRecurso = 0;
+
+                // Cuentas de mayor a utilizar en el asiento para los recursos
+                var cuentasMayor = inyeccionExtrusionService.ObtenerCuentasMayorRecurso();
+
+                foreach (var i in listaMateriales.Where(x => x.TipoItem == 290))
+                {
+                    var costosRecurso = inyeccionExtrusionService.ObtenerCostosRecurso(i.Item);
+
+                    var listCostosPorCuenta = inyeccionExtrusionService.ObtenerCostoPorCuentaRecurso(costosRecurso, cuentasMayor);
+
+                    foreach (var j in listCostosPorCuenta)
+                    {
+                        double creditoRecurso = j.Costo * i.Cantidad * cantidadRecibir;
+
+                        listLineasAsiento.Add(new AsientoDet
+                        {
+                            AccountCode = j.Cuenta,
+                            Credito = creditoRecurso
+                        });
+
+                        totalDebitoRecurso += creditoRecurso;
+                    }
+                }
+
+                listLineasAsiento.Add(new AsientoDet
+                {
+                    AccountCode = parametrizacion.CtaProduccionCurso,
+                    Debito = totalDebitoRecurso
+                });
+
+                var jObjectAsiento = _sboIntegration.CrearAsiento(detEnsamble.DocEntry, detEnsamble.LineId, listLineasAsiento, comentarioEstacion, docNumSalida);
+                nroAsiento = int.Parse(jObjectAsiento["JdtNum"].ToString());
+            }
+
+            // Entrada
+            double totalDebitoSalida = inyeccionExtrusionService.ObtenerDebitoAsientoSalidaMercaderias(nroAsientoSalida);
+            double precioUnitarioEntrada = totalDebitoRecurso + totalDebitoSalida / cantidadRecibir;
+
+            var listEntradaDet = new List<EntradaSalidaDet>();
+            if (detEnsamble.CantAprobadas > 0 || detEnsamble.CantAprobadasDesvio > 0)
+            {
+                var almacen = estacion == "ARMADO" ? parametrizacion.AlmacenAprobadosIny : parametrizacion.AlmacenAprobadosExt;
+
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArticuloEnsamble,
+                    Cantidad = detEnsamble.CantAprobadas + detEnsamble.CantAprobadasDesvio,
+                    Almacen = almacen,
+                    PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{detEnsamble.DocEntry}-1-{detEnsamble.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = detEnsamble.CantAprobadas,
+                        }
+                    ]
+                });
+            }
+
+            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(detEnsamble.DocEntry, detEnsamble.LineId, listEntradaDet, parametrizacion.CtaProduccionCurso, comentarioEstacion);
+            int docEntryEntrada = int.Parse(jObjectEntrada["DocEntry"].ToString());
+
+            ActualizarLineaEnsambleFinalizacion(detEnsamble.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detEnsamble);
+        }
+
+        public void ActualizarLineaEnsambleFinalizacion(int docEntryOT, int docEntrySalida, int nroAsiento, int docEntryEntrada, OTEnsambleDet detEnsamble)
+        {
+            var fechaActual = DateTime.Now;
+
+            var method = Method.Patch;
+            var entity = $"EEP_OT_ENSAM_CAB({docEntryOT})";
+
+            var body = new
+            {
+                EEP_OT_ENSAM_DETCollection = new[]
+                {
+                    new
+                    {
+                        LineId = detEnsamble.LineId,
+                        U_HORAFIN = fechaActual.ToString("HHmm"),
+                        U_CANTAPROB = detEnsamble.CantAprobadas,
+                        U_CANTPRODKG = detEnsamble.CantAprobadasKG,
+                        U_CCP1 = detEnsamble.PesoPiezaG,
+                        U_CANTAPROBD = detEnsamble.CantAprobadasDesvio,
+                        U_OBS = detEnsamble.Observaciones,
+                        U_DESALIDA = docEntrySalida,
+                        U_NROASIENTO = nroAsiento,
+                        U_DEENTRADA = docEntryEntrada,
+                        U_ESTADO = "Finalizado",
+                    }
+                }
             };
 
             _connectionService.SetEntitySL(method, entity, body);
