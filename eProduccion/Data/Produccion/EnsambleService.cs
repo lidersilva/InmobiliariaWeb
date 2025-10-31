@@ -4,7 +4,6 @@ using eProduccion.Models;
 using RestSharp;
 using System.Data.Odbc;
 using System.Globalization;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace eProduccion.Data.Produccion
 {
@@ -280,13 +279,14 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public async Task FinalizarLineaEnsamble(string codArticuloOV, string codArticuloEnsamble, OTEnsambleDet detEnsamble, string estacion, int codePlanificacionOT)
+        public async Task FinalizarLineaEnsamble(string codArticuloEnsamble, OTEnsambleDet detEnsamble, string estacion, int codePlanificacionOT)
         {
             var listLineasAsiento = new List<AsientoDet>();
             var listRegistroEnsamblado = new List<RegistroEnsambleDet>();
             int nroAsiento = 0;
             double totalDebitoRecurso = 0;
 
+            var codArticuloOV = ObtenerCodArticuloOV(codePlanificacionOT);
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
             listRegistroEnsamblado = await ObtenerDetalleRegistroEnsamblado(detEnsamble.DocEntry);
 

@@ -150,10 +150,10 @@
             if (detallesEnsamble.Count == 0)
             {
                 nuevoDetalle = new OTEnsambleDet
-                {
-                    Fecha = DateTime.Today,
-                    Turno = ObtenerTurnoSegunHoraSistema(),
-                };
+                    {
+                        Fecha = DateTime.Today,
+                        Turno = ObtenerTurnoSegunHoraSistema(),
+                    };
 
                 detallesEnsamble.Add(nuevoDetalle);
             }
@@ -162,10 +162,10 @@
                 var ultimaCarga = detallesEnsamble.Where(x => x.Operario == @UserSession.UserName && x.Turno == ObtenerTurnoSegunHoraSistema() && x.Fecha == DateTime.Today).LastOrDefault();
 
                 nuevoDetalle = new OTEnsambleDet
-                {
-                    Fecha = DateTime.Today,
-                    Turno = ObtenerTurnoSegunHoraSistema(),
-                };
+                    {
+                        Fecha = DateTime.Today,
+                        Turno = ObtenerTurnoSegunHoraSistema(),
+                    };
 
                 if (ultimaCarga != null)
                     nuevoDetalle.PesoPiezaG = ultimaCarga.PesoPiezaG;
@@ -232,12 +232,12 @@
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = false,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = false,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
     }
@@ -252,12 +252,12 @@
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.False,
-            FullWidth = true,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.False,
+                FullWidth = true,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<RegistroEnsambleDialog>("", parameters, options);
     }
@@ -282,7 +282,7 @@
                 detalleEnsamble.Operario = detalleEnsamble.UsuarioOperario?.CodigoUsuario;
                 detalleEnsamble.Operario2 = detalleEnsamble.UsuarioOperario2?.CodigoUsuario;
 
-                await EnsambleService.FinalizarLineaEnsamble(OTEnsamble.CodArticuloOV, OTEnsamble.ArticuloEnsamble, detalleEnsamble, Estacion, OTEnsamble.CodePlanificacionOT);
+                await EnsambleService.FinalizarLineaEnsamble(OTEnsamble.CodArticuloEnsamble, detalleEnsamble, Estacion, OTEnsamble.CodePlanificacionOT);
 
                 await CargarDetallesOTEnsamble();
 
@@ -291,10 +291,10 @@
                     var ultimaCarga = detallesEnsamble.Where(x => x.Operario == @UserSession.UserName && x.Turno == ObtenerTurnoSegunHoraSistema() && x.Fecha == DateTime.Today).LastOrDefault();
 
                     nuevoDetalle = new OTEnsambleDet
-                    {
-                        Fecha = DateTime.Today,
-                        Turno = ObtenerTurnoSegunHoraSistema(),
-                    };
+                        {
+                            Fecha = DateTime.Today,
+                            Turno = ObtenerTurnoSegunHoraSistema(),
+                        };
 
                     if (ultimaCarga != null)
                         nuevoDetalle.PesoPiezaG = ultimaCarga.PesoPiezaG;
