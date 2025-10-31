@@ -19,105 +19,392 @@
                              ResetValueOnEmptyText="true"
                              Dense="true" />
             <MudDivider DividerType="DividerType.Middle" Class="my-3" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén salida - Inyección"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenSalidaInySeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. aprobados - Inyección"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenAprobadosInySeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. rechazados reciclables - Inyección"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenRechReciInySeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. rechazados no reciclables - Inyección"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenRechNoReciInySeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. retenidos - Inyección"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenRetenidosInySeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true" />
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                <MudTabPanel Text="Inyección">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionInyeccionSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén salida"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenSalidaInySeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. aprobados"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosInySeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. rechazados reciclables"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechReciInySeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. rechazados no reciclables"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechNoReciInySeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. retenidos"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRetenidosInySeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Extrusión">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionExtrusionSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén salida"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenSalidaExtSeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. aprobados"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosExtSeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. rechazados reciclables"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechReciExtSeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. rechazados no reciclables"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechNoReciExtSeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-2" />
+                    <MudAutocomplete T="Almacen"
+                                     Label="Almacén prod. retenidos"
+                                     SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRetenidosExtSeleccionado"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Armado">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionArmadoSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosArmSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechArmadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuArmadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteArmadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproArmadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="FlowPack">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionFlowpackSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosFlowPackSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechFlowPackSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuFlowPackSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteFlowPackSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproFlowPackSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Sachetera">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionSacheteraSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosSacheteraSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechSacheteraSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuSacheteraSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteSacheteraSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproSacheteraSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Sellado">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionSelladoSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosSelladoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechSelladoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuSelladoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteSelladoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproSelladoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Horneado">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionHorneadoSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosHorneadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechHorneadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuHorneadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteHorneadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproHorneadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Empaquetado">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionEmpaquetadoSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosEmpaquetadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechEmpaquetadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuEmpaquetadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteEmpaquetadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproEmpaquetadoSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Prensa">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionPrensaSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosPrensaSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechPrensaSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuPrensaSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRetePrensaSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproPrensaSeleccionado" CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+                <MudTabPanel Text="Grabado láser">
+                    <MudAutocomplete T="EtapaRuta"
+                                     Label="Estación de trabajo"
+                                     SearchFunc="BuscarEstaciones"
+                                     ToStringFunc='estacion => estacion != null ? $"{estacion.Codigo} - {estacion.Descripcion}" : string.Empty'
+                                     @bind-Value="estacionGrabadoLSeleccionada"
+                                     CoerceText="true"
+                                     Clearable="true"
+                                     ResetValueOnEmptyText="true"
+                                     Dense="true"
+                                     Class="mb-5" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. aprobados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenAprobadosGrabadoLSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. rechazados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRechGrabadoLSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. recuperados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenRecuGrabadoLSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. retenidos" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReteGrabadoLSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén prod. reprocesados" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReproGrabadoLSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
+            </MudTabs>
             <MudDivider DividerType="DividerType.Middle" Class="my-3" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén salida - Extrusión"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenSalidaExtSeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. aprobados - Extrusión"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenAprobadosExtSeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. rechazados reciclables - Extrusión"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenRechReciExtSeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. rechazados no reciclables - Extrusión"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenRechNoReciExtSeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true"
-                             Class="mb-2" />
-            <MudAutocomplete T="Almacen"
-                             Label="Almacén prod. retenidos - Extrusión"
-                             SearchFunc="BuscarAlmacenes"
-                             ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
-                             @bind-Value="almacenRetenidosExtSeleccionado"
-                             CoerceText="true"
-                             Clearable="true"
-                             ResetValueOnEmptyText="true"
-                             Dense="true" />
         </div>
     </div>
     <div class="col-5">
@@ -162,8 +449,19 @@
 @code {
     private Parametrizacion parametrizacion = new();
     private List<CuentaContable> cuentasContables;
+    private List<EtapaRuta> estaciones;
     private List<Almacen> almacenes;
     private CuentaContable cuentaContableSeleccionada;
+    private EtapaRuta estacionInyeccionSeleccionada;
+    private EtapaRuta estacionExtrusionSeleccionada;
+    private EtapaRuta estacionArmadoSeleccionada;
+    private EtapaRuta estacionFlowpackSeleccionada;
+    private EtapaRuta estacionSacheteraSeleccionada;
+    private EtapaRuta estacionSelladoSeleccionada;
+    private EtapaRuta estacionHorneadoSeleccionada;
+    private EtapaRuta estacionEmpaquetadoSeleccionada;
+    private EtapaRuta estacionPrensaSeleccionada;
+    private EtapaRuta estacionGrabadoLSeleccionada;
     private Almacen almacenSalidaInySeleccionado;
     private Almacen almacenAprobadosInySeleccionado;
     private Almacen almacenRechReciInySeleccionado;
@@ -174,6 +472,46 @@
     private Almacen almacenRechReciExtSeleccionado;
     private Almacen almacenRechNoReciExtSeleccionado;
     private Almacen almacenRetenidosExtSeleccionado;
+    private Almacen almacenAprobadosArmSeleccionado;
+    private Almacen almacenRechArmadoSeleccionado;
+    private Almacen almacenRecuArmadoSeleccionado;
+    private Almacen almacenReteArmadoSeleccionado;
+    private Almacen almacenReproArmadoSeleccionado;
+    private Almacen almacenAprobadosFlowPackSeleccionado;
+    private Almacen almacenRechFlowPackSeleccionado;
+    private Almacen almacenRecuFlowPackSeleccionado;
+    private Almacen almacenReteFlowPackSeleccionado;
+    private Almacen almacenReproFlowPackSeleccionado;
+    private Almacen almacenAprobadosSacheteraSeleccionado;
+    private Almacen almacenRechSacheteraSeleccionado;
+    private Almacen almacenRecuSacheteraSeleccionado;
+    private Almacen almacenReteSacheteraSeleccionado;
+    private Almacen almacenReproSacheteraSeleccionado;
+    private Almacen almacenAprobadosSelladoSeleccionado;
+    private Almacen almacenRechSelladoSeleccionado;
+    private Almacen almacenRecuSelladoSeleccionado;
+    private Almacen almacenReteSelladoSeleccionado;
+    private Almacen almacenReproSelladoSeleccionado;
+    private Almacen almacenAprobadosHorneadoSeleccionado;
+    private Almacen almacenRechHorneadoSeleccionado;
+    private Almacen almacenRecuHorneadoSeleccionado;
+    private Almacen almacenReteHorneadoSeleccionado;
+    private Almacen almacenReproHorneadoSeleccionado;
+    private Almacen almacenAprobadosEmpaquetadoSeleccionado;
+    private Almacen almacenRechEmpaquetadoSeleccionado;
+    private Almacen almacenRecuEmpaquetadoSeleccionado;
+    private Almacen almacenReteEmpaquetadoSeleccionado;
+    private Almacen almacenReproEmpaquetadoSeleccionado;
+    private Almacen almacenAprobadosPrensaSeleccionado;
+    private Almacen almacenRechPrensaSeleccionado;
+    private Almacen almacenRecuPrensaSeleccionado;
+    private Almacen almacenRetePrensaSeleccionado;
+    private Almacen almacenReproPrensaSeleccionado;
+    private Almacen almacenAprobadosGrabadoLSeleccionado;
+    private Almacen almacenRechGrabadoLSeleccionado;
+    private Almacen almacenRecuGrabadoLSeleccionado;
+    private Almacen almacenReteGrabadoLSeleccionado;
+    private Almacen almacenReproGrabadoLSeleccionado;
     private Serie[]? series;
 
     protected override async Task OnInitializedAsync()
@@ -185,6 +523,7 @@
 
             cuentasContables = await ParametrizacionService.ObtenerCuentasContables();
 
+            estaciones = await ParametrizacionService.ObtenerEtapasRuta();
             almacenes = await ParametrizacionService.ObtenerAlmacenes();
 
             series = await ParametrizacionService.ObtenerSeriesOV();
@@ -192,6 +531,29 @@
             if (!string.IsNullOrWhiteSpace(parametrizacion.CtaProduccionCurso))
                 cuentaContableSeleccionada = cuentasContables.FirstOrDefault(c => c.Cuenta == parametrizacion.CtaProduccionCurso);
 
+            // ==================== ESTACIONES DE TRABAJO ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionInyeccion))
+                estacionInyeccionSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionInyeccion);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionExtrusion))
+                estacionExtrusionSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionExtrusion);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionArmado))
+                estacionArmadoSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionArmado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionFlowpack))
+                estacionFlowpackSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionFlowpack);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionSachetera))
+                estacionSacheteraSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionSachetera);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionSellado))
+                estacionSelladoSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionSellado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionHorneado))
+                estacionHorneadoSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionHorneado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionEmpaquetado))
+                estacionEmpaquetadoSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionEmpaquetado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionPrensa))
+                estacionPrensaSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionPrensa);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.CodEstacionGrabadoL))
+                estacionGrabadoLSeleccionada = estaciones.FirstOrDefault(c => c.Codigo == parametrizacion.CodEstacionGrabadoL);
+
+            // ==================== INYECCIÓN ====================
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenSalidaIny))
                 almacenSalidaInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenSalidaIny);
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosIny))
@@ -203,6 +565,7 @@
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidosIny))
                 almacenRetenidosInySeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidosIny);
 
+            // ==================== EXTRUSIÓN ====================
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenSalidaExt))
                 almacenSalidaExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenSalidaExt);
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosExt))
@@ -213,6 +576,102 @@
                 almacenRechNoReciExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechNoReciExt);
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidosExt))
                 almacenRetenidosExtSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidosExt);
+
+            // ==================== ARMADO ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosArmado))
+                almacenAprobadosArmSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosArmado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoArmado))
+                almacenRechArmadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoArmado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoArmado))
+                almacenRecuArmadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoArmado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoArmado))
+                almacenReteArmadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoArmado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoArmado))
+                almacenReproArmadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoArmado);
+
+            // ==================== FLOWPACK ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosFlowpack))
+                almacenAprobadosFlowPackSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosFlowpack);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoFlowpack))
+                almacenRechFlowPackSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoFlowpack);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoFlowpack))
+                almacenRecuFlowPackSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoFlowpack);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoFlowpack))
+                almacenReteFlowPackSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoFlowpack);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoFlowpack))
+                almacenReproFlowPackSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoFlowpack);
+
+            // ==================== SACHETERA ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosSachetera))
+                almacenAprobadosSacheteraSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosSachetera);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoSachetera))
+                almacenRechSacheteraSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoSachetera);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoSachetera))
+                almacenRecuSacheteraSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoSachetera);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoSachetera))
+                almacenReteSacheteraSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoSachetera);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoSachetera))
+                almacenReproSacheteraSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoSachetera);
+
+            // ==================== SELLADO ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosSellado))
+                almacenAprobadosSelladoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosSellado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoSellado))
+                almacenRechSelladoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoSellado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoSellado))
+                almacenRecuSelladoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoSellado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoSellado))
+                almacenReteSelladoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoSellado);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoSellado))
+                almacenReproSelladoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoSellado);
+
+            // ==================== HORNO ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosHorno))
+                almacenAprobadosHorneadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosHorno);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoHorno))
+                almacenRechHorneadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoHorno);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoHorno))
+                almacenRecuHorneadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoHorno);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoHorno))
+                almacenReteHorneadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoHorno);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoHorno))
+                almacenReproHorneadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoHorno);
+
+            // ==================== EMPAQUE ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosEmpaque))
+                almacenAprobadosEmpaquetadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosEmpaque);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoEmpaque))
+                almacenRechEmpaquetadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoEmpaque);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoEmpaque))
+                almacenRecuEmpaquetadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoEmpaque);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoEmpaque))
+                almacenReteEmpaquetadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoEmpaque);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoEmpaque))
+                almacenReproEmpaquetadoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoEmpaque);
+
+            // ==================== PRENSA ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosPrensa))
+                almacenAprobadosPrensaSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosPrensa);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoPrensa))
+                almacenRechPrensaSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoPrensa);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoPrensa))
+                almacenRecuPrensaSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoPrensa);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoPrensa))
+                almacenRetePrensaSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoPrensa);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoPrensa))
+                almacenReproPrensaSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoPrensa);
+
+            // ==================== GRABADO L ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenAprobadosGrabadoL))
+                almacenAprobadosGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenAprobadosGrabadoL);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRechazadoGrabadoL))
+                almacenRechGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRechazadoGrabadoL);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRecuperadoGrabadoL))
+                almacenRecuGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRecuperadoGrabadoL);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenRetenidoGrabadoL))
+                almacenReteGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoGrabadoL);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoGrabadoL))
+                almacenReproGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoGrabadoL);
         }
         catch (Exception ex)
         {
@@ -224,10 +683,10 @@
     {
         var serieDefecto = series?.FirstOrDefault();
         parametrizacion.SerieDetalle.Add(new SerieDetalle
-        {
-            CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
-            Serie = serieDefecto?.Descripcion ?? string.Empty
-        });
+            {
+                CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
+                Serie = serieDefecto?.Descripcion ?? string.Empty
+            });
     }
 
     private void EliminarSerie(SerieDetalle serie)
@@ -241,17 +700,87 @@
         {
             parametrizacion.CtaProduccionCurso = cuentaContableSeleccionada?.Cuenta;
 
+            // ==================== ESTACIONES DE TRABAJO ====================
+            parametrizacion.CodEstacionInyeccion = estacionInyeccionSeleccionada?.Codigo;
+            parametrizacion.CodEstacionExtrusion = estacionExtrusionSeleccionada?.Codigo;
+            parametrizacion.CodEstacionArmado = estacionArmadoSeleccionada?.Codigo;
+            parametrizacion.CodEstacionFlowpack = estacionFlowpackSeleccionada?.Codigo;
+            parametrizacion.CodEstacionSachetera = estacionSacheteraSeleccionada?.Codigo;
+            parametrizacion.CodEstacionSellado = estacionSelladoSeleccionada?.Codigo;
+            parametrizacion.CodEstacionHorneado = estacionHorneadoSeleccionada?.Codigo;
+            parametrizacion.CodEstacionEmpaquetado = estacionEmpaquetadoSeleccionada?.Codigo;
+            parametrizacion.CodEstacionPrensa = estacionPrensaSeleccionada?.Codigo;
+            parametrizacion.CodEstacionGrabadoL = estacionGrabadoLSeleccionada?.Codigo;
+
+            // ==================== INYECCIÓN ====================
             parametrizacion.AlmacenSalidaIny = almacenSalidaInySeleccionado?.Codigo;
             parametrizacion.AlmacenAprobadosIny = almacenAprobadosInySeleccionado?.Codigo;
             parametrizacion.AlmacenRechReciIny = almacenRechReciInySeleccionado?.Codigo;
             parametrizacion.AlmacenRechNoReciIny = almacenRechNoReciInySeleccionado?.Codigo;
             parametrizacion.AlmacenRetenidosIny = almacenRetenidosInySeleccionado?.Codigo;
 
+            // ==================== EXTRUSIÓN ====================
             parametrizacion.AlmacenSalidaExt = almacenSalidaExtSeleccionado?.Codigo;
             parametrizacion.AlmacenAprobadosExt = almacenAprobadosExtSeleccionado?.Codigo;
             parametrizacion.AlmacenRechReciExt = almacenRechReciExtSeleccionado?.Codigo;
             parametrizacion.AlmacenRechNoReciExt = almacenRechNoReciExtSeleccionado?.Codigo;
             parametrizacion.AlmacenRetenidosExt = almacenRetenidosExtSeleccionado?.Codigo;
+
+            // ==================== ARMADO ====================
+            parametrizacion.AlmacenAprobadosArmado = almacenAprobadosArmSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoArmado = almacenRechArmadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoArmado = almacenRecuArmadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoArmado = almacenReteArmadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoArmado = almacenReproArmadoSeleccionado?.Codigo;
+
+            // ==================== FLOWPACK ====================
+            parametrizacion.AlmacenAprobadosFlowpack = almacenAprobadosFlowPackSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoFlowpack = almacenRechFlowPackSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoFlowpack = almacenRecuFlowPackSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoFlowpack = almacenReteFlowPackSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoFlowpack = almacenReproFlowPackSeleccionado?.Codigo;
+
+            // ==================== SACHETERA ====================
+            parametrizacion.AlmacenAprobadosSachetera = almacenAprobadosSacheteraSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoSachetera = almacenRechSacheteraSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoSachetera = almacenRecuSacheteraSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoSachetera = almacenReteSacheteraSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoSachetera = almacenReproSacheteraSeleccionado?.Codigo;
+
+            // ==================== SELLADO ====================
+            parametrizacion.AlmacenAprobadosSellado = almacenAprobadosSelladoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoSellado = almacenRechSelladoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoSellado = almacenRecuSelladoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoSellado = almacenReteSelladoSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoSellado = almacenReproSelladoSeleccionado?.Codigo;
+
+            // ==================== HORNEADO ====================
+            parametrizacion.AlmacenAprobadosHorno = almacenAprobadosHorneadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoHorno = almacenRechHorneadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoHorno = almacenRecuHorneadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoHorno = almacenReteHorneadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoHorno = almacenReproHorneadoSeleccionado?.Codigo;
+
+            // ==================== EMPAQUE ====================
+            parametrizacion.AlmacenAprobadosEmpaque = almacenAprobadosEmpaquetadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoEmpaque = almacenRechEmpaquetadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoEmpaque = almacenRecuEmpaquetadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoEmpaque = almacenReteEmpaquetadoSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoEmpaque = almacenReproEmpaquetadoSeleccionado?.Codigo;
+
+            // ==================== PRENSA ====================
+            parametrizacion.AlmacenAprobadosPrensa = almacenAprobadosPrensaSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoPrensa = almacenRechPrensaSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoPrensa = almacenRecuPrensaSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoPrensa = almacenRetePrensaSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoPrensa = almacenReproPrensaSeleccionado?.Codigo;
+
+            // ==================== GRABADO L ====================
+            parametrizacion.AlmacenAprobadosGrabadoL = almacenAprobadosGrabadoLSeleccionado?.Codigo;
+            parametrizacion.AlmacenRechazadoGrabadoL = almacenRechGrabadoLSeleccionado?.Codigo;
+            parametrizacion.AlmacenRecuperadoGrabadoL = almacenRecuGrabadoLSeleccionado?.Codigo;
+            parametrizacion.AlmacenRetenidoGrabadoL = almacenReteGrabadoLSeleccionado?.Codigo;
+            parametrizacion.AlmacenReprocesoGrabadoL = almacenReproGrabadoLSeleccionado?.Codigo;
 
             await ParametrizacionService.GuardarParametrizacion(parametrizacion);
 
@@ -288,6 +817,21 @@
             return Task.FromResult(almacenes.AsEnumerable());
 
         var resultado = almacenes
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private Task<IEnumerable<EtapaRuta>> BuscarEstaciones(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(estaciones.AsEnumerable());
+
+        var resultado = estaciones
             .Where(a =>
                 (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
                 (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))

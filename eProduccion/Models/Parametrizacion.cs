@@ -4,6 +4,16 @@
     {
         public int? DocEntry { get; set; }
         public string CtaProduccionCurso { get; set; }
+        public string CodEstacionInyeccion { get; set; }
+        public string CodEstacionExtrusion { get; set; }
+        public string CodEstacionArmado { get; set; }
+        public string CodEstacionFlowpack { get; set; }
+        public string CodEstacionSachetera { get; set; }
+        public string CodEstacionSellado { get; set; }
+        public string CodEstacionHorneado { get; set; }
+        public string CodEstacionEmpaquetado { get; set; }
+        public string CodEstacionPrensa { get; set; }
+        public string CodEstacionGrabadoL { get; set; }
         public string AlmacenSalidaIny { get; set; }
         public string AlmacenAprobadosIny { get; set; }
         public string AlmacenRechReciIny { get; set; }
@@ -14,6 +24,46 @@
         public string AlmacenRechReciExt { get; set; }
         public string AlmacenRechNoReciExt { get; set; }
         public string AlmacenRetenidosExt { get; set; }
+        public string AlmacenAprobadosArmado { get; set; }
+        public string AlmacenRechazadoArmado { get; set; }
+        public string AlmacenRecuperadoArmado { get; set; }
+        public string AlmacenRetenidoArmado { get; set; }
+        public string AlmacenReprocesoArmado { get; set; }
+        public string AlmacenAprobadosFlowpack { get; set; }
+        public string AlmacenRechazadoFlowpack { get; set; }
+        public string AlmacenRecuperadoFlowpack { get; set; }
+        public string AlmacenRetenidoFlowpack { get; set; }
+        public string AlmacenReprocesoFlowpack { get; set; }
+        public string AlmacenAprobadosSachetera { get; set; }
+        public string AlmacenRechazadoSachetera { get; set; }
+        public string AlmacenRecuperadoSachetera { get; set; }
+        public string AlmacenRetenidoSachetera { get; set; }
+        public string AlmacenReprocesoSachetera { get; set; }
+        public string AlmacenAprobadosSellado { get; set; }
+        public string AlmacenRechazadoSellado { get; set; }
+        public string AlmacenRecuperadoSellado { get; set; }
+        public string AlmacenRetenidoSellado { get; set; }
+        public string AlmacenReprocesoSellado { get; set; }
+        public string AlmacenAprobadosHorno { get; set; }
+        public string AlmacenRechazadoHorno { get; set; }
+        public string AlmacenRecuperadoHorno { get; set; }
+        public string AlmacenRetenidoHorno { get; set; }
+        public string AlmacenReprocesoHorno { get; set; }
+        public string AlmacenAprobadosEmpaque { get; set; }
+        public string AlmacenRechazadoEmpaque { get; set; }
+        public string AlmacenRecuperadoEmpaque { get; set; }
+        public string AlmacenRetenidoEmpaque { get; set; }
+        public string AlmacenReprocesoEmpaque { get; set; }
+        public string AlmacenAprobadosPrensa { get; set; }
+        public string AlmacenRechazadoPrensa { get; set; }
+        public string AlmacenRecuperadoPrensa { get; set; }
+        public string AlmacenRetenidoPrensa { get; set; }
+        public string AlmacenReprocesoPrensa { get; set; }
+        public string AlmacenAprobadosGrabadoL { get; set; }
+        public string AlmacenRechazadoGrabadoL { get; set; }
+        public string AlmacenRecuperadoGrabadoL { get; set; }
+        public string AlmacenRetenidoGrabadoL { get; set; }
+        public string AlmacenReprocesoGrabadoL { get; set; }
         public List<SerieDetalle> SerieDetalle { get; set; }
     }
 }
