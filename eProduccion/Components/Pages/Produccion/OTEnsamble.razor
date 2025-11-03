@@ -1,4 +1,4 @@
-﻿@page "/armado"
+﻿@page "/{Estacion}"
 @using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
@@ -7,15 +7,15 @@
 @inject ISnackbar Snackbar
 @inject EnsambleService EnsambleService
 
-<PageTitle>eProducci&oacute;n | Armado</PageTitle>
+<PageTitle>eProducci&oacute;n | @tituloPagina</PageTitle>
 
 <div class="row">
     <div class="col-12">
         <div class="p-4">
             <div class="table-responsive">
-                <MudTable Items="@listaArmado" Filter="FiltrarTabla" Class="w-100">
+                <MudTable Items="@listaEnsamble" Filter="FiltrarTabla" Class="w-100">
                     <ToolBarContent>
-                        <MudText Typo="Typo.h6">Armado</MudText>
+                        <MudText Typo="Typo.h6">@tituloPagina</MudText>
                         <MudSpacer />
                         <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
@@ -57,14 +57,21 @@
 </div>
 
 @code {
-    private List<OTEnsamble> listaArmado;
+    [Parameter]
+    public string Estacion { get; set; }
+
+    private string estacionNormalizada => Estacion?.Replace("-", " ").Trim() ?? string.Empty;
+    private string tituloPagina => string.Join(" ", estacionNormalizada.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => char.ToUpper(x[0]) + x.Substring(1).ToLower()));
+    private string estacionMayuscula => estacionNormalizada.ToUpperInvariant();
+
+    private List<OTEnsamble> listaEnsamble;
     private string textoBusqueda = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         try
         {
-            listaArmado = await EnsambleService.ObtenerOTEnsamblado("ARMADO");
+            listaEnsamble = await EnsambleService.ObtenerOTEnsamblado(estacionMayuscula);
         }
         catch (Exception ex)
         {
@@ -76,17 +83,17 @@
     {
         var parameters = new DialogParameters
         {
-            { "Estacion", "ARMADO" },
+            { "Estacion", estacionMayuscula },
             { "OTEnsamble", otEnsamble },
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.False,
-            FullWidth = true,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.False,
+                FullWidth = true,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<OTEnsambleCargaDialog>("", parameters, options);
     }
