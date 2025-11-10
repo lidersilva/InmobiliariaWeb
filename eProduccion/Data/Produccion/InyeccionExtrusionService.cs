@@ -239,7 +239,7 @@ namespace eProduccion.Data.Produccion
 
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
-            string etapaRuta = estacion == "INYECCION" ? "02" : "08";
+            string etapaRuta = estacion == "INYECCION" ? parametrizacion.CodEstacionInyeccion : parametrizacion.CodEstacionExtrusion;
             string comentarioEstacion = estacion == "INYECCION" ? "Inyección" : "Extrusión";
             string almacenSalida = estacion == "INYECCION" ? parametrizacion.AlmacenSalidaIny : parametrizacion.AlmacenSalidaExt;
 

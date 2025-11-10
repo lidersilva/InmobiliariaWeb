@@ -290,7 +290,7 @@ namespace eProduccion.Data.Produccion
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
             listRegistroEnsamblado = await ObtenerDetalleRegistroEnsamblado(detEnsamble.DocEntry);
 
-            string etapaRuta = estacion == "ARMADO" ? "09" : "";
+            string etapaRuta = estacion == "ARMADO" ? parametrizacion.CodEstacionArmado : "";
             string comentarioEstacion = estacion == "ARMADO" ? "Armado" : "";
             string almacenSalida = estacion == "ARMADO" ? parametrizacion.AlmacenSalidaIny : parametrizacion.AlmacenSalidaExt;
 

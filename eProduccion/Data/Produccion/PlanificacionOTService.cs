@@ -89,7 +89,7 @@ namespace eProduccion.Data.Produccion
             bodyBatch.AppendLine();
 
             // Generar OT para las diferentes estaciones según la lista de materiales
-            bodyBatch.AppendLine(GenerarOTSegunListaMateriales(listaOV));
+            bodyBatch.AppendLine(await GenerarOTSegunListaMateriales(listaOV));
 
             // Actualizar líneas iniciadas en EEP_PLANI_OT (Tabla planificación OT)
             bodyBatch.AppendLine(ActualizarLineaPlanificacion(listaOV));
@@ -165,9 +165,10 @@ namespace eProduccion.Data.Produccion
             return list;
         }
 
-        private string GenerarOTSegunListaMateriales(List<PlanificacionOT> listaOV)
+        private async Task<string> GenerarOTSegunListaMateriales(List<PlanificacionOT> listaOV)
         {
             StringBuilder bodyBatch = new StringBuilder();
+            var parametrizacion = await _parametrizacionService.ObtenerParametrizacion();
 
             foreach (var i in listaOV)
             {
@@ -175,7 +176,7 @@ namespace eProduccion.Data.Produccion
 
                 foreach (var e in listaEtapasRuta)
                 {
-                    if (e.EtapaRuta == "02")
+                    if (e.EtapaRuta == parametrizacion.CodEstacionInyeccion)
                     {
                         bodyBatch.AppendLine("--changeset_EEP");
                         bodyBatch.AppendLine("content-type: application/http");
@@ -201,7 +202,7 @@ namespace eProduccion.Data.Produccion
                         bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
                         bodyBatch.AppendLine();
                     }
-                    else if (e.EtapaRuta == "08")
+                    else if (e.EtapaRuta == parametrizacion.CodEstacionExtrusion)
                     {
                         bodyBatch.AppendLine("--changeset_EEP");
                         bodyBatch.AppendLine("content-type: application/http");

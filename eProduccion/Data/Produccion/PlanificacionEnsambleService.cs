@@ -2,16 +2,15 @@
 using eProduccion.Models;
 using eProduccion.Utility;
 using RestSharp;
-using System.Data;
 using System.Data.Odbc;
-using System.Globalization;
 using System.Text;
 
 namespace eProduccion.Data.Produccion
 {
-    public class PlanificacionEnsambleService(ConnectionService connectionService)
+    public class PlanificacionEnsambleService(ConnectionService connectionService, ParametrizacionService parametrizacionService)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly ParametrizacionService _parametrizacionService = parametrizacionService;
 
         public Task<PlanificacionEnsamble[]> ObtenerPlanificacionEnsamble()
         {
@@ -158,7 +157,7 @@ namespace eProduccion.Data.Produccion
             bodyBatch.AppendLine();
 
             // Generar OT según la lista de materiales
-            bodyBatch.AppendLine(GenerarOTSegunListaMateriales(listPlanifEnsambleDet, codigoArticuloOV, codePlanificacionOT));
+            bodyBatch.AppendLine(await GenerarOTSegunListaMateriales(listPlanifEnsambleDet, codigoArticuloOV, codePlanificacionOT));
 
             // Actualizar líneas iniciadas del detalle de planificación de ensamble
             bodyBatch.AppendLine(ActualizarLineaPlanificacionEnsamble(listPlanifEnsambleDet, docEntryOT));
@@ -170,13 +169,14 @@ namespace eProduccion.Data.Produccion
             _connectionService.SetEntitySLBatch(method, entity, bodyBatch);
         }
 
-        private string GenerarOTSegunListaMateriales(List<PlanificacionEnsambleDet> listPlanifEnsambleDet, string codigoArticuloOV, int codePlanificacionOT)
+        private async Task<string> GenerarOTSegunListaMateriales(List<PlanificacionEnsambleDet> listPlanifEnsambleDet, string codigoArticuloOV, int codePlanificacionOT)
         {
             StringBuilder bodyBatch = new StringBuilder();
+            var parametrizacion = await _parametrizacionService.ObtenerParametrizacion();
 
             var sigEtapaRuta = ObtenerEtapasRuta(codigoArticuloOV);
 
-            if (sigEtapaRuta.EtapaRuta == "09")
+            if (sigEtapaRuta.EtapaRuta == parametrizacion.CodEstacionArmado)
             {
                 bodyBatch.AppendLine("--changeset_EEP");
                 bodyBatch.AppendLine("content-type: application/http");
