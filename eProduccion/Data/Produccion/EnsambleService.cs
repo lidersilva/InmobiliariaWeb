@@ -7,12 +7,13 @@ using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
-    public class EnsambleService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion, InyeccionExtrusionService inyeccionExtrusionService)
+    public class EnsambleService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion, InyeccionExtrusionService inyeccionExtrusionService, ProduccionCommonService produccionCommonService)
     {
         private readonly ConnectionService _connectionService = connectionService;
         private readonly SBOIntegration _sboIntegration = sboIntegration;
         private readonly ParametrizacionService _parametrizacion = parametrizacion;
         private readonly InyeccionExtrusionService _inyeccionExtrusionService = inyeccionExtrusionService;
+        private readonly ProduccionCommonService _produccionCommonService = produccionCommonService;
 
         public Task<List<OTEnsamble>> ObtenerOTEnsamblado(string estacion)
         {
@@ -290,7 +291,7 @@ namespace eProduccion.Data.Produccion
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
             listRegistroEnsamblado = await ObtenerDetalleRegistroEnsamblado(detEnsamble.DocEntry);
 
-            string etapaRuta = estacion == "ARMADO" ? parametrizacion.CodEstacionArmado : "";
+            string etapaRuta = await _produccionCommonService.ObtenerCodigoEtapaRuta(estacion);
             string comentarioEstacion = estacion == "ARMADO" ? "Armado" : "";
             string almacenSalida = estacion == "ARMADO" ? parametrizacion.AlmacenSalidaIny : parametrizacion.AlmacenSalidaExt;
 

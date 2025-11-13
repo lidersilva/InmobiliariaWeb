@@ -29,11 +29,13 @@ namespace eProduccion.Extensions
             services.AddScoped<ParametrizacionService>();
 
             // Producción
+            services.AddScoped<ProduccionCommonService>();
             services.AddScoped<PlanificacionOTService>();
             services.AddScoped<InyeccionExtrusionService>();
             services.AddScoped<ParadaService>();
             services.AddScoped<PlanificacionEnsambleService>();
             services.AddScoped<EnsambleService>();
+            services.AddScoped<MolinadoService>();
 
             // Utility
             services.AddScoped<DbHelper>();

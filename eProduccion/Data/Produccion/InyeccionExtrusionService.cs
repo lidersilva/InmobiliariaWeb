@@ -7,11 +7,12 @@ using System.Globalization;
 
 namespace eProduccion.Data.Produccion
 {
-    public class InyeccionExtrusionService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion)
+    public class InyeccionExtrusionService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacion, ProduccionCommonService produccionCommonService)
     {
         private readonly ConnectionService _connectionService = connectionService;
         private readonly SBOIntegration _sboIntegration = sboIntegration;
         private readonly ParametrizacionService _parametrizacion = parametrizacion;
+        private readonly ProduccionCommonService _produccionCommonService = produccionCommonService;
 
         public Task<OTInyeccionExtrusion[]> ObtenerOTInyeccionExtrusion(string estacion)
         {
@@ -239,7 +240,7 @@ namespace eProduccion.Data.Produccion
 
             var parametrizacion = await _parametrizacion.ObtenerParametrizacion();
 
-            string etapaRuta = estacion == "INYECCION" ? parametrizacion.CodEstacionInyeccion : parametrizacion.CodEstacionExtrusion;
+            string etapaRuta = await _produccionCommonService.ObtenerCodigoEtapaRuta(estacion);
             string comentarioEstacion = estacion == "INYECCION" ? "Inyección" : "Extrusión";
             string almacenSalida = estacion == "INYECCION" ? parametrizacion.AlmacenSalidaIny : parametrizacion.AlmacenSalidaExt;
 
