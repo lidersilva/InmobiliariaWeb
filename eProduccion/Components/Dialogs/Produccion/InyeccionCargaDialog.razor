@@ -1,4 +1,5 @@
-﻿@using eProduccion.Data.GestionAccesos
+﻿@using eProduccion.Data
+@using eProduccion.Data.GestionAccesos
 @using eProduccion.Data.Produccion
 @using eProduccion.Models
 @inject ISnackbar Snackbar
@@ -6,6 +7,7 @@
 @inject InyeccionExtrusionService InyeccionService
 @inject UsuarioSistemaService UsuarioSistemaService
 @inject UserSession UserSession
+@inject ImpresionEtiquetaService ImpresionEtiquetaService
 
 <MudDialog>
     <TitleContent>
@@ -149,7 +151,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.PauseCircle" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalParada(context)' Disabled="@(context.EstadoLinea != "Iniciado")" />
                     </MudTooltip>
                     <MudTooltip Text="Imprimir">
-                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" @onclick='() => AbrirModalImprimir(context)' Class="mr-2" Disabled="@(context.LineId == 0)" />
                     </MudTooltip>
                     <MudTooltip Text="Recibir">
                         <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalRecibir(context)' Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
@@ -294,6 +296,31 @@
             };
 
         var dialog = await DialogService.ShowAsync<ParadaDialog>("", parameters, options);
+    }
+
+    private async Task AbrirModalImprimir(OTInyeccionExtrusionDet detalleInyeccion)
+    {
+        var parameters = new DialogParameters { };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<ImprimirDialog>("", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                await ImpresionEtiquetaService.ImprimirEtiquetaInyeccionExtrusion(false, detalleInyeccion.DocEntry, detalleInyeccion.NroContenedor, OrdenInyeccion.CodArticuloIE, detalleInyeccion.CantAprobadas, detalleInyeccion.CantRetenidas,
+                detalleInyeccion.CantRechReciclable, detalleInyeccion.CantRechNoReciclable, detalleInyeccion.NroMaquina, detalleInyeccion.Operario, detalleInyeccion.Fecha, detalleInyeccion.Turno);
+
+                Snackbar.Add($"Etiqueta generada correctamente", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
+        }
     }
 
     private async Task AbrirModalRecibir(OTInyeccionExtrusionDet detalleInyeccion)

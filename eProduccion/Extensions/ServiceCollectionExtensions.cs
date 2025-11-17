@@ -18,6 +18,7 @@ namespace eProduccion.Extensions
             services.AddScoped<ConnectionService>();
             services.AddScoped<UserSession>();
             services.AddScoped<EstructuraService>();
+            services.AddScoped<ImpresionEtiquetaService>();
 
             // Gestión Usuarios
             services.AddScoped<UsuarioSistemaService>();
