@@ -1,5 +1,5 @@
 ﻿@page "/pendientemolinar"
-@using eProduccion.Components.Dialogs
+@using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
@@ -40,50 +40,24 @@
                     <RowTemplate>
                         <MudTd DataLabel="OT">@context.DocEntry</MudTd>
                         <MudTd DataLabel="Origen">@context.EstacionOrigen</MudTd>
-                        <MudTd DataLabel="Fecha" Style="min-width: 200px;">
-                            <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" />
-                        </MudTd>
+                        <MudTd DataLabel="Fecha">@context.Fecha.ToString("dd/MM/yyyy")</MudTd>
                         <MudTd DataLabel="Hora inicio">@context.HoraInicio.ToString("HH:mm")</MudTd>
                         <MudTd DataLabel="Hora fin">@context.HoraFin.ToString("HH:mm")</MudTd>
-                        <MudTd DataLabel="Turno" Style="min-width: 150px;">
-                            <MudSelect T="string" @bind-Value="@context.Turno" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
-                                <MudSelectItem Value="@("TM")">TM - Mañana</MudSelectItem>
-                                <MudSelectItem Value="@("TT")">TT - Tarde</MudSelectItem>
-                                <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
-                            </MudSelect>
-                        </MudTd>
-                        <MudTd DataLabel="Operario" Style="min-width: 220px;">
-                            <MudAutocomplete T="Usuario"
-                                             SearchFunc="BuscarOperarios"
-                                             ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
-                                             @bind-Value="@context.UsuarioOperario"
-                                             CoerceText="true"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Dense="true" />
-                        </MudTd>
-                        <MudTd DataLabel="Operario 2" Style="min-width: 220px;">
-                            <MudAutocomplete T="Usuario"
-                                             SearchFunc="BuscarOperarios"
-                                             ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
-                                             @bind-Value="@context.UsuarioOperario2"
-                                             CoerceText="true"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Dense="true" />
-                        </MudTd>
+                        <MudTd DataLabel="Turno">@context.Turno</MudTd>
+                        <MudTd DataLabel="Operario">@context.Operario</MudTd>
+                        <MudTd DataLabel="Operario 2">@context.Operario2</MudTd>
                         <MudTd DataLabel="Código" Class="text-nowrap">@context.CodArticulo</MudTd>
                         <MudTd DataLabel="Artículo" Class="text-nowrap">@context.Articulo</MudTd>
                         <MudTd DataLabel="Cant. producida">@context.CantProducida</MudTd>
                         <MudTd DataLabel="Cant. a solicitar">
-                            <MudNumericField T="int" @bind-Value="@context.CantSolicitar" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                            <MudNumericField T="int" @bind-Value="@context.CantSolicitar" Min="0" Max="@context.CantDisponible" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
                         </MudTd>
                         <MudTd DataLabel="Lote" Style="min-width: 200px;">
-                            <MudTextField T="string" @bind-Value="@context.Lote" Label="Lote" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Class="mud-width-full" Style="cursor: pointer;" />
+                            <MudTextField T="string" @bind-Value="@context.Lote" Label="Lote" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Class="mud-width-full" Style="cursor: pointer;" @onclick='() => AbrirModalLotes(context)' />
                         </MudTd>
                         <MudTd DataLabel="Cant. disponible">@context.CantDisponible</MudTd>
                         <MudTd DataLabel="Cant. solicitada">@context.CantSolicitada</MudTd>
-                        <MudTd DataLabel="U/M">U/M</MudTd>
+                        <MudTd DataLabel="U/M">@context.UMArticulo</MudTd>
                     </RowTemplate>
                     <PagerContent>
                         <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
@@ -92,7 +66,7 @@
             </div>
             <MudText>@filasSeleccionadas?.Count filas seleccionadas</MudText>
             <div class="d-flex justify-end mt-4">
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Disabled="@(!filasSeleccionadas.Any())">Procesar</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" @onclick="IniciarOT" Disabled="@(!filasSeleccionadas.Any())">Procesar</MudButton>
             </div>
         </div>
     </div>
@@ -102,23 +76,56 @@
     private PendienteMolinar[]? listaPendienteMolinar;
     private HashSet<PendienteMolinar> filasSeleccionadas = new HashSet<PendienteMolinar>();
     private string textoBusqueda = "";
-    private List<Usuario> operarios;
-    private Usuario operarioSeleccionado;
-    private Usuario operario2Seleccionado;
 
-    private Task<IEnumerable<Usuario>> BuscarOperarios(string value, CancellationToken token)
+    protected override async Task OnInitializedAsync()
     {
-        if (string.IsNullOrWhiteSpace(value))
-            return Task.FromResult(operarios.AsEnumerable());
+        try
+        {
+            listaPendienteMolinar = await MolinadoService.ObtenerOTPendienteMolinar();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
 
-        var resultado = operarios
-            .Where(a =>
-                (!string.IsNullOrEmpty(a.CodigoUsuario) && a.CodigoUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
-                (!string.IsNullOrEmpty(a.NombreUsuario) && a.NombreUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)))
-            .OrderBy(a => a.CodigoUsuario)
-            .Take(20);
+    private async Task AbrirModalLotes(PendienteMolinar pendienteMolinar)
+    {
+        var parameters = new DialogParameters
+        {
+            { "CodArticulo", pendienteMolinar.CodArticulo },
+        };
 
-        return Task.FromResult(resultado);
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.False,
+            BackdropClick = false,
+        };
+
+        var dialog = await DialogService.ShowAsync<LoteDialog>("", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Lote loteSeleccionado)
+            pendienteMolinar.Lote = loteSeleccionado.NroLote;
+    }
+
+    private async Task IniciarOT()
+    {
+        try
+        {
+            await MolinadoService.GenerarOT(filasSeleccionadas.ToList());
+
+            listaPendienteMolinar = await MolinadoService.ObtenerOTPendienteMolinar();
+
+            StateHasChanged();
+
+            Snackbar.Add($"OT enviadas a la estación de Molinado correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
     }
 
     private bool FiltrarTabla(PendienteMolinar item) => AplicarFiltroTabla(item, textoBusqueda);

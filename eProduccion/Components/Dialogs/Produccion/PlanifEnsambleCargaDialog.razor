@@ -93,9 +93,7 @@
         var result = await dialog.Result;
 
         if (!result.Canceled && result.Data is Lote loteSeleccionado)
-        {
             planificacionEnsambleDet.Lote = loteSeleccionado.NroLote;
-        }
     }
 
     private async Task IniciarOT()

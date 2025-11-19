@@ -431,6 +431,19 @@ namespace eProduccion.Data
                         new UserColumnsMD_FormColumns() { Code = "EEP_OT_ENSAM_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
                     ]
                 },
+                 new ()
+                {
+                    Code = "EEP_PEND_MOLI_OT", Name = "EEP OT Pendiente a molinar", TableName = "EEP_PEND_MOLI_OT", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PEND_MOLI_OT", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PEND_MOLI_OT", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
+                    ]
+                },
             }.ForEach(AgregarObjetos);
             #endregion
 
