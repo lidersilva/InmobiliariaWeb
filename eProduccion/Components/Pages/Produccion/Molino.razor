@@ -1,0 +1,235 @@
+﻿@page "/molino"
+@using eProduccion.Components.Dialogs
+@using eProduccion.Models
+@using eProduccion.Utility
+@using eProduccion.Data.GestionAccesos
+@using eProduccion.Data.Produccion
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject MolinadoService MolinadoService
+@inject InyeccionExtrusionService ExtrusionService
+@inject UsuarioSistemaService UsuarioSistemaService
+
+<PageTitle>eProducci&oacute;n | Molino</PageTitle>
+
+<div class="row">
+    <div class="col-12">
+        <div class="p-4">
+            <div class="table-responsive">
+                <MudTable Items="@listaMolino" MultiSelection="true" Filter="FiltrarTabla" Class="w-100">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Molino</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="textoBusqueda" Placeholder="Buscar" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>OT</MudTh>
+                        <MudTh>Fecha</MudTh>
+                        <MudTh>Hora inicio</MudTh>
+                        <MudTh>Hora fin</MudTh>
+                        <MudTh>Turno</MudTh>
+                        <MudTh>Operario</MudTh>
+                        <MudTh Class="text-nowrap">Operario 2</MudTh>
+                        <MudTh>Cant. procesar</MudTh>
+                        <MudTh>Cant. reciclable KG</MudTh>
+                        <MudTh>Cant. no conforme KG</MudTh>
+                        <MudTh>Motivo rechazo</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="OT">@context.DocEntry</MudTd>
+                        <MudTd DataLabel="Fecha" Style="min-width: 200px;">
+                            <MudDatePicker T="DateTime?" @bind-Date="@context.Fecha" DateFormat="dd/MM/yyyy" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100" />
+                        </MudTd>
+                        <MudTd DataLabel="Hora inicio">@context.HoraInicio.ToString("HH:mm")</MudTd>
+                        <MudTd DataLabel="Hora fin">@context.HoraFin.ToString("HH:mm")</MudTd>
+                        <MudTd DataLabel="Turno" Style="min-width: 150px;">
+                            <MudSelect T="string" @bind-Value="@context.Turno" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
+                                <MudSelectItem Value="@("TM")">TM - Mañana</MudSelectItem>
+                                <MudSelectItem Value="@("TT")">TT - Tarde</MudSelectItem>
+                                <MudSelectItem Value="@("TN")">TN - Noche</MudSelectItem>
+                            </MudSelect>
+                        </MudTd>
+                        <MudTd DataLabel="Operario" Style="min-width: 220px;">
+                            <MudAutocomplete T="Usuario"
+                                             SearchFunc="BuscarOperarios"
+                                             ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                             @bind-Value="@context.UsuarioOperario"
+                                             CoerceText="true"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Dense="true" />
+                        </MudTd>
+                        <MudTd DataLabel="Operario 2" Style="min-width: 220px;">
+                            <MudAutocomplete T="Usuario"
+                                             SearchFunc="BuscarOperarios"
+                                             ToStringFunc='operario => operario != null ? $"{operario.CodigoUsuario} {operario.NombreUsuario}" : string.Empty'
+                                             @bind-Value="@context.UsuarioOperario2"
+                                             CoerceText="true"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Dense="true" />
+                        </MudTd>
+                        <MudTd DataLabel="Cant. procesar">
+                            <MudNumericField T="int" @bind-Value="@context.CantProcesar" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                        </MudTd>
+                        <MudTd DataLabel="Cant. reciclable KG">
+                            <MudNumericField T="double" @bind-Value="@context.CantReciclableKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                        </MudTd>
+                        <MudTd DataLabel="Cant. no conforme KG">
+                            <MudNumericField T="double" @bind-Value="@context.CantNoConformeKG" Min="0" Immediate="true" Variant="Variant.Outlined" HideSpinButtons="true" Class="w-100" Margin="Margin.Dense" />
+                        </MudTd>
+                        <MudTd DataLabel="Motivo rechazo" Style="min-width: 250px;">
+                            <MudAutocomplete T="MotivoParadaDefecto"
+                                             SearchFunc="BuscarMotivosDefectos"
+                                             ToStringFunc='motivo => motivo != null ? $"{motivo.Codigo} {motivo.Descripcion}" : string.Empty'
+                                             @bind-Value="@context.MotRechazo"
+                                             CoerceText="true"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Dense="true" />
+                        </MudTd>
+                        <MudTd DataLabel="Acciones" Class="text-nowrap" Style="min-width: 160px;">
+                            <MudTooltip Text="Guardar">
+                                <MudIconButton Icon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Class="mr-2" @onclick='() => GuardarOTMolino(context)' />
+                            </MudTooltip>
+                            <MudTooltip Text="Inicio">
+                                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => RegistrarInicio(context)' />
+                            </MudTooltip>
+                            <MudTooltip Text="Imprimir">
+                                <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" />
+                            </MudTooltip>
+                            <MudTooltip Text="Recibir">
+                                <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalRecibir(context)' />
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager RowsPerPageString="Filas por página:" InfoFormat="{first_item}-{last_item} de {all_items}" AllItemsText="Todos" />
+                    </PagerContent>
+                </MudTable>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<OTMolino> listaMolino;
+    private string textoBusqueda = "";
+
+    private List<Usuario> operarios;
+    private Usuario operarioSeleccionado;
+    private Usuario operario2Seleccionado;
+    List<MotivoParadaDefecto> listaMotivoDefecto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
+            operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
+
+            listaMolino = await MolinadoService.ObtenerOTMolino();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task GuardarOTMolino(OTMolino item)
+    {
+        try
+        {
+            //await MolinadoService.GuardarOTMolino(item);
+            Snackbar.Add("Guardado correctamente", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al guardar: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task RegistrarInicio(OTMolino item)
+    {
+        try
+        {
+            //await MolinadoService.RegistrarInicio(item);
+            item.HoraInicio = DateTime.Now; // Update local state
+            Snackbar.Add("Inicio registrado", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al registrar inicio: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task AbrirModalRecibir(OTMolino item)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "¿Está seguro de finalizar esta orden?");
+        parameters.Add("ButtonText", "Finalizar");
+        parameters.Add("Color", Color.Success);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = DialogService.Show<FinalizarDialog>("Finalizar Orden", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                //await MolinadoService.FinalizarOTMolino(item);
+                item.HoraFin = DateTime.Now; // Update local state
+                Snackbar.Add("Orden finalizada", Severity.Success);
+                // Refresh list if needed
+                // listaMolino = await MolinadoService.ObtenerOTMolino();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error al finalizar: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+
+    private Task<IEnumerable<MotivoParadaDefecto>> BuscarMotivosDefectos(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(listaMotivoDefecto.AsEnumerable());
+
+        var resultado = listaMotivoDefecto
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.Codigo) && a.Codigo.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.Descripcion) && a.Descripcion.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.Codigo)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private Task<IEnumerable<Usuario>> BuscarOperarios(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(operarios.AsEnumerable());
+
+        var resultado = operarios
+            .Where(a =>
+                (!string.IsNullOrEmpty(a.CodigoUsuario) && a.CodigoUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(a.NombreUsuario) && a.NombreUsuario.Contains(value, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(a => a.CodigoUsuario)
+            .Take(20);
+
+        return Task.FromResult(resultado);
+    }
+
+    private bool FiltrarTabla(OTMolino item) => AplicarFiltroTabla(item, textoBusqueda);
+
+    private bool AplicarFiltroTabla(OTMolino item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        return true;
+    }
+}

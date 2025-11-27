@@ -31,7 +31,7 @@ namespace eProduccion.Data.Produccion
                 TA.""ItemName"",
                 TM.""U_CANTPROD"",
                 TM.""U_CANTSOLICITADA"",
-                TM.""U_LOTE""
+                TD.""U_LOTE""
                 FROM ""{_connectionService.DataBase}"".""@EEP_PEND_MOLI_OT"" TM 
                 JOIN ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_DET"" TD ON TM.""U_OT""=TD.""DocEntry"" AND TM.""U_LINEIDOT"" =""LineId""
                 JOIN ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_CAB"" TC ON TD.""DocEntry""=TC.""DocEntry""
@@ -68,6 +68,56 @@ namespace eProduccion.Data.Produccion
             _connectionService.DisconnectODBC();
 
             return Task.FromResult(list.ToArray());
+        }
+
+        public Task<List<OTMolino>> ObtenerOTMolino()
+        {
+            var list = new List<OTMolino>();
+
+            var query = $@"
+                SELECT 
+                TM.""DocEntry"", 
+                TM.""U_DEPENDMOLI"", 
+                TM.""U_FECHAPROC"", 
+                TM.""U_HORAINI"", 
+                TM.""U_HORAFIN"", 
+                TM.""U_TURNO"", 
+                TM.""U_OPERARIO"", 
+                TM.""U_OPERARIO2"",
+                TM.""U_CANTPROC"",
+                TM.""U_CANTRECIKG"",
+                TM.""U_CANTRECHKG"",
+                TM.""U_MOTIVORECH""
+                FROM ""{_connectionService.DataBase}"".""@EEP_OT_MOLINO"" TM 
+                ORDER BY TM.""DocEntry"" DESC";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new OTMolino();
+                che.DocEntry = int.Parse(reader["DocEntry"].ToString());
+                che.Fecha = DateTime.Parse(reader["U_FECHAPROC"].ToString());
+                var horaInicioString = reader["U_HORAINI"].ToString().PadLeft(4, '0');
+                if (!string.IsNullOrWhiteSpace(horaInicioString) && horaInicioString.Length == 4)
+                    che.HoraInicio = DateTime.ParseExact(horaInicioString, "HHmm", CultureInfo.InvariantCulture);
+                var horaFinString = reader["U_HORAFIN"].ToString().PadLeft(4, '0');
+                if (!string.IsNullOrWhiteSpace(horaFinString) && horaFinString.Length == 4)
+                    che.HoraFin = DateTime.ParseExact(horaFinString, "HHmm", CultureInfo.InvariantCulture);
+                che.Turno = reader["U_TURNO"].ToString();
+                che.Operario = reader["U_OPERARIO"].ToString();
+                che.Operario2 = reader["U_OPERARIO2"].ToString();
+                che.CantProcesar = int.Parse(reader["U_CANTPROC"].ToString());
+                che.CantReciclableKG = double.Parse(reader["U_CANTRECIKG"].ToString());
+                che.CantNoConformeKG = double.Parse(reader["U_CANTRECHKG"].ToString());
+                che.MotiRechazo = reader["U_MOTIVORECH"].ToString();
+                list.Add(che);
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return Task.FromResult(list);
         }
 
         public async Task GenerarOT(List<PendienteMolinar> listaOT)
@@ -119,5 +169,7 @@ namespace eProduccion.Data.Produccion
 
             return bodyBatch.ToString();
         }
+
+
     }
 }
