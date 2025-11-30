@@ -16,7 +16,7 @@
     <div class="col-12">
         <div class="p-4">
             <div class="table-responsive">
-                <MudTable Items="@listaMolino" MultiSelection="true" Filter="FiltrarTabla" Class="w-100">
+                <MudTable Items="@listaMolino" Filter="FiltrarTabla" Class="w-100">
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">Molino</MudText>
                         <MudSpacer />
@@ -128,7 +128,7 @@
             listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
             operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
 
-            listaMolino = await MolinadoService.ObtenerOTMolino();
+            await CargarOrdenesTrabajoMolino();
         }
         catch (Exception ex)
         {
@@ -136,34 +136,47 @@
         }
     }
 
-    private async Task GuardarOTMolino(OTMolino item)
+    private async Task GuardarOTMolino(OTMolino otMolino)
     {
         try
         {
-            //await MolinadoService.GuardarOTMolino(item);
-            Snackbar.Add("Guardado correctamente", Severity.Success);
+            otMolino.MotiRechazo = otMolino.MotRechazo?.Codigo;
+            otMolino.Operario = otMolino.UsuarioOperario?.CodigoUsuario;
+            otMolino.Operario2 = otMolino.UsuarioOperario2?.CodigoUsuario;
+
+            await MolinadoService.GuardarOTMolino(otMolino);
+
+            await CargarOrdenesTrabajoMolino();
+
+            StateHasChanged();
+
+            Snackbar.Add("OT guardada correctamente", Severity.Success);
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Error al guardar: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
     }
 
-    private async Task RegistrarInicio(OTMolino item)
+    private async Task RegistrarInicio(OTMolino otMolino)
     {
         try
         {
-            //await MolinadoService.RegistrarInicio(item);
-            item.HoraInicio = DateTime.Now; // Update local state
-            Snackbar.Add("Inicio registrado", Severity.Success);
+            await MolinadoService.RegistrarInicioMolino(otMolino);
+
+            await CargarOrdenesTrabajoMolino();
+
+            StateHasChanged();
+
+            Snackbar.Add($"OT iniciada correctamente", Severity.Success);
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Error al registrar inicio: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
         }
     }
 
-    private async Task AbrirModalRecibir(OTMolino item)
+    private async Task AbrirModalRecibir(OTMolino otMolino)
     {
         var parameters = new DialogParameters();
         parameters.Add("ContentText", "¿Está seguro de finalizar esta orden?");
@@ -180,18 +193,29 @@
             try
             {
                 //await MolinadoService.FinalizarOTMolino(item);
-                item.HoraFin = DateTime.Now; // Update local state
+                otMolino.HoraFin = DateTime.Now; // Update local state
                 Snackbar.Add("Orden finalizada", Severity.Success);
                 // Refresh list if needed
                 // listaMolino = await MolinadoService.ObtenerOTMolino();
             }
             catch (Exception ex)
             {
-                Snackbar.Add($"Error al finalizar: {ex.Message}", Severity.Error);
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
             }
         }
     }
 
+    private async Task CargarOrdenesTrabajoMolino()
+    {
+        listaMolino = await MolinadoService.ObtenerOTMolino();
+
+        foreach (var det in listaMolino)
+        {
+            det.MotRechazo = listaMotivoDefecto.FirstOrDefault(x => x.Codigo == det.MotiRechazo);
+            det.UsuarioOperario = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario);
+            det.UsuarioOperario2 = operarios.FirstOrDefault(x => x.CodigoUsuario == det.Operario2);
+        }
+    }
 
     private Task<IEnumerable<MotivoParadaDefecto>> BuscarMotivosDefectos(string value, CancellationToken token)
     {

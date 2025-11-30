@@ -8,10 +8,11 @@ using System.Text;
 
 namespace eProduccion.Data.Produccion
 {
-    public class MolinadoService(ConnectionService connectionService, ParametrizacionService parametrizacionService)
+    public class MolinadoService(ConnectionService connectionService, ParametrizacionService parametrizacionService, ProduccionCommonService produccionCommonService)
     {
         private readonly ConnectionService _connectionService = connectionService;
         private readonly ParametrizacionService _parametrizacionService = parametrizacionService;
+        private readonly ProduccionCommonService _produccionCommonService = produccionCommonService;
 
         public Task<PendienteMolinar[]> ObtenerOTPendienteMolinar()
         {
@@ -84,9 +85,9 @@ namespace eProduccion.Data.Produccion
                 TM.""U_TURNO"", 
                 TM.""U_OPERARIO"", 
                 TM.""U_OPERARIO2"",
-                TM.""U_CANTPROC"",
-                TM.""U_CANTRECIKG"",
-                TM.""U_CANTRECHKG"",
+                IFNULL(TM.""U_CANTPROC"", 0) ""U_CANTPROC"",
+                IFNULL(TM.""U_CANTRECIKG"", 0) ""U_CANTRECIKG"",
+                IFNULL(TM.""U_CANTRECHKG"", 0) ""U_CANTRECHKG"",
                 TM.""U_MOTIVORECH""
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_MOLINO"" TM 
                 ORDER BY TM.""DocEntry"" DESC";
@@ -98,7 +99,10 @@ namespace eProduccion.Data.Produccion
             {
                 var che = new OTMolino();
                 che.DocEntry = int.Parse(reader["DocEntry"].ToString());
-                che.Fecha = DateTime.Parse(reader["U_FECHAPROC"].ToString());
+                var fechaString = reader["U_FECHAPROC"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(fechaString))
+                    che.Fecha = DateTime.Parse(fechaString);
+                che.Fecha ??= DateTime.Today;
                 var horaInicioString = reader["U_HORAINI"].ToString().PadLeft(4, '0');
                 if (!string.IsNullOrWhiteSpace(horaInicioString) && horaInicioString.Length == 4)
                     che.HoraInicio = DateTime.ParseExact(horaInicioString, "HHmm", CultureInfo.InvariantCulture);
@@ -106,6 +110,8 @@ namespace eProduccion.Data.Produccion
                 if (!string.IsNullOrWhiteSpace(horaFinString) && horaFinString.Length == 4)
                     che.HoraFin = DateTime.ParseExact(horaFinString, "HHmm", CultureInfo.InvariantCulture);
                 che.Turno = reader["U_TURNO"].ToString();
+                if (string.IsNullOrWhiteSpace(che.Turno))
+                    che.Turno = _produccionCommonService.ObtenerTurnoSegunHoraSistema();
                 che.Operario = reader["U_OPERARIO"].ToString();
                 che.Operario2 = reader["U_OPERARIO2"].ToString();
                 che.CantProcesar = int.Parse(reader["U_CANTPROC"].ToString());
@@ -132,8 +138,8 @@ namespace eProduccion.Data.Produccion
             bodyBatch.AppendLine("content-type: multipart/mixed;boundary=changeset_EEP");
             bodyBatch.AppendLine();
 
-            // Generar OT para las diferentes estaciones según la lista de materiales
-            //bodyBatch.AppendLine(await GenerarOTSegunListaMateriales(listaOT));
+            // Generar OT para Molino
+            bodyBatch.AppendLine(await GenerarOTMolino(listaOT));
 
             bodyBatch.AppendLine(ActualizarOTPendienteMolinar(listaOT));
 
@@ -170,6 +176,62 @@ namespace eProduccion.Data.Produccion
             return bodyBatch.ToString();
         }
 
+        private async Task<string> GenerarOTMolino(List<PendienteMolinar> listaOT)
+        {
+            StringBuilder bodyBatch = new StringBuilder();
 
+            foreach (var i in listaOT)
+            {
+                bodyBatch.AppendLine("--changeset_EEP");
+                bodyBatch.AppendLine("content-type: application/http");
+                bodyBatch.AppendLine("content-transfer-encoding:binary");
+                bodyBatch.AppendLine();
+                bodyBatch.AppendLine($"POST /b1s/v1/EEP_OT_MOLINO");
+                bodyBatch.AppendLine();
+
+                var body = new
+                {
+                    U_DEPENDMOLI = i.DocEntry,
+                };
+
+                bodyBatch.AppendLine(Utils.JsonSerializeObject(body));
+                bodyBatch.AppendLine();
+            }
+
+            return bodyBatch.ToString();
+        }
+
+        public async Task RegistrarInicioMolino(OTMolino otMolino)
+        {
+            var method = Method.Patch;
+            var entity = $"EEP_OT_MOLINO({otMolino.DocEntry})";
+
+            var body = new
+            {
+                U_HORAINI = DateTime.Now.ToString("HHmm"),
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public async Task GuardarOTMolino(OTMolino otMolino)
+        {
+            var method = Method.Patch;
+            var entity = $"EEP_OT_MOLINO({otMolino.DocEntry})";
+
+            var body = new
+            {
+                U_FECHAPROC = otMolino.Fecha,
+                U_TURNO = otMolino.Turno,
+                U_OPERARIO = otMolino.Operario,
+                U_OPERARIO2 = otMolino.Operario2,
+                U_CANTPROC = otMolino.CantProcesar,
+                U_CANTRECIKG = otMolino.CantReciclableKG,
+                U_CANTRECHKG = otMolino.CantNoConformeKG,
+                U_MOTIVORECHC = otMolino.MotiRechazo,
+            };
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
     }
 }
