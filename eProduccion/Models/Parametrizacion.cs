@@ -64,6 +64,8 @@
         public string AlmacenRecuperadoGrabadoL { get; set; }
         public string AlmacenRetenidoGrabadoL { get; set; }
         public string AlmacenReprocesoGrabadoL { get; set; }
+        public string AlmacenReciMolino { get; set; }
+        public string AlmacenNoReciMolino { get; set; }
         public List<SerieDetalle> SerieDetalle { get; set; }
     }
 }

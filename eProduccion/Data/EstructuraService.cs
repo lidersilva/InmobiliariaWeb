@@ -116,6 +116,8 @@ namespace eProduccion.Data
                 new () { Name = "CEMPAQUE", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CPRENSA", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CGRABADOL", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ARECIMOLI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reciclables molino", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ANORECIMOLI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. no reciclables molino", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 // Parametrización - Series Det.
                 new () { Name = "CODSERIE", Type = TipoCampo.Numeric, Size = 11, Description = "Código serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "SERIE", Type = TipoCampo.Alpha, Size = 8, Description = "Serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
@@ -281,6 +283,8 @@ namespace eProduccion.Data
                 new () { Name = "OTREFE", Type = TipoCampo.Numeric, Size = 11, Description = "OT referencial", SubType = SubTipoCampo.None, TableName = "OIGN", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "LINEREFE", Type = TipoCampo.Numeric, Size = 11, Description = "LineId referencial", SubType = SubTipoCampo.None, TableName = "OIGN", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CodAcabado", Type = TipoCampo.Alpha, Size = 50, Description = "Subproducto", SubType = SubTipoCampo.None, TableName = "ITT2", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOLIRE", Type = TipoCampo.Alpha, Size = 50, Description = "Art. molinado re.", SubType = SubTipoCampo.None, TableName = "OITM", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOLINORE", Type = TipoCampo.Alpha, Size = 50, Description = "Art. molinado no re.", SubType = SubTipoCampo.None, TableName = "OITM", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
             }.ForEach(AgregarCampos);
             #endregion
 

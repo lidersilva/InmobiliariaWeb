@@ -17,5 +17,8 @@
         public double CantNoConformeKG { get; set; }
         public string MotiRechazo { get; set; }
         public MotivoParadaDefecto? MotRechazo { get; set; }
+        public string Lote {  get; set; }
+        public string CodArticuloPendienteM {  get; set; }
+        public string EstacionOrigen { get; set; }
     }
 }

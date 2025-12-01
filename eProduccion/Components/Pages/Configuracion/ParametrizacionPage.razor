@@ -403,6 +403,18 @@
                                      CoerceText="true" Clearable="true"
                                      ResetValueOnEmptyText="true" Dense="true" />
                 </MudTabPanel>
+                <MudTabPanel Text="Molino">
+                    <MudAutocomplete T="Almacen" Label="Almacén reciclables" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenReciclablesMolinoSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" Class="mb-2" />
+                    <MudAutocomplete T="Almacen" Label="Almacén no reciclables" SearchFunc="BuscarAlmacenes"
+                                     ToStringFunc='almacen => almacen != null ? $"{almacen.Codigo} - {almacen.Descripcion}" : string.Empty'
+                                     @bind-Value="almacenNoReciclablesMolinoSeleccionado"
+                                     CoerceText="true" Clearable="true"
+                                     ResetValueOnEmptyText="true" Dense="true" />
+                </MudTabPanel>
             </MudTabs>
             <MudDivider DividerType="DividerType.Middle" Class="my-3" />
         </div>
@@ -512,6 +524,8 @@
     private Almacen almacenRecuGrabadoLSeleccionado;
     private Almacen almacenReteGrabadoLSeleccionado;
     private Almacen almacenReproGrabadoLSeleccionado;
+    private Almacen almacenReciclablesMolinoSeleccionado;
+    private Almacen almacenNoReciclablesMolinoSeleccionado;
     private Serie[]? series;
 
     protected override async Task OnInitializedAsync()
@@ -672,6 +686,12 @@
                 almacenReteGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenRetenidoGrabadoL);
             if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReprocesoGrabadoL))
                 almacenReproGrabadoLSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReprocesoGrabadoL);
+
+            // ==================== MOLINO ====================
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenReciMolino))
+                almacenReciclablesMolinoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenReciMolino);
+            if (!string.IsNullOrWhiteSpace(parametrizacion.AlmacenNoReciMolino))
+                almacenNoReciclablesMolinoSeleccionado = almacenes.FirstOrDefault(c => c.Codigo == parametrizacion.AlmacenNoReciMolino);
         }
         catch (Exception ex)
         {
@@ -683,10 +703,10 @@
     {
         var serieDefecto = series?.FirstOrDefault();
         parametrizacion.SerieDetalle.Add(new SerieDetalle
-            {
-                CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
-                Serie = serieDefecto?.Descripcion ?? string.Empty
-            });
+        {
+            CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
+            Serie = serieDefecto?.Descripcion ?? string.Empty
+        });
     }
 
     private void EliminarSerie(SerieDetalle serie)
@@ -781,6 +801,10 @@
             parametrizacion.AlmacenRecuperadoGrabadoL = almacenRecuGrabadoLSeleccionado?.Codigo;
             parametrizacion.AlmacenRetenidoGrabadoL = almacenReteGrabadoLSeleccionado?.Codigo;
             parametrizacion.AlmacenReprocesoGrabadoL = almacenReproGrabadoLSeleccionado?.Codigo;
+
+            // ==================== MOLINO ====================
+            parametrizacion.AlmacenReciMolino = almacenReciclablesMolinoSeleccionado?.Codigo;
+            parametrizacion.AlmacenNoReciMolino = almacenNoReciclablesMolinoSeleccionado?.Codigo;
 
             await ParametrizacionService.GuardarParametrizacion(parametrizacion);
 

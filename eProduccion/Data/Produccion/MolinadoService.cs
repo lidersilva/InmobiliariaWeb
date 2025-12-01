@@ -1,4 +1,6 @@
-﻿using eProduccion.Data.Configuracion;
+﻿using eProduccion.Components.Pages.Produccion;
+using eProduccion.Data.Configuracion;
+using eProduccion.Integration;
 using eProduccion.Models;
 using eProduccion.Utility;
 using RestSharp;
@@ -8,9 +10,10 @@ using System.Text;
 
 namespace eProduccion.Data.Produccion
 {
-    public class MolinadoService(ConnectionService connectionService, ParametrizacionService parametrizacionService, ProduccionCommonService produccionCommonService)
+    public class MolinadoService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacionService, ProduccionCommonService produccionCommonService)
     {
         private readonly ConnectionService _connectionService = connectionService;
+        private readonly SBOIntegration _sboIntegration = sboIntegration;
         private readonly ParametrizacionService _parametrizacionService = parametrizacionService;
         private readonly ProduccionCommonService _produccionCommonService = produccionCommonService;
 
@@ -88,8 +91,14 @@ namespace eProduccion.Data.Produccion
                 IFNULL(TM.""U_CANTPROC"", 0) ""U_CANTPROC"",
                 IFNULL(TM.""U_CANTRECIKG"", 0) ""U_CANTRECIKG"",
                 IFNULL(TM.""U_CANTRECHKG"", 0) ""U_CANTRECHKG"",
-                TM.""U_MOTIVORECH""
+                TM.""U_MOTIVORECH"",
+                TP.""U_LOTE"",
+                TC.""U_CODSUBART"",
+                TP.""U_ESTANTERIOR"" 
                 FROM ""{_connectionService.DataBase}"".""@EEP_OT_MOLINO"" TM 
+                JOIN ""{_connectionService.DataBase}"".""@EEP_PEND_MOLI_OT"" TP ON TM.""U_DEPENDMOLI""=TP.""DocEntry"" 
+                JOIN ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_DET"" TD ON TP.""U_OT""=TD.""DocEntry"" AND TP.""U_LINEIDOT"" =""LineId""
+                JOIN ""{_connectionService.DataBase}"".""@EEP_OT_INYEX_CAB"" TC ON TD.""DocEntry""=TC.""DocEntry""
                 ORDER BY TM.""DocEntry"" DESC";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
@@ -118,6 +127,9 @@ namespace eProduccion.Data.Produccion
                 che.CantReciclableKG = double.Parse(reader["U_CANTRECIKG"].ToString());
                 che.CantNoConformeKG = double.Parse(reader["U_CANTRECHKG"].ToString());
                 che.MotiRechazo = reader["U_MOTIVORECH"].ToString();
+                che.Lote = reader["U_LOTE"].ToString();
+                che.CodArticuloPendienteM = reader["U_CODSUBART"].ToString();
+                che.EstacionOrigen = reader["U_ESTANTERIOR"].ToString();
                 list.Add(che);
             }
 
@@ -228,10 +240,110 @@ namespace eProduccion.Data.Produccion
                 U_CANTPROC = otMolino.CantProcesar,
                 U_CANTRECIKG = otMolino.CantReciclableKG,
                 U_CANTRECHKG = otMolino.CantNoConformeKG,
-                U_MOTIVORECHC = otMolino.MotiRechazo,
+                U_MOTIVORECH = otMolino.MotiRechazo,
             };
 
             _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        public async Task FinalizarOTMolino(OTMolino otMolino)
+        {
+            var parametrizacion = await _parametrizacionService.ObtenerParametrizacion();
+
+            var almacenSalida = otMolino.EstacionOrigen switch
+            {
+                "INYECCION" => parametrizacion.AlmacenRechReciIny,
+                "EXTRUSION" => parametrizacion.AlmacenRechReciExt,
+                _ => null
+            };
+
+            ObtenerArticulosMolino(otMolino.CodArticuloPendienteM, out string codArtMolinoReciclable, out string codArtMolinoNoReciclable);
+
+            // Salida
+            var listaSalidaDet = new List<EntradaSalidaDet>
+            {
+                new() {
+                    Articulo = otMolino.CodArticuloPendienteM,
+                    Cantidad = otMolino.CantProcesar,
+                    LoteDetalle =
+                    [
+                        new() {
+                            NroLote = otMolino.Lote,
+                            Cantidad = otMolino.CantProcesar
+                        }
+                    ]
+                }
+            };
+
+            var jObjectSalida = _sboIntegration.CrearSalidaMercancias(otMolino.DocEntry, 0, listaSalidaDet, parametrizacion.CtaProduccionCurso, almacenSalida, "Molino");
+            int docEntrySalida = int.Parse(jObjectSalida["DocEntry"].ToString());
+            int docNumSalida = int.Parse(jObjectSalida["DocNum"].ToString());
+            int nroAsientoSalida = int.Parse(jObjectSalida["TransNum"].ToString());
+
+            // Entrada
+            var listEntradaDet = new List<EntradaSalidaDet>();
+            if (otMolino.CantReciclableKG > 0)
+            {
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArtMolinoReciclable,
+                    Cantidad = otMolino.CantReciclableKG,
+                    Almacen = parametrizacion.AlmacenReciMolino,
+                    //PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{otMolino.DocEntry}-1-{otMolino.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = otMolino.CantReciclableKG,
+                        }
+                    ]
+                });
+            }
+
+            if (otMolino.CantNoConformeKG > 0)
+            {
+                listEntradaDet.Add(new EntradaSalidaDet
+                {
+                    Articulo = codArtMolinoNoReciclable,
+                    Cantidad = otMolino.CantNoConformeKG,
+                    Almacen = parametrizacion.AlmacenNoReciMolino,
+                    //PrecioUnitario = precioUnitarioEntrada,
+                    LoteDetalle =
+                    [
+                        new Lote{
+                            NroLote = $"{otMolino.DocEntry}-1-{otMolino.Turno}-{DateTime.Now:yyyyMMdd}",
+                            Cantidad = otMolino.CantNoConformeKG,
+                        }
+                    ]
+                });
+            }
+
+            var jObjectEntrada = _sboIntegration.CrearEntradaMercancias(otMolino.DocEntry, 0, listEntradaDet, parametrizacion.CtaProduccionCurso, "Molino");
+            int docEntryEntrada = int.Parse(jObjectEntrada["DocEntry"].ToString());
+
+            //ActualizarLineaInyeccionFinalizacion(detInyeccionExtrusion.DocEntry, docEntrySalida, nroAsiento, docEntryEntrada, detInyeccionExtrusion);
+        }
+
+        private string ObtenerArticulosMolino(string codArticulo, out string codArtMolinoReciclable, out string codArtMolinoNoReciclable)
+        {
+            codArtMolinoReciclable = "";
+            codArtMolinoNoReciclable = "";
+
+            var query = $@"
+                SELECT ""U_MOLIRE"", ""U_MOLINORE"" FROM ""{_connectionService.DataBase}"".OITM WHERE ""ItemCode""='{codArticulo}' ";
+
+            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                codArtMolinoReciclable = reader["U_MOLIRE"].ToString();
+                codArtMolinoNoReciclable = reader["U_MOLINORE"].ToString();
+            }
+
+            _connectionService.DisconnectODBC();
+
+            return codArtMolinoReciclable;
         }
     }
 }

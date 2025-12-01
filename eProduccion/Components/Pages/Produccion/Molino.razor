@@ -178,25 +178,32 @@
 
     private async Task AbrirModalRecibir(OTMolino otMolino)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "¿Está seguro de finalizar esta orden?");
-        parameters.Add("ButtonText", "Finalizar");
-        parameters.Add("Color", Color.Success);
+        var parameters = new DialogParameters
+        {
+            { "MensajeFinalizar", $"¿Está seguro de proceder a Recibir/Emitir artículos?. Esto generará procesos de Emisión y Recibos en SAP B1." },
+            { "TextoBoton", "Recibir" }
+        };
 
-        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialog = DialogService.Show<FinalizarDialog>("Finalizar Orden", parameters, options);
+        var dialog = await DialogService.ShowAsync<FinalizarDialog>("Recibir artículos", parameters, options);
         var result = await dialog.Result;
 
         if (!result.Canceled)
         {
             try
             {
-                //await MolinadoService.FinalizarOTMolino(item);
-                otMolino.HoraFin = DateTime.Now; // Update local state
-                Snackbar.Add("Orden finalizada", Severity.Success);
-                // Refresh list if needed
-                // listaMolino = await MolinadoService.ObtenerOTMolino();
+                otMolino.MotiRechazo = otMolino.MotRechazo?.Codigo;
+                otMolino.Operario = otMolino.UsuarioOperario?.CodigoUsuario;
+                otMolino.Operario2 = otMolino.UsuarioOperario2?.CodigoUsuario;
+
+                await MolinadoService.FinalizarOTMolino(otMolino);
+
+                await CargarOrdenesTrabajoMolino();
+
+                StateHasChanged();
+
+                Snackbar.Add($"Documentos registrados en SAP correctamente", Severity.Success);
             }
             catch (Exception ex)
             {
