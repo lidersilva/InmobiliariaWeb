@@ -7,6 +7,10 @@ using PdfDocument = PdfiumViewer.PdfDocument;
 using System.Drawing.Printing;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using System.IO;
 
 
 namespace eProduccion.Data
@@ -43,7 +47,7 @@ namespace eProduccion.Data
 
             string html = GenerarHtmlTicket(ticket);
 
-            string pdfPath = CrearPdfDesdeHtml_iTextSharp(html);
+            string pdfPath = CrearPdfDesdeHtml_ConCss(html);
 
             PrintPdf(pdfPath);
         }
@@ -86,6 +90,36 @@ namespace eProduccion.Data
                 {
                     HTMLWorker htmlWorker = new HTMLWorker(document);
                     htmlWorker.Parse(sr);
+                }
+
+                document.Close();
+            }
+
+            return outputPath;
+        }
+
+        public string CrearPdfDesdeHtml_ConCss(string html)
+        {
+            // Carpeta de salida
+            string pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "pdf");
+
+            if (!Directory.Exists(pdfFolder))
+                Directory.CreateDirectory(pdfFolder);
+
+            // Nombre completo del archivo
+            string outputPath = Path.Combine(pdfFolder, $"ticket_{Guid.NewGuid()}.pdf");
+
+            using (FileStream fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                // Crear documento A6
+                Document document = new Document(PageSize.A6, 10, 10, 10, 10);
+                PdfWriter writer = PdfWriter.GetInstance(document, fs);
+                document.Open();
+
+                // Convertir HTML + CSS a PDF
+                using (var srHtml = new StringReader(html))
+                {
+                    XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
                 }
 
                 document.Close();
