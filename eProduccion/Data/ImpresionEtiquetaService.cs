@@ -173,12 +173,13 @@ namespace eProduccion.Data
             string ean = EnsureEan13(t.CodigoArticulo ?? string.Empty);
             string barcodeFile = SaveBarcodePng(ean); // ruta absoluta al PNG
 
-            // XMLWorker NO acepta "file:///" → usar ruta física normal
-            string fileUri = barcodeFile?.Replace("\\", "/");
+            // Asegurar separadores correctos para XMLWorker (rutas absolutas con '/')
+            string filePathForHtml = barcodeFile?.Replace("\\", "/");
 
-            // Etiqueta <img> corregida
-            string imgTag = !string.IsNullOrEmpty(fileUri)
-                ? $"<img src=\"{fileUri}\" style=\"display:block;margin:4px auto;max-width:60mm;height:auto;\" />"
+            // Insertar la etiqueta <img> en el HTML para que XMLWorker la procese en su posición exacta.
+            // Defino clase y estilos en línea mínimamente; la CSS inyectada en CrearPdfDesdeHtml_ConCss controlará el tamaño final.
+            string imgTag = !string.IsNullOrEmpty(filePathForHtml)
+                ? $"<img src=\"{filePathForHtml}\" class=\"barcode\" style=\"display:block;margin:2px auto;max-width:60mm;height:auto;max-height:12mm;\" />"
                 : string.Empty;
 
             html = html.Replace("{{BARCODE_IMAGE}}", imgTag)
@@ -226,12 +227,9 @@ namespace eProduccion.Data
             return mm / 25.4f * 72f;
         }
 
-        public string CrearPdfDesdeHtml_ConCssCm(string html, float widthCm = 7.5f, float heightCm = 2.5f)
-        {
-            return CrearPdfDesdeHtml_ConCss(html, widthCm * 10f, heightCm * 10f);
-        }
-
-        // Versión que parsea el HTML y permite que XMLWorker cargue la imagen desde archivo
+        // Reemplaza el método CrearPdfDesdeHtml_ConCss por esta versión que fuerza tamaño exacto (75 x 25 mm),
+        // inyecta CSS compacto para evitar salto a segunda página y asegura que el barcode que se guardó como PNG
+        // tenga un tamaño máximo razonable para entrar en una sola hoja.
         public string CrearPdfDesdeHtml_ConCss(string html, float widthMm = 75f, float heightMm = 25f)
         {
             string pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "pdf");
@@ -240,32 +238,45 @@ namespace eProduccion.Data
 
             string outputPath = Path.Combine(pdfFolder, $"ticket_{Guid.NewGuid()}.pdf");
 
-            // Recoger rutas de imágenes temporales para eliminar después
-            var tempImageUris = new List<string>();
+            // Recoger rutas de PNG temporales (barcode_*.png) generadas por GenerarHtmlTicket
+            var tempImagePaths = new List<string>();
+            foreach (Match m in Regex.Matches(html ?? string.Empty, @"(?:[A-Za-z]:\\|/)[^\s'\""]*barcode_[A-Za-z0-9\-]+\.png", RegexOptions.IgnoreCase))
+            {
+                tempImagePaths.Add(m.Value.Replace("/", Path.DirectorySeparatorChar.ToString()));
+            }
 
             try
             {
-                // Detectar file:///...barcode_*.png incrustados en el HTML (generados por GenerarHtmlTicket)
-                foreach (Match m in Regex.Matches(html ?? string.Empty, @"file:///[^\s'\""]*barcode_[A-Za-z0-9\-]+\.png", RegexOptions.IgnoreCase))
-                {
-                    tempImageUris.Add(m.Value);
-                }
-
                 using (var fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    var document = new Document(); // tamaño por defecto
+                    float w = MmToPoints(widthMm);
+                    float h = MmToPoints(heightMm);
+
+                    var pageSize = new iTextSharp.text.Rectangle(w, h);
+                    var document = new Document(pageSize, 0, 0, 0, 0);
                     var writer = PdfWriter.GetInstance(document, fs);
                     document.Open();
 
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-                    // Normalizar HTML a XHTML
-                    string fixedHtml = NormalizeHtmlToXhtml(html ?? string.Empty);
+                    // CSS compacto: fuente pequeña, paddings mínimos y limitar la altura del barcode (evitar salto)
+                    var compactCss = @"<style>
+                @page { size: " + widthMm + "mm " + heightMm + @"mm; margin: 0; }
+                html, body { margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; font-size:7px; color:#000; }
+                table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:7px; }
+                td { padding:1px 3px; vertical-align:middle; }
+                img.barcode { display:block; margin:2px auto; max-width:60mm; max-height:12mm; height:auto; }
+                </style>";
 
-                    // Parsear HTML con XMLWorker (permitir que cargue <img src="file:///...png">)
+                    // Quitar data:URIs por seguridad y anteponer CSS
+                    string htmlSafe = Regex.Replace(html ?? string.Empty, @"<img[^>]*src=['""]data:[^'""]+['""][^>]*>", "", RegexOptions.IgnoreCase);
+                    string htmlWithCss = compactCss + htmlSafe;
+                    string xhtml = NormalizeHtmlToXhtml(htmlWithCss);
+
+                    // Parsear HTML con XMLWorker y permitir que procese la imagen grande directamente
                     try
                     {
-                        using (var sr = new StringReader(fixedHtml))
+                        using (var sr = new StringReader(xhtml))
                         {
                             XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, sr);
                         }
@@ -273,10 +284,10 @@ namespace eProduccion.Data
                     catch (Exception ex)
                     {
                         Console.WriteLine($"XMLWorker error: {ex.Message}");
-                        // Fallback simple
+                        // Fallback simple (HTMLWorker)
                         try
                         {
-                            using (var sr = new StringReader(html ?? string.Empty))
+                            using (var sr = new StringReader(htmlWithCss))
                             {
                                 var hw = new HTMLWorker(document);
                                 hw.Parse(sr);
@@ -295,16 +306,13 @@ namespace eProduccion.Data
             }
             finally
             {
-                // Intentar eliminar archivos temporales generados para el barcode
-                foreach (var uri in tempImageUris)
+                // Limpieza: eliminar PNG temporales generados para el barcode
+                foreach (var path in tempImagePaths)
                 {
                     try
                     {
-                        var localPath = new Uri(uri).LocalPath;
-                        if (File.Exists(localPath))
-                        {
-                            File.Delete(localPath);
-                        }
+                        if (File.Exists(path))
+                            File.Delete(path);
                     }
                     catch
                     {
@@ -313,6 +321,7 @@ namespace eProduccion.Data
                 }
             }
         }
+
 
         public void PrintPdf(string pdfPath, string printerName = null, bool abrirEnVisor = true)
         {
