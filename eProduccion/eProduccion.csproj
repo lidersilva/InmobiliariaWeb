@@ -12,6 +12,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\Services\**" />
+	  <Content Remove="wwwroot\Services\**" />
+	  <EmbeddedResource Remove="wwwroot\Services\**" />
+	  <None Remove="wwwroot\Services\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DinkToPdf" Version="1.0.8" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
 		<PackageReference Include="itextsharp.xmlworker" Version="5.5.13.4" />
