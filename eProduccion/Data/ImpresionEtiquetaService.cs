@@ -339,11 +339,13 @@ namespace eProduccion.Data
                     return;
                 }
 
+                // Cargar documento PDF usando PdfiumViewer (requiere System.Windows.Forms disponible)
                 using (var document = PdfDocument.Load(pdfPath))
                 using (var printDocument = document.CreatePrintDocument())
                 {
                     var printerSettings = new PrinterSettings();
 
+                    // Si no se pasa impresora, usa la predeterminada del sistema
                     if (!string.IsNullOrWhiteSpace(printerName))
                     {
                         try
@@ -357,7 +359,7 @@ namespace eProduccion.Data
                     }
 
                     printDocument.PrinterSettings = printerSettings;
-                    printDocument.PrintController = new StandardPrintController();
+                    printDocument.PrintController = new StandardPrintController(); // evita diálogo
                     printDocument.Print();
                 }
             }
