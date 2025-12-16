@@ -12,108 +12,28 @@ using ZXing.Common;
 using DinkToPdf;
 using iTextSharp.text;
 
-using Path = System.IO.Path;
-using PdfDocument = PdfiumViewer.PdfDocument;
 namespace eProduccion.Controladores
 {
-    public class TicketDataInyeccion
+    public class ImpresionEmsambleController
     {
-        public int NumeroOT { get; set; }
-        public string NumeroCaja { get; set; }
-        public string CodigoArticulo { get; set; }
-        public int CantidadAprobadas { get; set; }
-        public string Maquina { get; set; }
-        public string Operador { get; set; }
-        public DateTime Fecha { get; set; }
-        public string Turno { get; set; }
-        public string PerfilAcabado { get; set; } = "ACABADO ESTÁNDAR";
-    }
-    public class ImpresionInyeccionController
-    {
-        private string EnsureEan13(string input)
+        public class TicketDataEmsamble
         {
-            var digits = new string((input ?? string.Empty).Where(char.IsDigit).ToArray());
-            if (digits.Length >= 12)
-            {
-                digits = digits.Substring(0, 12);
-            }
-            else
-            {
-                digits = digits.PadLeft(12, '0');
-            }
-
-            int checksum = CalculateEan13Checksum(digits);
-            return digits + checksum.ToString();
+            public string Operador { get; set; }
+            public DateTime? FechaRecepcion { get; set; }
+            public DateTime? HoraRecepcion { get; set; }
+            public string Producto { get; set; }
+            public DateTime? FechaFin { get; set; }
+            public DateTime? HoraFin { get; set; }
+            public double CantidadEntregado { get; set; }
+            public string PerfilAcabado { get; set; } = "ACABADO ESTÁNDAR";
         }
-
-        private int CalculateEan13Checksum(string twelveDigits)
-        {
-            int sum = 0;
-            for (int i = 0; i < 12; i++)
-            {
-                int d = twelveDigits[i] - '0';
-                if ((i % 2) == 1)
-                    sum += d * 3;
-                else
-                    sum += d;
-            }
-
-            int mod = sum % 10;
-            int check = (10 - mod) % 10;
-            return check;
-        }
-
-        private string GenerateEan13BarcodeBase64(string ean13)
-        {
-            try
-            {
-                var writer = new BarcodeWriterPixelData
-                {
-                    Format = BarcodeFormat.EAN_13,
-                    Options = new EncodingOptions
-                    {
-                        Height = 60,
-                        Width = 300,
-                        Margin = 2,
-                        PureBarcode = false
-                    }
-                };
-
-                var pixelData = writer.Write(ean13);
-
-                using (var bitmap = new Bitmap(pixelData.Width, pixelData.Height, PixelFormat.Format32bppRgb))
-                {
-                    var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
-                    try
-                    {
-                        System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
-                    }
-                    finally
-                    {
-                        bitmap.UnlockBits(bitmapData);
-                    }
-
-                    using (var ms = new MemoryStream())
-                    {
-                        bitmap.Save(ms, ImageFormat.Png);
-                        return Convert.ToBase64String(ms.ToArray());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error generating barcode: {ex.Message}");
-                return string.Empty;
-            }
-        }
-
-        public string GenerarHtmlTicket(TicketDataInyeccion t)
+        public string GenerarHtmlTicket(TicketDataEmsamble t)
         {
             string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates", "TicketInyeccion.html");
             string html = File.ReadAllText(templatePath);
 
             // Generar barcode EAN-13 y guardar como PNG temporal
-            string ean = EnsureEan13(t.CodigoArticulo ?? string.Empty);
+            string ean = EnsureEan13(t.Producto ?? string.Empty);
             string barcodeFile = SaveBarcodePng(ean); // ruta absoluta al PNG
 
             // Asegurar separadores correctos para XMLWorker (rutas absolutas con '/')
@@ -462,6 +382,83 @@ namespace eProduccion.Controladores
             {
                 Console.WriteLine($"Error guardando PNG del barcode: {ex.Message}");
                 return null;
+            }
+        }
+
+        private string EnsureEan13(string input)
+        {
+            var digits = new string((input ?? string.Empty).Where(char.IsDigit).ToArray());
+            if (digits.Length >= 12)
+            {
+                digits = digits.Substring(0, 12);
+            }
+            else
+            {
+                digits = digits.PadLeft(12, '0');
+            }
+
+            int checksum = CalculateEan13Checksum(digits);
+            return digits + checksum.ToString();
+        }
+
+        private int CalculateEan13Checksum(string twelveDigits)
+        {
+            int sum = 0;
+            for (int i = 0; i < 12; i++)
+            {
+                int d = twelveDigits[i] - '0';
+                if ((i % 2) == 1)
+                    sum += d * 3;
+                else
+                    sum += d;
+            }
+
+            int mod = sum % 10;
+            int check = (10 - mod) % 10;
+            return check;
+        }
+
+        private string GenerateEan13BarcodeBase64(string ean13)
+        {
+            try
+            {
+                var writer = new BarcodeWriterPixelData
+                {
+                    Format = BarcodeFormat.EAN_13,
+                    Options = new EncodingOptions
+                    {
+                        Height = 60,
+                        Width = 300,
+                        Margin = 2,
+                        PureBarcode = false
+                    }
+                };
+
+                var pixelData = writer.Write(ean13);
+
+                using (var bitmap = new Bitmap(pixelData.Width, pixelData.Height, PixelFormat.Format32bppRgb))
+                {
+                    var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
+                    try
+                    {
+                        System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
+                    }
+                    finally
+                    {
+                        bitmap.UnlockBits(bitmapData);
+                    }
+
+                    using (var ms = new MemoryStream())
+                    {
+                        bitmap.Save(ms, ImageFormat.Png);
+                        return Convert.ToBase64String(ms.ToArray());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating barcode: {ex.Message}");
+                return string.Empty;
             }
         }
     }

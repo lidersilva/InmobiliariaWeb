@@ -1,4 +1,5 @@
-﻿@using eProduccion.Data.GestionAccesos
+﻿@using eProduccion.Data
+@using eProduccion.Data.GestionAccesos
 @using eProduccion.Data.Produccion
 @using eProduccion.Models
 @inject ISnackbar Snackbar
@@ -6,6 +7,7 @@
 @inject EnsambleService EnsambleService
 @inject UsuarioSistemaService UsuarioSistemaService
 @inject UserSession UserSession
+@inject ImpresionEtiquetaService ImpresionEtiquetaService
 
 <MudDialog>
     <TitleContent>
@@ -105,7 +107,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Class="mr-2" @onclick='() => AbrirModalRegistroEnsamble(context)' />
                     </MudTooltip>
                     <MudTooltip Text="Imprimir">
-                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" Class="mr-2" Disabled="@(context.LineId == 0)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Print" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" @onclick='() => AbrirModalImprimir(context)' Class="mr-2" Disabled="@(context.LineId == 0)" />
                     </MudTooltip>
                     <MudTooltip Text="Recibir">
                         <MudIconButton Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick='() => AbrirModalRecibir(context)' Disabled="@(context.EstadoLinea != "Iniciado" || context.LineId == 0)" />
@@ -351,5 +353,28 @@
         return Task.FromResult(resultado);
     }
 
+    private async Task AbrirModalImprimir(OTEnsambleDet detalleemsamble)
+    {
+        var parameters = new DialogParameters { };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<ImprimirDialog>("", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                await ImpresionEtiquetaService.ImprimirEtiquetaEmsamble(detalleemsamble.Operario, detalleemsamble.Fecha, detalleemsamble.Fecha, OTEnsamble.CodArticuloEnsamble, detalleemsamble.Fecha, detalleemsamble.HoraFin, OTEnsamble.CantidadOT);  // Debemos de verificar fecha de recepcion y fecha fin
+
+                Snackbar.Add($"Etiqueta generada correctamente", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Ha ocurrido un error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
     private void Cancel() => MudDialog.Cancel();
 }

@@ -1,14 +1,16 @@
 ﻿using eProduccion.Controladores;
+using static eProduccion.Controladores.ImpresionEmsambleController;
 
 namespace eProduccion.Data
 {
     public class ImpresionEtiquetaService
     {
-        private readonly ImpresionInyeccionController _impresionController;
-
+        private readonly ImpresionInyeccionController _impresioninyeController;
+        private readonly ImpresionEmsambleController _impresionemsamController;
         public ImpresionEtiquetaService()
         {
-            _impresionController = new ImpresionInyeccionController();
+            _impresioninyeController = new ImpresionInyeccionController();
+            _impresionemsamController = new ImpresionEmsambleController();
         }
         public async Task ImprimirEtiquetaInyeccionExtrusion(
             bool imprimirNoConformes,
@@ -24,7 +26,7 @@ namespace eProduccion.Data
             DateTime? fecha,
             string turno)
         {
-            var ticket = new TicketData
+            var ticket = new TicketDataInyeccion
             {
                 NumeroOT = nroOT,
                 NumeroCaja = nroCaja,
@@ -36,10 +38,38 @@ namespace eProduccion.Data
                 Turno = turno
             };
 
-            string html = _impresionController.GenerarHtmlTicket(ticket);
-            string pdfPath = _impresionController.CrearPdfDesdeHtml_ConCss(html);
+            string html = _impresioninyeController.GenerarHtmlTicket(ticket);
+            string pdfPath = _impresioninyeController.CrearPdfDesdeHtml_ConCss(html);
 
-            _impresionController.PrintPdf(pdfPath);
+            _impresioninyeController.PrintPdf(pdfPath);
+        }
+
+        public Task ImprimirEtiquetaEmsamble(
+           string operador,
+           DateTime? fechaRecepcionSE,
+           DateTime? horaRecepcionSE,
+           string producto,
+           DateTime? fechaFinArmado,
+           DateTime? horaFinArmado,
+           double cantidadEntregada)
+        {
+            var ticketEmbalado = new TicketDataEmsamble
+            {
+                Operador = operador,
+                FechaRecepcion = fechaRecepcionSE ?? DateTime.Now,
+                HoraRecepcion = horaRecepcionSE ?? DateTime.Now,
+                Producto = producto,
+                FechaFin = fechaFinArmado ?? DateTime.Now,
+                HoraFin = horaFinArmado ?? DateTime.Now,
+                CantidadEntregado = cantidadEntregada
+            };
+
+            string html = _impresionemsamController.GenerarHtmlTicket(ticketEmbalado);
+            string pdfPath = _impresionemsamController.CrearPdfDesdeHtml_ConCss(html);
+
+            _impresionemsamController.PrintPdf(pdfPath);
+
+            return Task.CompletedTask;
         }
     }
 }
