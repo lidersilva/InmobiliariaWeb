@@ -1,4 +1,6 @@
 ﻿using eProduccion.Data.Configuracion;
+using eProduccion.Models;
+using RestSharp;
 
 namespace eProduccion.Data.Produccion
 {
@@ -24,6 +26,18 @@ namespace eProduccion.Data.Produccion
                 "PRENSA" => parametrizacion.CodEstacionPrensa,
                 "GRABADO LASER" => parametrizacion.CodEstacionGrabadoL,
             };
+        }
+
+        public string ObtenerTurnoSegunHoraSistema()
+        {
+            var horaActual = DateTime.Now.TimeOfDay;
+
+            if (horaActual >= TimeSpan.FromHours(6) && horaActual < TimeSpan.FromHours(14))
+                return "TM";
+            if (horaActual >= TimeSpan.FromHours(14) && horaActual < TimeSpan.FromHours(22))
+                return "TT";
+            else
+                return "TN";
         }
     }
 }

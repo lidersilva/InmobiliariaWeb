@@ -401,6 +401,8 @@ namespace eProduccion.Data.Produccion
             {
                 GenerarOrdenPlanifEnsamblado(codePlanificacionOT, detInyeccionExtrusion.CantAprobadas, estacion, detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId, codArticuloIE);
             }
+
+            GenerarOTPendienteMolinar(codePlanificacionOT, detInyeccionExtrusion.CantRechReciclable, estacion, detInyeccionExtrusion.DocEntry, detInyeccionExtrusion.LineId);
         }
 
         public List<ListaMaterialesDet> ObtenerListaMateriales(string codArticuloOV, string codArticuloI, string estacion)
@@ -790,6 +792,24 @@ namespace eProduccion.Data.Produccion
                     }
                 };
             }
+
+            _connectionService.SetEntitySL(method, entity, body);
+        }
+
+        private void GenerarOTPendienteMolinar(int codePlanificacionOT, int cantRechazadaReciclable, string estacion, int docEntryOT, int lineIdOT)
+        {
+            var method = Method.Post;
+            var entity = $"EEP_PEND_MOLI_OT";
+
+            var body = new
+            {
+                U_CODEPLANIOT = codePlanificacionOT,
+                U_ESTANTERIOR = estacion,
+                U_OT = docEntryOT,
+                U_LINEIDOT = lineIdOT,
+                U_CANTPROD = cantRechazadaReciclable,
+                U_CANTSOLICITADA = 0,
+            };
 
             _connectionService.SetEntitySL(method, entity, body);
         }

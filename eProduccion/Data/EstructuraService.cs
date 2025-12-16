@@ -37,6 +37,8 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_OT_ENSAM_CAB", Descr = "EEP OT Ensamblado cab.", ObjectType = 3 },
                 new () {TableName = "EEP_OT_ENSAM_DET", Descr = "EEP OT Ensamblado det.", ObjectType = 4},
                 new () {TableName = "EEP_REG_ENSAM_DET", Descr = "EEP Registro Ensamblado det.", ObjectType = 4},
+                new () { TableName = "EEP_PEND_MOLI_OT", Descr = "EEP OT Pendiente a molinar", ObjectType = 3 },
+                new () { TableName = "EEP_OT_MOLINO", Descr = "EEP OT Molino", ObjectType = 3 },
             }.ForEach(AgregarTablas);
             #endregion
 
@@ -114,6 +116,8 @@ namespace eProduccion.Data
                 new () { Name = "CEMPAQUE", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CPRENSA", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CGRABADOL", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ARECIMOLI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reciclables molino", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ANORECIMOLI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. no reciclables molino", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 // Parametrización - Series Det.
                 new () { Name = "CODSERIE", Type = TipoCampo.Numeric, Size = 11, Description = "Código serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "SERIE", Type = TipoCampo.Alpha, Size = 8, Description = "Serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
@@ -240,6 +244,27 @@ namespace eProduccion.Data
                 new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
+                // OT Pendiente a molinar
+                new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "ESTANTERIOR", Type = TipoCampo.Alpha, Size = 50, Description = "Estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OT", Type = TipoCampo.Numeric, Size = 11, Description = "Nro. OT", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "LINEIDOT", Type = TipoCampo.Numeric, Size = 11, Description = "LineId OT", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTPROD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad producida", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTSOLICITADA", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad solicitada", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+
+                // OT Molino
+                new () { Name = "DEPENDMOLI", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry pendiente a molinar", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "FECHAPROC", Type = TipoCampo.Date, Size = 0, Description = "Fecha", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 0, Description = "Hora inicio trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 0, Description = "Hora fin trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno operador", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTPROC", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad a procesar", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTRECIKG", Type = TipoCampo.Float, Size = 10, Description = "Cantidad reciclable KG", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "CANTRECHKG", Type = TipoCampo.Float, Size = 10, Description = "Cantidad no conforme KG", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOTIVORECH", Type = TipoCampo.Alpha, Size = 100, Description = "Motivo rechazo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
 
                 // Maestro paradas/motivos defectos
                 new () { Name = "CODIGO", Type = TipoCampo.Alpha, Size = 3, Description = "Código mot. parada/defecto", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
@@ -258,6 +283,8 @@ namespace eProduccion.Data
                 new () { Name = "OTREFE", Type = TipoCampo.Numeric, Size = 11, Description = "OT referencial", SubType = SubTipoCampo.None, TableName = "OIGN", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "LINEREFE", Type = TipoCampo.Numeric, Size = 11, Description = "LineId referencial", SubType = SubTipoCampo.None, TableName = "OIGN", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
                 new () { Name = "CodAcabado", Type = TipoCampo.Alpha, Size = 50, Description = "Subproducto", SubType = SubTipoCampo.None, TableName = "ITT2", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOLIRE", Type = TipoCampo.Alpha, Size = 50, Description = "Art. molinado re.", SubType = SubTipoCampo.None, TableName = "OITM", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
+                new () { Name = "MOLINORE", Type = TipoCampo.Alpha, Size = 50, Description = "Art. molinado no re.", SubType = SubTipoCampo.None, TableName = "OITM", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
             }.ForEach(AgregarCampos);
             #endregion
 
@@ -420,6 +447,32 @@ namespace eProduccion.Data
                     FormColumns =
                     [
                         new UserColumnsMD_FormColumns() { Code = "EEP_OT_ENSAM_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
+                    ]
+                },
+                 new ()
+                {
+                    Code = "EEP_PEND_MOLI_OT", Name = "EEP OT Pendiente a molinar", TableName = "EEP_PEND_MOLI_OT", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_PEND_MOLI_OT", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_PEND_MOLI_OT", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
+                    ]
+                },
+                  new ()
+                {
+                    Code = "EEP_OT_MOLINO", Name = "EEP OT Molino", TableName = "EEP_OT_MOLINO", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
+                    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
+                    FindColumns =
+                    [
+                        new UserColumnsMD_FindColumns() { Code = "EEP_OT_MOLINO", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
+                    ],
+                    FormColumns =
+                    [
+                        new UserColumnsMD_FormColumns() { Code = "EEP_OT_MOLINO", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
                     ]
                 },
             }.ForEach(AgregarObjetos);

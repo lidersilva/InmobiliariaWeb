@@ -86,6 +86,10 @@ namespace eProduccion.Data.Configuracion
                 $"TP.\"U_AREPROEM\", \n" +   // Alm. reprocesados empaquetado
                 $"TP.\"U_AREPROPR\", \n" +   // Alm. reprocesados prensa
                 $"TP.\"U_AREPROGL\", \n" +   // Alm. reprocesados grabado láser
+
+                $"TP.\"U_ARECIMOLI\", \n" +     // Alm. reciclables molino
+                $"TP.\"U_ANORECIMOLI\", \n" +   // Alm. no reciclables molino
+
                 $"TDS.\"LineId\", \n" +
                 $"TDS.\"U_CODSERIE\", \n" +
                 $"TDS.\"U_SERIE\" " +
@@ -183,6 +187,10 @@ namespace eProduccion.Data.Configuracion
                     parametrizacion.AlmacenRecuperadoGrabadoL = reader["U_ARECUGL"].ToString();
                     parametrizacion.AlmacenRetenidoGrabadoL = reader["U_ARETEGL"].ToString();
                     parametrizacion.AlmacenReprocesoGrabadoL = reader["U_AREPROGL"].ToString();
+
+                    // ==================== MOLINO ====================
+                    parametrizacion.AlmacenReciMolino = reader["U_ARECIMOLI"].ToString();
+                    parametrizacion.AlmacenNoReciMolino = reader["U_ANORECIMOLI"].ToString();
                 }
 
                 var serieDet = new SerieDetalle();
@@ -413,6 +421,10 @@ namespace eProduccion.Data.Configuracion
                 U_ARECUGL = parametrizacion.AlmacenRecuperadoGrabadoL,
                 U_ARETEGL = parametrizacion.AlmacenRetenidoGrabadoL,
                 U_AREPROGL = parametrizacion.AlmacenReprocesoGrabadoL,
+
+                // ==================== MOLINO ====================
+                U_ARECIMOLI = parametrizacion.AlmacenReciMolino,
+                U_ANORECIMOLI = parametrizacion.AlmacenNoReciMolino,
 
                 EEP_PARSERIE_DETCollection = listSeriesDet
             };
