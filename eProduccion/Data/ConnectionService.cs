@@ -32,6 +32,7 @@ namespace eProduccion.Data
         public string UserName => _userSession.UserName;
         public string PassSecure => _userSession.PassSecure;
         public string DataBase => _userSession.DataBase;
+        public HashSet<string> Permisos => _userSession.Permisos;
 
         public ConnectionService(UserSession userSession, IServiceProvider serviceProvider)
         {
@@ -64,7 +65,7 @@ namespace eProduccion.Data
             UserDB = GetUserDB();
             PassDB = GetPassDB();
             _userSession.CompanyName = GetCompanyName();
-            //Permisos = GetPermisos(UserName);
+            GetPermisos(UserName);
         }
 
         public void GetNumberFormat()
@@ -148,6 +149,56 @@ namespace eProduccion.Data
                 companyName = jObject["CompanyName"].ToString();
 
             return companyName;
+        }
+
+        public void GetPermisos(string userName)
+        {
+            var permisos = string.Empty;
+
+            if (userName == "EEP_ADMIN")
+            {
+                _userSession.Permisos =
+                [
+                    "01","02","03","04","05","06","07","08","09","10",
+                    "11","12","13","14","15","16","17","18","20","21",
+                    "22","23","24","25","26","27","28","29","30","31",
+                    "32","33","34","35","36","37","38","39","40","41","42"
+                ];
+            }
+            else
+            {
+                var listaPermisos = ObtenerListaPermisos(userName);
+
+                _userSession.Permisos = listaPermisos.Select(x => x.U_PERM).ToHashSet();
+
+                if (listaPermisos.Count <= 0)
+                    throw new Exception("El usuario no posee permisos para acceder al sistema.");
+            }
+        }
+
+        public List<RolDetalle> ObtenerListaPermisos(string userName)
+        {
+            var list = new List<RolDetalle>();
+
+            var query = "SELECT T2.\"U_PERM\" " +
+                $"FROM \"{DataBase}\".\"@EP_ROLU\" T0 " +
+                $"JOIN \"{DataBase}\".\"@EP_ROLC\" T1 ON T0.\"U_ROLID\" = T1.\"Code\" " +
+                $"JOIN \"{DataBase}\".\"@EP_ROLD\" T2 ON T1.\"Code\" = T2.\"Code\" " +
+                $"WHERE T0.\"U_USER\" = '{userName}' ";
+
+            var command = new OdbcCommand(query, ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new RolDetalle();
+                che.U_PERM = reader["U_PERM"].ToString();
+                list.Add(che);
+            }
+
+            DisconnectODBC();
+
+            return list;
         }
 
         public int GetCantidadDecimales()
