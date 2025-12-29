@@ -9,8 +9,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ZXing;
 using ZXing.Common;
-using DinkToPdf;
 using iTextSharp.text;
+using PdfiumViewer;
+using PdfiumPdfDocument = PdfiumViewer.PdfDocument;     
+
+
 
 namespace eProduccion.Controladores
 {
@@ -20,41 +23,49 @@ namespace eProduccion.Controladores
         {
             public string Operador { get; set; }
             public DateTime? FechaRecepcion { get; set; }
-            public DateTime? HoraRecepcion { get; set; }
+            public DateTime? HoraRecepcion { get; set; }            
             public string Producto { get; set; }
             public DateTime? FechaFin { get; set; }
             public DateTime? HoraFin { get; set; }
             public double CantidadEntregado { get; set; }
             public string PerfilAcabado { get; set; } = "ACABADO ESTÁNDAR";
         }
+
         public string GenerarHtmlTicket(TicketDataEmsamble t)
         {
-            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates", "TicketInyeccion.html");
-            string html = File.ReadAllText(templatePath);
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates", "TicketEmsamble.html");
+            // Leer en UTF-8 para que los acentos no se rompan
+            string html = File.ReadAllText(templatePath, Encoding.UTF8);
 
-            // Generar barcode EAN-13 y guardar como PNG temporal
+            // Barcode basado en Producto
             string ean = EnsureEan13(t.Producto ?? string.Empty);
-            string barcodeFile = SaveBarcodePng(ean); // ruta absoluta al PNG
-
-            // Asegurar separadores correctos para XMLWorker (rutas absolutas con '/')
+            string barcodeFile = SaveBarcodePng(ean);
             string filePathForHtml = barcodeFile?.Replace("\\", "/");
-
-            // Insertar la etiqueta <img> en el HTML para que XMLWorker la procese en su posición exacta.
-            // Defino clase y estilos en línea mínimamente; la CSS inyectada en CrearPdfDesdeHtml_ConCss controlará el tamaño final.
             string imgTag = !string.IsNullOrEmpty(filePathForHtml)
                 ? $"<img src=\"{filePathForHtml}\" class=\"barcode\" style=\"display:block;margin:2px auto;max-width:60mm;height:auto;max-height:12mm;\" />"
                 : string.Empty;
 
+            // Valores
+            string operador = t.Operador ?? string.Empty;
+            string fechaRecepcion = (t.FechaRecepcion ?? DateTime.Now).ToString("dd/MM/yyyy");
+            string horaRecepcion = (t.HoraRecepcion ?? DateTime.Now).ToString("HH:mm");
+            string producto = t.Producto ?? string.Empty;
+            string fechaFin = (t.FechaFin ?? DateTime.Now).ToString("dd/MM/yyyy");
+            string horaFin = (t.HoraFin ?? DateTime.Now).ToString("HH:mm");
+            string cantidad = t.CantidadEntregado.ToString();
+
+            // Reemplazos estilo Inyección
             html = html.Replace("{{BARCODE_IMAGE}}", imgTag)
-                       .Replace("{{NRO_OP}}", t.NumeroOT.ToString())
-                       .Replace("{{NRO_CAJA}}", t.NumeroCaja)
-                       .Replace("{{PRODUCTO}}", t.CodigoArticulo)
-                       .Replace("{{CANTIDAD}}", t.CantidadAprobadas.ToString())
-                       .Replace("{{MAQUINA}}", t.Maquina)
-                       .Replace("{{OPERADOR}}", t.Operador)
-                       .Replace("{{FECHA}}", t.Fecha.ToString("dd/MM/yyyy"))
-                       .Replace("{{TURNO}}", t.Turno)
-                       .Replace("{{PERFIL}}", t.PerfilAcabado);
+                       .Replace("{{OPERADOR}}", operador)
+                       .Replace("{{FECHA_RECEPCION}}", fechaRecepcion)
+                       .Replace("{{HORA_RECEPCION}}", horaRecepcion)
+                       .Replace("{{PRODUCTO}}", producto)
+                       .Replace("{{FECHA_FIN}}", fechaFin)
+                       .Replace("{{HORA_FIN}}", horaFin)
+                       .Replace("{{CANTIDAD}}", cantidad);
+
+            if (html.Contains("{{PERFIL}}"))
+                html = html.Replace("{{PERFIL}}", t.PerfilAcabado ?? "ACABADO ESTÁNDAR");
 
             return html;
         }
@@ -103,7 +114,7 @@ namespace eProduccion.Controladores
 
             // Recoger rutas de PNG temporales (barcode_*.png) generadas por GenerarHtmlTicket
             var tempImagePaths = new List<string>();
-            foreach (Match m in Regex.Matches(html ?? string.Empty, @"(?:[A-Za-z]:\\|/)[^\s'\""]*barcode_[A-Za-z0-9\-]+\.png", RegexOptions.IgnoreCase))
+            foreach (Match m in Regex.Matches(html ?? string.Empty, @"(?:[A-Za-z]:\\|/)[^\s'\""]*barcode_[A-Za-l0-9\-]+\.png", RegexOptions.IgnoreCase))
             {
                 tempImagePaths.Add(m.Value.Replace("/", Path.DirectorySeparatorChar.ToString()));
             }
@@ -203,7 +214,7 @@ namespace eProduccion.Controladores
                 }
 
                 // Cargar documento PDF usando PdfiumViewer (requiere System.Windows.Forms disponible)
-                using (var document = PdfDocument.Load(pdfPath))
+                using (var document = PdfiumPdfDocument.Load(pdfPath))
                 using (var printDocument = document.CreatePrintDocument())
                 {
                     var printerSettings = new PrinterSettings();
