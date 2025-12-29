@@ -65,7 +65,6 @@ namespace eProduccion.Data
             UserDB = GetUserDB();
             PassDB = GetPassDB();
             _userSession.CompanyName = GetCompanyName();
-            GetPermisos(UserName);
         }
 
         public void GetNumberFormat()
@@ -151,7 +150,7 @@ namespace eProduccion.Data
             return companyName;
         }
 
-        public void GetPermisos(string userName)
+        public void CargarListaPermisos(string userName)
         {
             var permisos = string.Empty;
 
@@ -231,6 +230,8 @@ namespace eProduccion.Data
 
             var usuarioSistema = _serviceProvider.GetRequiredService<UsuarioSistemaService>();
             usuarioSistema.VerificarUsuarioExistente();
+
+            CargarListaPermisos(usuario);
         }
 
         public void GetSessionSL()
