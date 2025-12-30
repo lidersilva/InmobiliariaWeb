@@ -1,5 +1,4 @@
-﻿using eProduccion.Components.Pages.Produccion;
-using eProduccion.Data.Configuracion;
+﻿using eProduccion.Data.Configuracion;
 using eProduccion.Integration;
 using eProduccion.Models;
 using eProduccion.Utility;

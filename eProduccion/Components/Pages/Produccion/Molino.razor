@@ -1,9 +1,12 @@
 ﻿@page "/molino"
+@inherits PageBasePermiso
+@using eProduccion.Base
 @using eProduccion.Components.Dialogs
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.GestionAccesos
 @using eProduccion.Data.Produccion
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject MolinadoService MolinadoService
@@ -113,6 +116,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.Molino;
+
     List<OTMolino> listaMolino;
     private string textoBusqueda = "";
 
