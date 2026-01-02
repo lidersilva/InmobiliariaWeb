@@ -1,6 +1,4 @@
 ﻿@page "/molino"
-@inherits PageBasePermiso
-@using eProduccion.Base
 @using eProduccion.Components.Dialogs
 @using eProduccion.Models
 @using eProduccion.Utility
@@ -116,8 +114,6 @@
 </div>
 
 @code {
-    protected override string PermisoRequerido => PermisosSistema.Molino;
-
     List<OTMolino> listaMolino;
     private string textoBusqueda = "";
 

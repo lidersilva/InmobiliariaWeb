@@ -1,6 +1,8 @@
-﻿using eProduccion.Data.Configuracion;
+﻿using eProduccion.Data.Base;
+using eProduccion.Data.Configuracion;
 using eProduccion.Integration;
 using eProduccion.Models;
+using eProduccion.Security;
 using eProduccion.Utility;
 using RestSharp;
 using System.Data.Odbc;
@@ -9,7 +11,8 @@ using System.Text;
 
 namespace eProduccion.Data.Produccion
 {
-    public class MolinadoService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacionService, ProduccionCommonService produccionCommonService)
+    public class MolinadoService(ConnectionService connectionService, SBOIntegration sboIntegration, ParametrizacionService parametrizacionService, ProduccionCommonService produccionCommonService,
+        UserSession userSession) : BasePermisoService(userSession)
     {
         private readonly ConnectionService _connectionService = connectionService;
         private readonly SBOIntegration _sboIntegration = sboIntegration;
@@ -75,6 +78,8 @@ namespace eProduccion.Data.Produccion
 
         public Task<List<OTMolino>> ObtenerOTMolino()
         {
+            RequierePermiso(PermisosSistema.Molino);
+
             var list = new List<OTMolino>();
 
             var query = $@"

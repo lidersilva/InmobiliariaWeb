@@ -20,7 +20,7 @@
             PassSecure = null;
             DataBase = null;
             CompanyName = null;
-            Permisos.Clear();
+            Permisos = new HashSet<string>();
             SapSession = null;
         }
     }
