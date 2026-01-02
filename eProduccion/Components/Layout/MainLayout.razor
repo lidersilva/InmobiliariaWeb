@@ -98,11 +98,14 @@
 
             var userResult = await SessionStorage.GetAsync<string>("UserName");
             var dbResult = await SessionStorage.GetAsync<string>("DataBase");
+            var permisosResult = await SessionStorage.GetAsync<HashSet<string>>("Permisos");
 
-            if (userResult.Success && dbResult.Success)
+            if (userResult.Success && dbResult.Success && permisosResult.Success)
             {
                 UserSession.UserName = userResult.Value;
                 UserSession.DataBase = dbResult.Value;
+                UserSession.Permisos = permisosResult.Value;
+
                 sesionVerificada = true;
                 StateHasChanged();
             }
@@ -120,6 +123,7 @@
         // Limpiar sesión
         await SessionStorage.DeleteAsync("UserName");
         await SessionStorage.DeleteAsync("DataBase");
+        await SessionStorage.DeleteAsync("Permisos");
         UserSession.Clear();
         // Redirigir al Login
         NavigationManager.NavigateTo("/");

@@ -6,6 +6,7 @@ using RestSharp;
 using System.Data.Odbc;
 using System.Net;
 using eProduccion.Data.GestionAccesos;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace eProduccion.Data
 {
@@ -15,6 +16,7 @@ namespace eProduccion.Data
         public static NumberFormat NumberFormat;
         private readonly UserSession _userSession;
         private readonly UsuarioSistemaService _usuarioSistemaService;
+        private readonly ProtectedLocalStorage _localStorage;
         private readonly IServiceProvider _serviceProvider;
 
         public static string Integration;
@@ -34,10 +36,11 @@ namespace eProduccion.Data
         public string DataBase => _userSession.DataBase;
         public HashSet<string> Permisos => _userSession.Permisos;
 
-        public ConnectionService(UserSession userSession, IServiceProvider serviceProvider)
+        public ConnectionService(UserSession userSession, IServiceProvider serviceProvider, ProtectedLocalStorage localStorage)
         {
             _userSession = userSession;
             _serviceProvider = serviceProvider;
+            _localStorage = localStorage;
         }
 
         public void GetAppSettings()
@@ -150,7 +153,7 @@ namespace eProduccion.Data
             return companyName;
         }
 
-        public void CargarListaPermisos(string userName)
+        public async Task CargarListaPermisos(string userName)
         {
             var permisos = string.Empty;
 
@@ -171,6 +174,8 @@ namespace eProduccion.Data
                 if (listaPermisos.Count <= 0)
                     throw new Exception("El usuario no posee permisos para acceder al sistema.");
             }
+
+            await _localStorage.SetAsync("Permisos", _userSession.Permisos);
         }
 
         public List<RolDetalle> ObtenerListaPermisos(string userName)
@@ -212,7 +217,7 @@ namespace eProduccion.Data
             return cantidadDecimales;
         }
 
-        public void ConnectSAP(string usuario, string contrasena, string baseDatos)
+        public async Task ConnectSAP(string usuario, string contrasena, string baseDatos)
         {
             _userSession.UserName = usuario;
             _userSession.PassSecure = Encryption.EncryptString(contrasena);
@@ -229,7 +234,7 @@ namespace eProduccion.Data
             var usuarioSistema = _serviceProvider.GetRequiredService<UsuarioSistemaService>();
             usuarioSistema.VerificarUsuarioExistente();
 
-            CargarListaPermisos(usuario);
+            await CargarListaPermisos(usuario);
         }
 
         public void GetSessionSL()
