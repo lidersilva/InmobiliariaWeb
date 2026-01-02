@@ -10,6 +10,7 @@
 @inject MolinadoService MolinadoService
 @inject InyeccionExtrusionService ExtrusionService
 @inject UsuarioSistemaService UsuarioSistemaService
+@* @inject UserSession UserSession *@
 
 <PageTitle>eProducci&oacute;n | Molino</PageTitle>
 
@@ -126,6 +127,9 @@
     {
         try
         {
+            // if (!UserSession.TienePermiso(PermisosSistema.Molino))
+            //     Snackbar.Add($"Acceso no autorizado.", Severity.Error);
+
             listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
             operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
 
