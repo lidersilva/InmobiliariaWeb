@@ -1,4 +1,6 @@
 ﻿@page "/molino"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs
 @using eProduccion.Models
 @using eProduccion.Utility
@@ -10,7 +12,6 @@
 @inject MolinadoService MolinadoService
 @inject InyeccionExtrusionService ExtrusionService
 @inject UsuarioSistemaService UsuarioSistemaService
-@inject UserSession UserSession
 
 <PageTitle>eProducci&oacute;n | Molino</PageTitle>
 
@@ -115,6 +116,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.Molino;
+
     List<OTMolino> listaMolino;
     private string textoBusqueda = "";
 
@@ -127,9 +130,6 @@
     {
         try
         {
-            if (!UserSession.TienePermiso(PermisosSistema.Molino))
-                Snackbar.Add($"Acceso no autorizado.", Severity.Error); // Prueba
-
             listaMotivoDefecto = (await ExtrusionService.ObtenerMotivosParadaDefecto()).Where(x => x.Tipo == "DF").ToList();
             operarios = (await UsuarioSistemaService.ObtenerUsuarios()).Where(x => x.TipoUsuario == "OP").ToList();
 
