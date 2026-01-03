@@ -1,6 +1,9 @@
 ﻿@page "/permisos"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Models
 @using eProduccion.Data.GestionAccesos
+@using eProduccion.Security
 @inject ISnackbar Snackbar
 @inject PermisoService PermisoService
 
@@ -28,6 +31,8 @@
 </MudGrid>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.GestionAccesos;
+
     private Permiso[]? permisos;
     private Permiso? PermisoSeleccionado;
     private SelectionMode SelectionMode = SelectionMode.SingleSelection;

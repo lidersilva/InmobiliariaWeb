@@ -1,8 +1,11 @@
 ﻿@page "/roles"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs
 @using eProduccion.Components.Dialogs.GestionAccesos
 @using eProduccion.Models
 @using eProduccion.Data.GestionAccesos
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject RolService RolService
@@ -58,6 +61,8 @@
 </MudGrid>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.GestionAccesos;
+
     private Rol[]? roles;
     private Permiso[]? permisos;
     private Rol RolSeleccionado;

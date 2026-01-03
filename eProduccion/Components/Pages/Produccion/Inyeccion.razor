@@ -1,8 +1,11 @@
 ﻿@page "/inyeccion"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject InyeccionExtrusionService InyeccionService
@@ -71,6 +74,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.Inyeccion;
+
     private OTInyeccionExtrusion[]? ordenesInyeccion;
     private OTInyeccionExtrusion? otSeleccionada;
     private string textoBusqueda = "";

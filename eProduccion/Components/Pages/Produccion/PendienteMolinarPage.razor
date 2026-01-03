@@ -1,8 +1,11 @@
 ﻿@page "/pendientemolinar"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject MolinadoService MolinadoService
@@ -71,6 +74,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.PendienteMolinar;
+
     private PendienteMolinar[]? listaPendienteMolinar;
     private HashSet<PendienteMolinar> filasSeleccionadas = new HashSet<PendienteMolinar>();
     private string textoBusqueda = "";

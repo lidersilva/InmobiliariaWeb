@@ -1,6 +1,9 @@
 ﻿@page "/usuariosroles"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Models
 @using eProduccion.Data.GestionAccesos
+@using eProduccion.Security
 @inject ISnackbar Snackbar
 @inject UsuarioRolService UsuarioRolService
 
@@ -41,6 +44,8 @@
 </MudGrid>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.GestionAccesos;
+
     private Usuario[]? usuarios;
     private UsuarioRol[]? usuarioRoles;
     private string UsuarioSeleccionado = "";
