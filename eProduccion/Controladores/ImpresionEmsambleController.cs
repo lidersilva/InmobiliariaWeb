@@ -104,7 +104,7 @@ namespace eProduccion.Controladores
         // Reemplaza el método CrearPdfDesdeHtml_ConCss por esta versión que fuerza tamaño exacto (75 x 25 mm),
         // inyecta CSS compacto para evitar salto a segunda página y asegura que el barcode que se guardó como PNG
         // tenga un tamaño máximo razonable para entrar en una sola hoja.
-        public string CrearPdfDesdeHtml_ConCss(string html, float widthMm = 75f, float heightMm = 45f)
+        public string CrearPdfDesdeHtml_ConCss(string html, float widthMm = 75f, float heightMm = 53f)
         {
             string pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "pdf");
             if (!Directory.Exists(pdfFolder))
