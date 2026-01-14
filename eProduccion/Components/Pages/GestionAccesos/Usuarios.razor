@@ -1,8 +1,11 @@
 ﻿@page "/usuarios"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs
 @using eProduccion.Components.Dialogs.GestionAccesos
 @using eProduccion.Models
 @using eProduccion.Data.GestionAccesos
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject UsuarioSistemaService UsuarioSistemaService
@@ -50,6 +53,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.GestionAccesos;
+
     private Usuario[]? usuarios;
     private Usuario? usuarioSeleccionado;
     private string textoBusqueda = "";

@@ -1,6 +1,9 @@
 ﻿@page "/parametrizacion"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Models
 @using eProduccion.Data.Configuracion
+@using eProduccion.Security
 @inject ISnackbar Snackbar
 @inject ParametrizacionService ParametrizacionService
 
@@ -459,6 +462,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.Parametrizacion;
+
     private Parametrizacion parametrizacion = new();
     private List<CuentaContable> cuentasContables;
     private List<EtapaRuta> estaciones;
@@ -703,10 +708,10 @@
     {
         var serieDefecto = series?.FirstOrDefault();
         parametrizacion.SerieDetalle.Add(new SerieDetalle
-        {
-            CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
-            Serie = serieDefecto?.Descripcion ?? string.Empty
-        });
+            {
+                CodigoSerie = serieDefecto?.CodigoSerie ?? 0,
+                Serie = serieDefecto?.Descripcion ?? string.Empty
+            });
     }
 
     private void EliminarSerie(SerieDetalle serie)

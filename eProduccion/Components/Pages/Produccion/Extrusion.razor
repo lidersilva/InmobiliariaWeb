@@ -1,8 +1,11 @@
 ﻿@page "/extrusion"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject InyeccionExtrusionService ExtrusionService
@@ -71,6 +74,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.Extrusion;
+
     private OTInyeccionExtrusion[]? ordenesExtrusion;
     private OTInyeccionExtrusion? otSeleccionada;
     private string textoBusqueda = "";
@@ -95,12 +100,12 @@
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.False,
-            FullWidth = true,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.False,
+                FullWidth = true,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<ExtrusionCargaDialog>("", parameters, options);
     }

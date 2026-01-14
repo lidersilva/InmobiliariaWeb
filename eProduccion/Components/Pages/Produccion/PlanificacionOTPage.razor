@@ -1,8 +1,11 @@
 ﻿@page "/planificacionot"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject PlanificacionOTService PlanificacionOTService
@@ -78,6 +81,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.PlanificacionOT;
+
     private PlanificacionOT[]? listaOV;
     private HashSet<PlanificacionOT> filasSeleccionadas = new HashSet<PlanificacionOT>();
     private string textoBusqueda = "";

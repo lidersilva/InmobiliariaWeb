@@ -6,7 +6,13 @@
         public string PassSecure { get; set; }
         public string DataBase { get; set; }
         public string CompanyName { get; set; }
+        public HashSet<string> Permisos { get; set; } = [];
         public Session SapSession { get; set; }
+
+        public bool TienePermiso(string permiso)
+        {
+            return Permisos?.Contains(permiso) == true;
+        }
 
         public void Clear()
         {
@@ -14,6 +20,7 @@
             PassSecure = null;
             DataBase = null;
             CompanyName = null;
+            Permisos = new HashSet<string>();
             SapSession = null;
         }
     }

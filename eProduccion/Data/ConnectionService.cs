@@ -6,16 +6,18 @@ using RestSharp;
 using System.Data.Odbc;
 using System.Net;
 using eProduccion.Data.GestionAccesos;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace eProduccion.Data
 {
-    public class ConnectionService
+    public class ConnectionService(UserSession userSession, IServiceProvider serviceProvider, ProtectedLocalStorage localStorage)
     {
         public OdbcConnection OdbcConn;
         public static NumberFormat NumberFormat;
-        private readonly UserSession _userSession;
         private readonly UsuarioSistemaService _usuarioSistemaService;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly UserSession _userSession = userSession;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly ProtectedLocalStorage _localStorage = localStorage;
 
         public static string Integration;
         public static string SQLType;
@@ -32,12 +34,7 @@ namespace eProduccion.Data
         public string UserName => _userSession.UserName;
         public string PassSecure => _userSession.PassSecure;
         public string DataBase => _userSession.DataBase;
-
-        public ConnectionService(UserSession userSession, IServiceProvider serviceProvider)
-        {
-            _userSession = userSession;
-            _serviceProvider = serviceProvider;
-        }
+        public HashSet<string> Permisos => _userSession.Permisos;
 
         public void GetAppSettings()
         {
@@ -64,7 +61,6 @@ namespace eProduccion.Data
             UserDB = GetUserDB();
             PassDB = GetPassDB();
             _userSession.CompanyName = GetCompanyName();
-            //Permisos = GetPermisos(UserName);
         }
 
         public void GetNumberFormat()
@@ -150,6 +146,56 @@ namespace eProduccion.Data
             return companyName;
         }
 
+        public async Task CargarListaPermisos(string userName)
+        {
+            var permisos = string.Empty;
+
+            if (userName == "EEP_ADMIN")
+            {
+                _userSession.Permisos =
+                [
+                    "01","02","04",
+                    "10","11","12","13","14","15","16","17","18","20","21","22","23"
+                ];
+            }
+            else
+            {
+                var listaPermisos = ObtenerListaPermisos(userName);
+
+                _userSession.Permisos = listaPermisos.Select(x => x.U_PERM).ToHashSet();
+
+                if (listaPermisos.Count <= 0)
+                    throw new Exception("El usuario no posee permisos para acceder al sistema.");
+            }
+
+            await _localStorage.SetAsync("Permisos", _userSession.Permisos);
+        }
+
+        public List<RolDetalle> ObtenerListaPermisos(string userName)
+        {
+            var list = new List<RolDetalle>();
+
+            var query = "SELECT T2.\"U_PERM\" " +
+                $"FROM \"{DataBase}\".\"@EP_ROLU\" T0 " +
+                $"JOIN \"{DataBase}\".\"@EP_ROLC\" T1 ON T0.\"U_ROLID\" = T1.\"Code\" " +
+                $"JOIN \"{DataBase}\".\"@EP_ROLD\" T2 ON T1.\"Code\" = T2.\"Code\" " +
+                $"WHERE T0.\"U_USER\" = '{userName}' ";
+
+            var command = new OdbcCommand(query, ConnectODBC());
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var che = new RolDetalle();
+                che.U_PERM = reader["U_PERM"].ToString();
+                list.Add(che);
+            }
+
+            DisconnectODBC();
+
+            return list;
+        }
+
         public int GetCantidadDecimales()
         {
             var cantidadDecimales = 0;
@@ -164,7 +210,7 @@ namespace eProduccion.Data
             return cantidadDecimales;
         }
 
-        public void ConnectSAP(string usuario, string contrasena, string baseDatos)
+        public async Task ConnectSAP(string usuario, string contrasena, string baseDatos)
         {
             _userSession.UserName = usuario;
             _userSession.PassSecure = Encryption.EncryptString(contrasena);
@@ -180,6 +226,8 @@ namespace eProduccion.Data
 
             var usuarioSistema = _serviceProvider.GetRequiredService<UsuarioSistemaService>();
             usuarioSistema.VerificarUsuarioExistente();
+
+            await CargarListaPermisos(usuario);
         }
 
         public void GetSessionSL()

@@ -88,7 +88,7 @@
         try
         {
             // Realiza la conexión en segundo plano
-            await Task.Run(() => ConnectionService.ConnectSAP(Usuario, Password, BaseDatos));
+            await ConnectionService.ConnectSAP(Usuario, Password, BaseDatos);
 
             // Guarda los datos de sesión de forma segura
             await SessionStorage.SetAsync("UserName", Usuario);

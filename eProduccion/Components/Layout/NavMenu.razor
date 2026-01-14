@@ -1,6 +1,9 @@
 ﻿@using eProduccion.Components.Dialogs
+@using eProduccion.Models
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject UserSession UserSession
 
 <!-- Sidebar Start -->
 <div class="sidebar pe-4 pb-3">
@@ -14,40 +17,93 @@
                     <i class="fa fa-wrench me-2"></i>Producci&oacute;n
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a class="dropdown-item" @onclick='() => Navegar("/planificacionot")'>Planificaci&oacute;n OT</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/inyeccion")'>Inyecci&oacute;n</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/extrusion")'>Extrusi&oacute;n</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/planificacionensamble")'>Planificaci&oacute;n ensamble</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/armado")'>Armado</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/flowpack")'>Flowpack</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/sachetera")'>Sachetera</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/sellado")'>Sellado</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/horneado")'>Horneado</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/empaquetado")'>Empaquetado</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/prensa")'>Prensa</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/grabado-laser")'>Grabado láser</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/pendientemolinar")'>Pendiente a molinar</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/molino")'>Molino</a>
+                    @if (UserSession.TienePermiso(PermisosSistema.PlanificacionOT))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionot")'>Planificación OT</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Inyeccion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/inyeccion")'>Inyección</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Extrusion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/extrusion")'>Extrusión</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.PlanificacionEnsamble))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionensamble")'>Planificación ensamble</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Armado))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/armado")'>Armado</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Flowpack))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/flowpack")'>Flowpack</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Sachetera))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/sachetera")'>Sachetera</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Sellado))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/sellado")'>Sellado</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Horneado))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/horneado")'>Horneado</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Empaquetado))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/empaquetado")'>Empaquetado</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Prensa))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/prensa")'>Prensa</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.GrabadoLaser))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/grabado-laser")'>Grabado láser</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.PendienteMolinar))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/pendientemolinar")'>Pendiente a molinar</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Molino))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/molino")'>Molino</a>
+                    }
                 </div>
             </div>
-            <div class="nav-item dropdown">
-                <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="fa fa-users me-2"></i>Gesti&oacute;n de Accesos
-                </a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i>Gesti&oacute;n de Accesos
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    </div>
                 </div>
-            </div>
+            }
+
             <div class="nav-item dropdown">
                 <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-cogs me-2"></i>Configuraci&oacute;n
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a class="dropdown-item" @onclick="AbrirModalEstructura">Crear estructura</a>
-                    <a class="dropdown-item" @onclick='() => Navegar("/parametrizacion")'>Parametrizaci&oacute;n</a>
+                    @if (UserSession.TienePermiso(PermisosSistema.GenerarEstructura))
+                    {
+                        <a class="dropdown-item" @onclick="AbrirModalEstructura">Crear estructura</a>
+                    }
+                    @if (UserSession.TienePermiso(PermisosSistema.Parametrizacion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/parametrizacion")'>Parametrizaci&oacute;n</a>
+                    }
                 </div>
             </div>
         </div>

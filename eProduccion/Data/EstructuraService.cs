@@ -486,6 +486,21 @@ namespace eProduccion.Data
                 new () { TableName = "EEP_PERM", Code = "02", Name = "Generar Estructura", Descripcion = "Generación de estructura del sistema" },
                 new () { TableName = "EEP_PERM", Code = "04", Name = "Parametrización", Descripcion = "Parametrización del sistema" },
 
+                new () { TableName = "EEP_PERM", Code = "10", Name = "Planificación OT", Descripcion = "Acceso a vista Planificación OT" },
+                new () { TableName = "EEP_PERM", Code = "11", Name = "Inyección", Descripcion = "Acceso a vista" },
+                new () { TableName = "EEP_PERM", Code = "12", Name = "Extrusión", Descripcion = "Acceso a vista" },
+                new () { TableName = "EEP_PERM", Code = "13", Name = "Planificación ensamble", Descripcion = "Acceso a vista" },
+                new () { TableName = "EEP_PERM", Code = "14", Name = "Armado", Descripcion = "Acceso a vista Armado" },
+                new () { TableName = "EEP_PERM", Code = "15", Name = "Flowpack", Descripcion = "Acceso a vista Flowpack" },
+                new () { TableName = "EEP_PERM", Code = "16", Name = "Sachetera", Descripcion = "Acceso a vista Sachetera" },
+                new () { TableName = "EEP_PERM", Code = "17", Name = "Sellado", Descripcion = "Acceso a vista Sellado" },
+                new () { TableName = "EEP_PERM", Code = "18", Name = "Horneado", Descripcion = "Acceso a vista Horneado" },
+                new () { TableName = "EEP_PERM", Code = "19", Name = "Empaquetado", Descripcion = "Acceso a vista Empaquetado" },
+                new () { TableName = "EEP_PERM", Code = "20", Name = "Prensa", Descripcion = "Acceso a vista Prensa" },
+                new () { TableName = "EEP_PERM", Code = "21", Name = "Grabado láser", Descripcion = "Acceso a vista Grabado láser" },
+                new () { TableName = "EEP_PERM", Code = "22", Name = "Pendiente a molinar", Descripcion = "Acceso a vista Pendiente a molinar" },
+                new () { TableName = "EEP_PERM", Code = "23", Name = "Molino", Descripcion = "Acceso a vista Molino" },
+               
                 // Roles
                 new () { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },
                 new () { TableName = "EEP_ROLC", Code = "02", Name = "Usuario", Activo = YesNo.Yes },

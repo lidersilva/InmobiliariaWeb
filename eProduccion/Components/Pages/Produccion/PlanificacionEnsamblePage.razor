@@ -1,8 +1,11 @@
 ﻿@page "/planificacionensamble"
+@inherits BasePermisoPage
+@using eProduccion.Components.Base
 @using eProduccion.Components.Dialogs.Produccion
 @using eProduccion.Models
 @using eProduccion.Utility
 @using eProduccion.Data.Produccion
+@using eProduccion.Security
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject PlanificacionEnsambleService PlanificacionEnsambleService
@@ -53,6 +56,8 @@
 </div>
 
 @code {
+    protected override string PermisoRequerido => PermisosSistema.PlanificacionEnsamble;
+
     private PlanificacionEnsamble[]? listaOV;
     private string textoBusqueda = "";
 
@@ -76,12 +81,12 @@
         };
 
         var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.False,
-            FullWidth = true,
-            BackdropClick = false,
-        };
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.False,
+                FullWidth = true,
+                BackdropClick = false,
+            };
 
         var dialog = await DialogService.ShowAsync<PlanifEnsambleCargaDialog>("", parameters, options);
     }
