@@ -10,14 +10,14 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace eProduccion.Data
 {
-    public class ConnectionService
+    public class ConnectionService(UserSession userSession, IServiceProvider serviceProvider, ProtectedLocalStorage localStorage)
     {
         public OdbcConnection OdbcConn;
         public static NumberFormat NumberFormat;
-        private readonly UserSession _userSession;
         private readonly UsuarioSistemaService _usuarioSistemaService;
-        private readonly ProtectedLocalStorage _localStorage;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly UserSession _userSession = userSession;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly ProtectedLocalStorage _localStorage = localStorage;
 
         public static string Integration;
         public static string SQLType;
@@ -35,13 +35,6 @@ namespace eProduccion.Data
         public string PassSecure => _userSession.PassSecure;
         public string DataBase => _userSession.DataBase;
         public HashSet<string> Permisos => _userSession.Permisos;
-
-        public ConnectionService(UserSession userSession, IServiceProvider serviceProvider, ProtectedLocalStorage localStorage)
-        {
-            _userSession = userSession;
-            _serviceProvider = serviceProvider;
-            _localStorage = localStorage;
-        }
 
         public void GetAppSettings()
         {
@@ -162,7 +155,7 @@ namespace eProduccion.Data
                 _userSession.Permisos =
                 [
                     "01","02","04",
-                    "10","11","12","13","14","15","16","17","18","20","21","22"//,"23"
+                    "10","11","12","13","14","15","16","17","18","20","21","22","23"
                 ];
             }
             else
