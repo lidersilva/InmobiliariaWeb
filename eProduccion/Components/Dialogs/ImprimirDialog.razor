@@ -5,7 +5,12 @@
         <MudText Typo="Typo.h6" Class="mb-0">Imprimir etiqueta</MudText>
     </TitleContent>
     <DialogContent>
-        Texto ejemplo
+        Seleccione la etiqueta a imprimir:
+        <MudRadioGroup @bind-Value="OpcionSeleccionada">
+            <MudRadio Value="@("Aprobados")" Color="Color.Primary">Aprobados</MudRadio>
+            <MudRadio Value="@("Rechazados")" Color="Color.Primary">Rechazados</MudRadio>
+            <MudRadio Value="@("Colada")" Color="Color.Primary" Disabled="true">Colada</MudRadio>
+        </MudRadioGroup>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="Submit">Imprimir</MudButton>
@@ -17,9 +22,11 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
 
+    public string OpcionSeleccionada { get; set; } = "Aprobados";
+
     private async Task Submit()
     {
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog.Close(DialogResult.Ok(OpcionSeleccionada));
     }
 
     private void Cancel() => MudDialog.Cancel();

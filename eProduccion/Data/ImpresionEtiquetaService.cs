@@ -13,7 +13,7 @@ namespace eProduccion.Data
             _impresionemsamController = new ImpresionEmsambleController();
         }
         public async Task ImprimirEtiquetaInyeccionExtrusion(
-            bool imprimirNoConformes,
+            string tipoEtiqueta,
             int nroOT,
             string nroCaja,
             string codArticulo,
@@ -26,12 +26,14 @@ namespace eProduccion.Data
             DateTime? fecha,
             string turno)
         {
+            int cantidadImprimir = tipoEtiqueta == "Aprobados" ? cantAprobadas : cantRechReciclable + cantRechNoReciclable;
+
             var ticket = new TicketDataInyeccion
             {
                 NumeroOT = nroOT,
                 NumeroCaja = nroCaja,
                 CodigoArticulo = codArticulo,
-                CantidadAprobadas = cantAprobadas,
+                CantidadAprobadas = cantidadImprimir,
                 Maquina = maquina,
                 Operador = operador,
                 Fecha = fecha ?? DateTime.Now,

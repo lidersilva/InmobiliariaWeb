@@ -366,7 +366,9 @@
         {
             try
             {
-                await ImpresionEtiquetaService.ImprimirEtiquetaEmsamble(detalleemsamble.Operario, detalleemsamble.Fecha, detalleemsamble.Fecha, OTEnsamble.CodArticuloEnsamble, detalleemsamble.Fecha, detalleemsamble.HoraFin, OTEnsamble.CantidadOT);  // Debemos de verificar fecha de recepcion y fecha fin
+                var tipoEtiqueta = result.Data as string;
+
+                await ImpresionEtiquetaService.ImprimirEtiquetaEmsamble(detalleemsamble.Operario, detalleemsamble.Fecha, detalleemsamble.Fecha, OTEnsamble.CodArticuloEnsamble, detalleemsamble.Fecha, detalleemsamble.HoraFin, detalleemsamble.CantAprobadas);  // Debemos de verificar fecha de recepcion y fecha fin
 
                 Snackbar.Add($"Etiqueta generada correctamente", Severity.Success);
             }
@@ -376,5 +378,6 @@
             }
         }
     }
+
     private void Cancel() => MudDialog.Cancel();
 }
