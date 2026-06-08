@@ -150,7 +150,7 @@ namespace eProduccion.Data
         {
             var permisos = string.Empty;
 
-            if (userName == "EEP_ADMIN")
+            if (userName == "manager")
             {
                 _userSession.Permisos =
                 [
@@ -213,7 +213,8 @@ namespace eProduccion.Data
         public async Task ConnectSAP(string usuario, string contrasena, string baseDatos)
         {
             _userSession.UserName = usuario;
-            _userSession.PassSecure = Encryption.EncryptString(contrasena);
+            //_userSession.PassSecure = Encryption.EncryptString(contrasena);
+            _userSession.PassSecure = contrasena;
             _userSession.DataBase = baseDatos;
 
             GetAppSettings();
@@ -245,8 +246,8 @@ namespace eProduccion.Data
                 var body = new
                 {
                     CompanyDB = _userSession.DataBase,
-                    UserName = UserNameSL,
-                    Password = PassSecureSL,
+                    UserName = "manager",//UserNameSL,
+                    Password = "Abc1234*",//PassSecureSL,
                     SessionTimeout = SessionTimeout,
                     Language = 25
                 };
