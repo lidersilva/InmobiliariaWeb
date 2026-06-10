@@ -133,7 +133,8 @@ namespace eProduccion.Data.GestionAccesos
         {
             var list = new List<Usuario>();
 
-            var query = $"SELECT \"Code\", \"U_EXUCODE\", \"U_EXNCODE\", \"U_MAIL\", \"U_EXNSUC\", \"U_EXTUSU\" FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" ORDER BY \"U_EXUCODE\" ";
+            //var query = $"SELECT \"Code\", \"U_EXUCODE\", \"U_EXNCODE\", \"U_MAIL\", \"U_EXNSUC\", \"U_EXTUSU\" FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" ORDER BY \"U_EXUCODE\" ";
+            var query = $"SELECT \"Code\", \"U_EXUCODE\", \"U_EXNCODE\", \"U_EXNSUC\", \"U_EXTUSU\" FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" ORDER BY \"U_EXUCODE\" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -145,7 +146,7 @@ namespace eProduccion.Data.GestionAccesos
                     Code = int.Parse(reader["Code"].ToString()),
                     CodigoUsuario = reader["U_EXUCODE"].ToString(),
                     NombreUsuario = reader["U_EXNCODE"].ToString(),
-                    Email = reader["U_MAIL"].ToString(),
+                    //Email = reader["U_MAIL"].ToString(),
                     Estado = reader["U_EXTUSU"].ToString(), //hay que crear campo para usuario actibvo
                     TipoUsuario = reader["U_EXTUSU"].ToString(),
                 };
@@ -168,20 +169,27 @@ namespace eProduccion.Data.GestionAccesos
             else
             {
                 var method = Method.Post;
-                var entity = $"U_EEP_USUA";
+                var entity = $"U_EMUSUA";
                 var fechaActual = DateTime.Now;
 
                 var body = new
                 {
-                    Name = usuario.NombreUsuario,
-                    U_CODE = usuario.CodigoUsuario,
-                    U_PASS = Encryption.EncryptString(usuario.Password),
-                    U_MAIL = usuario.Email,
-                    U_FCRE = fechaActual.ToString("yyyyMMdd"),
-                    U_FACT = fechaActual.ToString("yyyyMMdd"),
-                    U_HCRE = fechaActual.ToString("HHmm"),
-                    U_HACT = fechaActual.ToString("HHmm"),
-                    U_TIPO = usuario.TipoUsuario,
+                    U_EXNCODE = usuario.NombreUsuario,
+                    U_EXUCODE = usuario.CodigoUsuario,
+                    U_EXCLAVE = Encryption.EncryptString(usuario.Password),
+                    //U_MAIL = usuario.Email,
+                    //U_FCRE = fechaActual.ToString("yyyyMMdd"),
+                    //U_FACT = fechaActual.ToString("yyyyMMdd"),
+                    //U_HCRE = fechaActual.ToString("HHmm"),
+                    //U_HACT = fechaActual.ToString("HHmm"),
+                    U_EXTUSU = usuario.TipoUsuario,
+
+                    //U_EXUCODE = "manager",                // Código de Usuario
+                    //U_EXNCODE = "Usuario Administrador",    // Nombre Usuario
+                    //U_EXCSUC = 0,                           // Código Sucursal (ejemplo vacío)
+                    //U_EXNSUC = "",                          // Nombre Sucursal (ejemplo vacío)
+                    //U_EXTUSU = "SI",                        // Superusuario
+                    //U_EXCLAVE = "hEyrr2banueW67WOuteQI4AmHS0PpolV",
                 };
 
                 _connectionService.SetEntitySL(method, entity, body);

@@ -10,7 +10,7 @@
         <MudTextField @bind-Value="@_Usuario.Email" Label="E-Mail" Variant="Variant.Text" Class="mb-2"></MudTextField>
         <MudSelect T="string" @bind-Value="@_Usuario.TipoUsuario" Label="Tipo de usuario" Variant="Variant.Outlined" Margin="Margin.Dense" Class="w-100">
             <MudSelectItem Value="@("")"></MudSelectItem>
-            <MudSelectItem Value="@("OP")">OP - Operario</MudSelectItem>
+            <MudSelectItem Value="@("SI")">SI - Operario</MudSelectItem>
         </MudSelect>
         @if (Accion == "Crear")
         {

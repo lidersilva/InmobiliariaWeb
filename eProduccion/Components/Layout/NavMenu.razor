@@ -9,7 +9,7 @@
 <div class="sidebar pe-4 pb-3">
     <nav class="navbar bg-light navbar-light">
         <a NavLink="#" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary">eProducción</h3>
+            <h3 class="text-primary">EMSA INMOBILIARIA</h3>
         </a>
         <div class="navbar-nav w-100">
             <div class="nav-item dropdown">
@@ -17,7 +17,7 @@
                     <i class="fa fa-wrench me-2"></i>Comercial
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    @if (UserSession.TienePermiso(PermisosSistema.PlanificacionOT))
+                    @* @if (UserSession.TienePermiso(PermisosSistema.PlanificacionOT))
                     {
                         <a class="dropdown-item" @onclick='() => Navegar("/planificacionot")'>Planificación OT</a>
                     }
@@ -72,7 +72,7 @@
                     @if (UserSession.TienePermiso(PermisosSistema.Molino))
                     {
                         <a class="dropdown-item" @onclick='() => Navegar("/molino")'>Molino</a>
-                    }
+                    } *@
                 </div>
             </div>
 
