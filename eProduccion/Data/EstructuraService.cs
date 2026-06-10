@@ -116,6 +116,7 @@ namespace eProduccion.Data
         new () { TableName = "EEP_PERM", Code = "01", Name = "Menú Gestión de Accesos", Descripcion = "Acceso a la gestión de Usuarios, Roles y Permisos" },
         new () { TableName = "EEP_PERM", Code = "02", Name = "Generar Estructura", Descripcion = "Generación de estructura del sistema" },
         new () { TableName = "EEP_PERM", Code = "04", Name = "Parametrización", Descripcion = "Parametrización del sistema" },
+        new () { TableName = "EEP_PERM", Code = "100", Name = "Lotes" },
 
         // Roles
         new () { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },

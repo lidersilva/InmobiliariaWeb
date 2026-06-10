@@ -176,9 +176,9 @@ namespace eProduccion.Data
             var list = new List<RolDetalle>();
 
             var query = "SELECT T2.\"U_PERM\" " +
-                $"FROM \"{DataBase}\".\"@EP_ROLU\" T0 " +
-                $"JOIN \"{DataBase}\".\"@EP_ROLC\" T1 ON T0.\"U_ROLID\" = T1.\"Code\" " +
-                $"JOIN \"{DataBase}\".\"@EP_ROLD\" T2 ON T1.\"Code\" = T2.\"Code\" " +
+                $"FROM \"{DataBase}\".\"@EEP_ROLU\" T0 " +
+                $"JOIN \"{DataBase}\".\"@EEP_ROLC\" T1 ON T0.\"U_ROLID\" = T1.\"Code\" " +
+                $"JOIN \"{DataBase}\".\"@EEP_ROLD\" T2 ON T1.\"Code\" = T2.\"Code\" " +
                 $"WHERE T0.\"U_USER\" = '{userName}' ";
 
             var command = new OdbcCommand(query, ConnectODBC());

@@ -14,68 +14,67 @@
         <div class="navbar-nav w-100">
             <div class="nav-item dropdown">
                 <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="fa fa-wrench me-2"></i>Comercial
+                    <i class="fa fa-wrench me-2"></i>Gestion de Cobranza
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    @* @if (UserSession.TienePermiso(PermisosSistema.PlanificacionOT))
+                    @if (UserSession.TienePermiso(PermisosSistema.Lotes))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionot")'>Planificación OT</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionot")'> Lotes  Inmuebles</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Inyeccion))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/inyeccion")'>Inyección</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/inyeccion")'>Alta de clientes y proveedores</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Extrusion))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/extrusion")'>Extrusión</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/extrusion")'>Seña de lote </a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.PlanificacionEnsamble))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionensamble")'>Planificación ensamble</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionensamble")'>Generacion de contracto</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Armado))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/armado")'>Armado</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/armado")'>Comisiones a vendedores</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Flowpack))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/flowpack")'>Flowpack</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/flowpack")'>Planes de comisio a vendedores</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Sachetera))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/sachetera")'>Sachetera</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/sachetera")'>Planes de ventas</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Sellado))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/sellado")'>Sellado</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/sellado")'>Consulta de estado de contratos</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Horneado))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/horneado")'>Horneado</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/horneado")'>Listado de lotes libres</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Empaquetado))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/empaquetado")'>Empaquetado</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/empaquetado")'>Ventas realizadas</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Prensa))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/prensa")'>Prensa</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/prensa")'>Reporte de recupero y renuncias</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.GrabadoLaser))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/grabado-laser")'>Grabado láser</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/grabado-laser")'>Reporte para Seprelad</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.PendienteMolinar))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/pendientemolinar")'>Pendiente a molinar</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/pendientemolinar")'>Redefinar cuota de contrato</a>
                     }
                     @if (UserSession.TienePermiso(PermisosSistema.Molino))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/molino")'>Molino</a>
-                    } *@
+                        <a class="dropdown-item" @onclick='() => Navegar("/molino")'>Asigacion de operadores a fraccions</a>
+                    }
                 </div>
             </div>
-
             @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
             {
                 <div class="nav-item dropdown">
@@ -90,7 +89,95 @@
                     </div>
                 </div>
             }
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i> Inteligencia de Negocios
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Liquidación de propietario</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Consulta de liquidacio por propietario</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Reporte de redición de propietarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Reportede liquidación de propietarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Consulta de facturas</a>
+                    </div>
+                </div>
+            }
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i> Obras y Proyectos
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Loteamiento / Fracciones</a>
+                     @*    <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a> *@
+                    </div>
+                </div>
+            }
 
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i>Comercial 
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    </div>
+                </div>
+            }
+
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i> Tesoreria
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    </div>
+                </div>
+            }
+
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i> Escrituraciones
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    </div>
+                </div>
+            }
+
+            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i> Contabilidad
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    </div>
+                </div>
+            }
             <div class="nav-item dropdown">
                 <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-cogs me-2"></i>Configuraci&oacute;n

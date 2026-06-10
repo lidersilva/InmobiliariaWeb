@@ -13,10 +13,10 @@ namespace eProduccion.Data.GestionAccesos
             var list = new List<Usuario>();
 
             var query = $"SELECT " +
-                $"\"U_CODE\" \n" +
-                $"FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" \n" +
-                $"WHERE \"U_CODE\"!='EEP_ADMIN' \n" +
-                $"ORDER BY \"U_CODE\"; ";
+                $"\"U_EXUCODE\" \n" +
+                $"FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" \n" +
+                $"WHERE \"U_EXUCODE\"!='manager' \n" +
+                $"ORDER BY \"U_EXUCODE\"; ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -24,7 +24,7 @@ namespace eProduccion.Data.GestionAccesos
             while (reader.Read())
             {
                 var che = new Usuario();
-                che.CodigoUsuario = reader["U_CODE"].ToString();
+                che.CodigoUsuario = reader["U_EXUCODE"].ToString();
                 list.Add(che);
             }
 

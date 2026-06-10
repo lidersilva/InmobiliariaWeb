@@ -9,6 +9,7 @@
 
         // Vistas Producción
         public const string PlanificacionOT = "10";
+        public const string Lotes = "100";
         public const string Inyeccion = "11";
         public const string Extrusion = "12";
         public const string PlanificacionEnsamble = "13";
