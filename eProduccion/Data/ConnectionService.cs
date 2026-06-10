@@ -213,8 +213,8 @@ namespace eProduccion.Data
         public async Task ConnectSAP(string usuario, string contrasena, string baseDatos)
         {
             _userSession.UserName = usuario;
-            //_userSession.PassSecure = Encryption.EncryptString(contrasena);
-            _userSession.PassSecure = contrasena;
+            _userSession.PassSecure = Encryption.EncryptString(contrasena);
+            //_userSession.PassSecur = contrasena;
             _userSession.DataBase = baseDatos;
 
             GetAppSettings();
@@ -246,8 +246,8 @@ namespace eProduccion.Data
                 var body = new
                 {
                     CompanyDB = _userSession.DataBase,
-                    UserName = "manager",//UserNameSL,
-                    Password = "Abc1234*",//PassSecureSL,
+                    UserName = UserNameSL,
+                    Password = PassSecureSL,
                     SessionTimeout = SessionTimeout,
                     Language = 25
                 };
@@ -424,19 +424,25 @@ namespace eProduccion.Data
             {
                 if (restResponse.ErrorMessage != null)
                 {
-                    throw new Exception(restResponse.ErrorMessage);
+                    throw new Exception($"Error calling '{entity}': {restResponse.ErrorMessage} \nResponseContent: {restResponse.Content}");
                 }
                 else
                 {
-                    if (restResponse.ContentType.Contains("application/json"))
+                    try
                     {
-                        jObject = JsonConvert.DeserializeObject<JObject>(restResponse.Content);
-                        throw new Exception(jObject["error"]["message"]["value"].ToString());
+                        if (!string.IsNullOrEmpty(restResponse.Content) && restResponse.ContentType != null && restResponse.ContentType.Contains("application/json"))
+                        {
+                            jObject = JsonConvert.DeserializeObject<JObject>(restResponse.Content);
+                            var msg = jObject["error"]?["message"]?["value"]?.ToString() ?? restResponse.Content;
+                            throw new Exception($"Error calling '{entity}': {msg} \nResponseContent: {restResponse.Content}");
+                        }
                     }
-                    else
+                    catch
                     {
-                        throw new Exception(restResponse.Content);
+                        // Caerá al final y lanzará el contenido bruto si no es JSON o hubo problema al parsear
                     }
+
+                    throw new Exception($"Error calling '{entity}': HTTP {(int)restResponse.StatusCode} - {restResponse.StatusDescription} \nResponseContent: {restResponse.Content}");
                 }
             }
             else
@@ -493,9 +499,17 @@ namespace eProduccion.Data
 
             if (restResponse.Content.Contains("HTTP/1.1 400 Bad Request"))
             {
-                jResponse = restResponse.Content.Substring(restResponse.Content.IndexOf('{'), restResponse.Content.LastIndexOf('}') + 1 - restResponse.Content.IndexOf('{'));
-                jObject = JsonConvert.DeserializeObject<JObject>(jResponse);
-                throw new Exception(jObject["error"]["message"]["value"].ToString());
+                try
+                {
+                    jResponse = restResponse.Content.Substring(restResponse.Content.IndexOf('{'), restResponse.Content.LastIndexOf('}') + 1 - restResponse.Content.IndexOf('{'));
+                    jObject = JsonConvert.DeserializeObject<JObject>(jResponse);
+                    var msg = jObject["error"]?["message"]?["value"]?.ToString() ?? jResponse;
+                    throw new Exception($"Batch error calling '{entity}': {msg} \nResponseContent: {restResponse.Content}");
+                }
+                catch
+                {
+                    throw new Exception($"Batch error calling '{entity}': HTTP 400 Bad Request \nResponseContent: {restResponse.Content}");
+                }
             }
 
             return jResponse;

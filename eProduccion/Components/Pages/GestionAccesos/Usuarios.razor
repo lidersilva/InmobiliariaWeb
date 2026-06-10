@@ -32,7 +32,7 @@
             <MudTd DataLabel="Usuario">@context.NombreUsuario</MudTd>
             <MudTd DataLabel="E-Mail">@context.Email</MudTd>
             <MudTd DataLabel="Estado">
-                <MudChip T="string" Color="@(context.Estado == "Y" ? Color.Info : Color.Warning)" Style="color:white;" Size="Size.Small">@(context.Estado == "Y" ? "Activo" : "Inactivo")</MudChip>
+                <MudChip T="string" Color="@(context.Estado == "Y" ? Color.Info : Color.Warning)" Style="color:white;" Size="Size.Small">@(context.Estado == "SI" ? "Activo" : "Inactivo")</MudChip>
             </MudTd>
             <MudTd DataLabel="Acciones">
                 <MudTooltip Text="Cambiar contraseña">

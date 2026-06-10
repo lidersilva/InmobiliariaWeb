@@ -24,7 +24,7 @@ namespace eProduccion.Data.GestionAccesos
 
             if (verificarEstructuraIni != "N")
                 // La primera vez que el usuario inice sesión no existirá la estructura correspondiente, por lo que se debe crear en el momento
-                //CrearEstructuraUsuario();
+                CrearEstructuraUsuario();
 
             VerificarCredenciales();
         }
@@ -33,7 +33,7 @@ namespace eProduccion.Data.GestionAccesos
             // Crear tabla Usuario
             List<UserTablesMD> tablas = new()
             {
-                new UserTablesMD() { TableName = "EXUSU", Descr = "Usuarios", ObjectType = 5 }
+                 new UserTablesMD() { TableName = "EMUSUA", Descr = "Usuarios", ObjectType = 5 }
             };
 
             foreach (var i in tablas)
@@ -51,12 +51,14 @@ namespace eProduccion.Data.GestionAccesos
 
             List<UserFieldsMD> campos = new()
             {
-                new UserFieldsMD() { Name = "EXUCODE", Type = TipoCampo.Alpha, Size = 10, Description = "Cód. Usuario", SubType = SubTipoCampo.None, TableName = "@EXUSU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
-                new UserFieldsMD() { Name = "EXNCODE", Type = TipoCampo.Alpha, Size = 50, Description = "Nombre Usuario", SubType = SubTipoCampo.None, TableName = "@EXUSU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
-                new UserFieldsMD() { Name = "EXCSUC", Type = TipoCampo.Numeric, Size = 11, Description = "Cód. Sucursal", SubType = SubTipoCampo.None, TableName = "@EXUSU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
-                new UserFieldsMD() { Name = "EXNSUC", Type = TipoCampo.Alpha, Size = 30, Description = "Nombre Sucursal", SubType = SubTipoCampo.None, TableName = "@EXUSU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
-                new UserFieldsMD() { Name = "EXTUSU", Type = TipoCampo.Alpha, Size = 2, Description = "Superusuario", SubType = SubTipoCampo.None, TableName = "@EXUSU", LinkedTable = null, DefaultValue = "NO", ValidValuesMD = valoresSuperusuario, LinkedSystemObject = null },
-                new UserFieldsMD() { Name = "EXCLAVE", Type = TipoCampo.Alpha, Size = 10, Description = "Clave de acceso", SubType = SubTipoCampo.None, TableName = "@EXUSU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null }
+                new UserFieldsMD() { Name = "EXUCODE", Type = TipoCampo.Alpha, Size = 10, Description = "Cód. Usuario", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
+                new UserFieldsMD() { Name = "EXNCODE", Type = TipoCampo.Alpha, Size = 50, Description = "Nombre Usuario", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
+                new UserFieldsMD() { Name = "EXCSUC", Type = TipoCampo.Numeric, Size = 11, Description = "Cód. Sucursal", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
+                new UserFieldsMD() { Name = "EXNSUC", Type = TipoCampo.Alpha, Size = 30, Description = "Nombre Sucursal", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
+                new UserFieldsMD() { Name = "EXTUSU", Type = TipoCampo.Alpha, Size = 2, Description = "Superusuario", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = "NO", ValidValuesMD = valoresSuperusuario, LinkedSystemObject = null },
+                //new UserFieldsMD() { Name = "ACTI", Type = TipoCampo.Alpha, Size = 1, Description = "Usuario Activo", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = "SI", ValidValuesMD = valoresSuperusuario, LinkedSystemObject = null } ,
+                //new UserFieldsMD() { Name = "MAIL", Type = TipoCampo.Alpha, Size = 50, Description = "Correo Usuario", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null },
+                new UserFieldsMD() { Name = "EXCLAVE", Type = TipoCampo.Alpha, Size = 100, Description = "Clave de acceso", SubType = SubTipoCampo.None, TableName = "@EMUSUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresVacios, LinkedSystemObject = null }
             };
 
             foreach (var i in campos)
@@ -68,7 +70,7 @@ namespace eProduccion.Data.GestionAccesos
             if (!ExisteUsuario("manager"))
             {
                 var method = Method.Post;
-                var entity = $"U_EXUSU";   // nombre correcto de la tabla
+                var entity = $"U_EMUSUA";   // nombre correcto de la tabla
                 var fechaActual = DateTime.Now;
 
                 dynamic body = new
@@ -78,8 +80,10 @@ namespace eProduccion.Data.GestionAccesos
                     U_EXCSUC = 0,                           // Código Sucursal (ejemplo vacío)
                     U_EXNSUC = "",                          // Nombre Sucursal (ejemplo vacío)
                     U_EXTUSU = "SI",                        // Superusuario
-                    U_EXCLAVE = "Abc1234*", // Clave de acceso (encriptada)
-                  
+                    U_EXCLAVE = "hEyrr2banueW67WOuteQI4AmHS0PpolV", // Clave de acceso (encriptada)
+                    //U_ACTI = "SI",
+                    //U_MAIL = "lider.silva@exxis-group.com"
+
                 };
 
                 var jObject = _connectionService.SetEntitySL(method, entity, body);
@@ -90,7 +94,7 @@ namespace eProduccion.Data.GestionAccesos
         {
             bool existe = false;
 
-            var query = $"SELECT \"U_EXNCODE\" FROM \"{_connectionService.DataBase}\".\"@EXUSU\" WHERE \"U_EXNCODE\"='{codeUsuario}' ";
+            var query = $"SELECT \"U_EXNCODE\" FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" WHERE \"U_EXNCODE\"='{codeUsuario}' ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -109,7 +113,7 @@ namespace eProduccion.Data.GestionAccesos
         {
             bool existe = false;
 
-            var query = $"SELECT \"U_EXNCODE\" FROM \"{_connectionService.DataBase}\".\"@EXUSU\" WHERE \"U_EXUCODE\"='{_connectionService.UserName}' AND \"U_EXCLAVE\"='{_connectionService.PassSecure}' AND \"U_EXTUSU\"='SI' ";
+            var query = $"SELECT \"U_EXNCODE\" FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" WHERE \"U_EXUCODE\"='{_connectionService.UserName}' AND \"U_EXCLAVE\"='{_connectionService.PassSecure}' AND \"U_EXTUSU\"='SI' ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -129,7 +133,7 @@ namespace eProduccion.Data.GestionAccesos
         {
             var list = new List<Usuario>();
 
-            var query = $"SELECT \"Code\", \"U_EXUCODE\", \"U_EXNCODE\", \"U_EXCSUC\", \"U_EXNSUC\", \"U_EXTUSU\" FROM \"{_connectionService.DataBase}\".\"@EXUSU\" ORDER BY \"U_EXUCODE\" ";
+            var query = $"SELECT \"Code\", \"U_EXUCODE\", \"U_EXNCODE\", \"U_MAIL\", \"U_EXNSUC\", \"U_EXTUSU\" FROM \"{_connectionService.DataBase}\".\"@EMUSUA\" ORDER BY \"U_EXUCODE\" ";
 
             var command = new OdbcCommand(query, _connectionService.ConnectODBC());
             var reader = command.ExecuteReader();
@@ -141,8 +145,8 @@ namespace eProduccion.Data.GestionAccesos
                     Code = int.Parse(reader["Code"].ToString()),
                     CodigoUsuario = reader["U_EXUCODE"].ToString(),
                     NombreUsuario = reader["U_EXNCODE"].ToString(),
-                    Email = reader["U_EXCSUC"].ToString(),
-                    Estado = reader["U_EXNSUC"].ToString(),
+                    Email = reader["U_MAIL"].ToString(),
+                    Estado = reader["U_EXTUSU"].ToString(), //hay que crear campo para usuario actibvo
                     TipoUsuario = reader["U_EXTUSU"].ToString(),
                 };
 
@@ -187,14 +191,12 @@ namespace eProduccion.Data.GestionAccesos
         public async Task CambiarPassUsuario(Usuario usuario)
         {
             var method = Method.Patch;
-            var entity = $"U_EEP_USUA({usuario.Code})";
-            var fechaActual = DateTime.Now;
+            var entity = $"U_EMUSUA({usuario.Code})";
+            //var fechaActual = DateTime.Now;
 
             var body = new
             {
-                U_PASS = Encryption.EncryptString(usuario.Password),
-                U_FACT = fechaActual.ToString("yyyyMMdd"),
-                U_HACT = fechaActual.ToString("HHmm")
+                U_EXCLAVE = Encryption.EncryptString(usuario.Password)
             };
 
             _connectionService.SetEntitySL(method, entity, body);
@@ -224,7 +226,7 @@ namespace eProduccion.Data.GestionAccesos
         public async Task EditarUsuario(Usuario usuario)
         {
             var method = Method.Patch;
-            var entity = $"U_EEP_USUA({usuario.Code})";
+            var entity = $"U_EMUSUA({usuario.Code})";
             var fechaActual = DateTime.Now;
 
             var body = new
