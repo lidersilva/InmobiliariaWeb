@@ -210,27 +210,6 @@ namespace eProduccion.Data.GestionAccesos
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public void CambiarPassUsuarioLayout(Usuario usuario)
-        {
-            if (usuario.Password != Encryption.DecryptString(_connectionService.PassSecure))
-                throw new Exception("La contraseña ingresada no es válida. Verifique.");
-
-            int codeUsuario = ObtenerCodeUsuario(_connectionService.UserName);
-
-            var method = Method.Patch;
-            var entity = $"U_EEP_USUA({codeUsuario})";
-            var fechaActual = DateTime.Now;
-
-            var body = new
-            {
-                U_PASS = Encryption.EncryptString(usuario.NewPassword),
-                U_FACT = fechaActual.ToString("yyyyMMdd"),
-                U_HACT = fechaActual.ToString("HHmm")
-            };
-
-            _connectionService.SetEntitySL(method, entity, body);
-        }
-
         public async Task EditarUsuario(Usuario usuario)
         {
             var method = Method.Patch;
@@ -239,12 +218,9 @@ namespace eProduccion.Data.GestionAccesos
 
             var body = new
             {
-                Name = usuario.NombreUsuario,
-                U_MAIL = usuario.Email,
-                U_FACT = fechaActual.ToString("yyyyMMdd"),
-                U_HACT = fechaActual.ToString("HHmm"),
-                U_ACTI = usuario.Estado,
-                U_TIPO = usuario.TipoUsuario,
+                U_EXNCODE = usuario.NombreUsuario,
+                U_EXUCODE = usuario.CodigoUsuario,
+                U_EXTUSU = usuario.TipoUsuario,
             };
 
             _connectionService.SetEntitySL(method, entity, body);
@@ -260,23 +236,5 @@ namespace eProduccion.Data.GestionAccesos
             _connectionService.SetEntitySL(method, entity, body);
         }
 
-        public int ObtenerCodeUsuario(string user)
-        {
-            int code = 0;
-
-            var query = $"SELECT \"Code\" FROM \"{_connectionService.DataBase}\".\"@EEP_USUA\" WHERE \"U_CODE\"='{user}' AND \"U_ACTI\"='Y' ";
-
-            var command = new OdbcCommand(query, _connectionService.ConnectODBC());
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                code = int.Parse(reader["Code"].ToString());
-            }
-
-            _connectionService.DisconnectODBC();
-
-            return code;
-        }
     }
 }
