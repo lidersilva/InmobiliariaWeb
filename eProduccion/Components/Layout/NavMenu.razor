@@ -6,14 +6,15 @@
 @inject UserSession UserSession
 
 <!-- Sidebar Start -->
-<div class="sidebar pe-4 pb-3">
+<div class="sidebar pe-4 pb-3" style="height:100vh; overflow-y:auto;">
     <nav class="navbar bg-light navbar-light">
         <a NavLink="#" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary">EMSA INMOBILIARIA</h3>
+            @* <h3 class="text-primary">EMSA INMOBILIARIA</h3> *@
+            <h6 class="text-primary text-center">EMSA INMOBILIARIA</h6>
         </a>
         <div class="navbar-nav w-100">
             <div class="nav-item dropdown">
-                <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-wrench me-2"></i>Gestion de Cobranza
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
@@ -98,7 +99,7 @@
                 @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
                 {
                     <div class="nav-item dropdown">
-                        <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-users me-2"></i>Gesti&oacute;n de Accesos
                         </a>
                         <div class="dropdown-menu bg-transparent border-0">
@@ -111,7 +112,7 @@
                 }
          
                 <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Inteligencia de Negocios
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
@@ -144,7 +145,7 @@
 
            
                 <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Obras y Proyectos
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
@@ -156,7 +157,7 @@
                 </div>
 
                 <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Escrituraciones
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
@@ -177,7 +178,7 @@
                     </div>
                 </div>
                 <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i>Comercial 
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
@@ -255,7 +256,7 @@
 
            
                 <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Tesoreria
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
@@ -375,26 +376,11 @@
                     }
                     </div>
                 </div>
-            
-
-           @*  @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
-                <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-users me-2"></i> Escrituraciones
-                    </a>
-                    <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
-                    </div>
-                </div>
-            } *@
+           
 
             
             <div class="nav-item dropdown">
-                <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-users me-2"></i> Contabilidad
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
@@ -471,7 +457,7 @@
             </div>
            
             <div class="nav-item dropdown">
-                <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-cogs me-2"></i>Configuraci&oacute;n
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
