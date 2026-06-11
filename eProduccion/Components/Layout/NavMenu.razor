@@ -17,139 +17,367 @@
                     <i class="fa fa-wrench me-2"></i>Gestion de Cobranza
                 </a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    @if (UserSession.TienePermiso(PermisosSistema.Lotes))
+                  
+                    @if (UserSession.TienePermiso(PermisosSistema.LiquidacionCuotas))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionot")'> Lotes  Inmuebles</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/liquidacioncuotas")'>Liquidación de cuotas</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Inyeccion))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.GeneracionPlanillaReclamos))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/inyeccion")'>Alta de clientes y proveedores</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/generacionplanillareclamos")'>Generación de planilla de reclamos</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Extrusion))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.HistorialLlamadores))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/extrusion")'>Seña de lote </a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/historialllamadores")'>Historial de llamadores</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.PlanificacionEnsamble))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.GestionReclamos))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/planificacionensamble")'>Generacion de contracto</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/gestionreclamos")'>Gestión de reclamos</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Armado))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ExtractoContrato))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/armado")'>Comisiones a vendedores</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/extractocontrato")'>Extracto de contrato</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Flowpack))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.RenunciaLote))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/flowpack")'>Planes de comisio a vendedores</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/renuncialote")'>Renuncia a lote</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Sachetera))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.SolicitudRecuperoLote))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/sachetera")'>Planes de ventas</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/solicitudrecuperolote")'>Solicitud de recupero de lote</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Sellado))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.CuotasCobradasFraccion))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/sellado")'>Consulta de estado de contratos</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/cuotascobradasfraccion")'>Cuotas cobradas por fracción</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Horneado))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.CarteraClientes))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/horneado")'>Listado de lotes libres</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/carteraclientes")'>Cartera de clientes</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Empaquetado))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.MantenimientoVerificacionLotes))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/empaquetado")'>Ventas realizadas</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/mantenimientoverificacionlotes")'>Mantenimiento de verificación de lotes</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Prensa))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.SolicitudBloqueoContrato))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/prensa")'>Reporte de recupero y renuncias</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/solicitudbloqueocontrato")'>Solicitud de bloqueo de contrato</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.GrabadoLaser))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.BloqueosMasivos))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/grabado-laser")'>Reporte para Seprelad</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/bloqueosmasivos")'>Bloqueos masivos</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.PendienteMolinar))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.PedidoDescuento))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/pendientemolinar")'>Redefinar cuota de contrato</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/pedidodescuento")'>Pedido de descuento</a>
                     }
-                    @if (UserSession.TienePermiso(PermisosSistema.Molino))
+
+                    @if (UserSession.TienePermiso(PermisosSistema.DatosClientes))
                     {
-                        <a class="dropdown-item" @onclick='() => Navegar("/molino")'>Asigacion de operadores a fraccions</a>
+                        <a class="dropdown-item" @onclick='() => Navegar("/datosclientes")'>Datos de clientes</a>
                     }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ArchivoInforcom))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/archivoinform")'>Archivo Inforcom</a>
+                    }
+                    
                 </div>
             </div>
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
-                <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-users me-2"></i>Gesti&oacute;n de Accesos
-                    </a>
-                    <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+                {
+                    <div class="nav-item dropdown">
+                        <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fa fa-users me-2"></i>Gesti&oacute;n de Accesos
+                        </a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
+                            <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
+                            <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
+                            <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                        </div>
                     </div>
-                </div>
-            }
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
+                }
+         
                 <div class="nav-item dropdown">
                     <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Inteligencia de Negocios
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Liquidación de propietario</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Consulta de liquidacio por propietario</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Reporte de redición de propietarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Reportede liquidación de propietarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Consulta de facturas</a>
+                        @if (UserSession.TienePermiso(PermisosSistema.LiquidacionPropietario))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/liquidacionpropietario")'>Liquidación de propietario</a>
+                        }
+
+                        @if (UserSession.TienePermiso(PermisosSistema.ConsultaLiquidacionPropietario))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/consultaliquidacionpropietario")'>Consulta de liquidación por propietario</a>
+                        }
+
+                        @if (UserSession.TienePermiso(PermisosSistema.ReporteRendicionPropietarios))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/reporterendicionpropietarios")'>Reporte de rendición de propietarios</a>
+                        }
+
+                        @if (UserSession.TienePermiso(PermisosSistema.ReporteLiquidacionPropietarios))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/reporteliquidacionpropietarios")'>Reporte de liquidación de propietarios</a>
+                        }
+
+                        @if (UserSession.TienePermiso(PermisosSistema.ConsultaFacturas))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/consultafacturas")'>Consulta de facturas</a>
+                        }
                     </div>
                 </div>
-            }
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
+
+           
                 <div class="nav-item dropdown">
                     <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Obras y Proyectos
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Loteamiento / Fracciones</a>
-                     @*    <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a> *@
+                        @if (UserSession.TienePermiso(PermisosSistema.LoeteamientoFracciones))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/reporteliquidacionpropietarios")'>Loteamiento / Fracciones</a>
+                        }
                     </div>
                 </div>
-            }
 
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
+                <div class="nav-item dropdown">
+                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-users me-2"></i> Escrituraciones
+                    </a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        @if (UserSession.TienePermiso(PermisosSistema.CesionDerecho))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/cesionderecho")'>Cesión de derecho</a>
+                        }
+
+                        @if (UserSession.TienePermiso(PermisosSistema.OrdenEscrituracionPlanPago))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/ordenescrituracionplanpago")'>Orden de escrituración/plan de pago</a>
+                        }
+
+                        @if (UserSession.TienePermiso(PermisosSistema.ConsultaCuotasEscrituracion))
+                        {
+                            <a class="dropdown-item" @onclick='() => Navegar("/consultacuotasescrituracion")'>Consulta cuotas de escrituración</a>
+                        }
+                    </div>
+                </div>
                 <div class="nav-item dropdown">
                     <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i>Comercial 
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    @if (UserSession.TienePermiso(PermisosSistema.LotesInmueble))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/lotesinmueble")'>Lotes / Inmueble</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.AltaClientesProveedores))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/altaclientesproveedores")'>Alta de clientes y proveedores</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.SenaLote))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/senalote")'>Seña de lote</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.GeneracionContrato))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/generacioncontrato")'>Generación de contrato</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ComisionesVendedores))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/comisionesvendedores")'>Comisiones a vendedores</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.PlanesComisionVendedores))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/planescomisionvendedores")'>Planes de comisión a vendedores</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.PlanesVentas))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/planesventas")'>Planes de ventas</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ConsultaEstadoContratos))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/consultaestadocontratos")'>Consulta de estado de contratos</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ListadoLotesLibres))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/listadoloteslibres")'>Listado de lotes libres</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.VentasRealizadas))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/ventasrealizadas")'>Ventas realizadas</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ReporteRecuperoRenuncias))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/reporterecuperorenuncias")'>Reporte de recupero y renuncias</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ReporteSepralad))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/reportesepralad")'>Reporte para Sepralad</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.RedefinirCuotasContrato))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/redefinircuotascontrato")'>Redefinir cuotas de contrato</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.AsignacionOperadoresFraccion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/asignacionoperadoresfraccion")'>Asignación de operadores a fracción</a>
+                    }
                     </div>
                 </div>
-            }
 
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
+           
                 <div class="nav-item dropdown">
                     <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-users me-2"></i> Tesoreria
                     </a>
                     <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
+                    @if (UserSession.TienePermiso(PermisosSistema.CobroVentanilla))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/cobroventanilla")'>Cobro Ventanilla</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.CobrosMultiples))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/cobrosmultiples")'>Cobros múltiples</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.CobroCuotaEscrituracion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/cobrocuotaescrituracion")'>Cobra cuota escrituración</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ArqueoCaja))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/arqueocaja")'>Arqueo de CAJA</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.RegistroServicioFacturar))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/registroserviciofacturar")'>Registro de servicio a facturar</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.RegistroPagoImpuestoInmobiliario))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/registropagoimpuestoinmobiliario")'>Registro de pago impuesto inmobiliario</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.EstadoDocumentosFacturacionElectronica))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/estadodocumentosfacturacionelectronica")'>Estado de documentos facturación electrónica</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ReimpresionFacturasRecibos))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/reimpresionfacturasrecibos")'>Reimpresión de facturas y recibos</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.DevolucionVentaNotaCredito))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/devolucionventanotacredito")'>Devolución de venta (nota de crédito)</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.MantenimientoCotizacion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/mantenimientocotizacion")'>Mantenimiento de cotización</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.LibroBanco))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/librobanco")'>Libro banco</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.OrdenPago))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/ordenpago")'>Orden de pago</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.AnulacionDocumentos))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/anulaciondocumentos")'>Anulación de documentos</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ConsultaDocumentosAnulados))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/consultadocumentosanulados")'>Consulta de documentos anulados</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.MovimientosVarios))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/movimientosvarios")'>Movimientos varios</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.OperadorCuentaBanco))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/operadorcuentabanco")'>Operador cuenta banco</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.MantenimientoCuentasBancarias))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/mantenimientocuentasbancarias")'>Mantenimiento de cuentas bancarias</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.MantenimientoProveedoresCasuales))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/mantenimientoproveedorescasuales")'>Mantenimiento proveedores casuales</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.OrdenesPagoBancoFamiliar))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/ordenespagobancofamiliar")'>Órdenes de pagos banco familiar</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ExtractoCuentasProveedores))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/extractocuentasproveedores")'>Extracto de cuentas de proveedores</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.DepositoExtraccion))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/depositoextraccion")'>Depósito/extracción</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.PagosCobros))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/pagoscobros")'>Pagos/cobros</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.CobrosDesdeBocasCobranzas))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/cobrosdesdebocascobranzas")'>Cobros desde bocas de cobranzas</a>
+                    }
                     </div>
                 </div>
-            }
+            
 
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
+           @*  @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
             {
                 <div class="nav-item dropdown">
                     <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -162,22 +390,86 @@
                         <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
                     </div>
                 </div>
-            }
+            } *@
 
-            @if (UserSession.TienePermiso(PermisosSistema.GestionAccesos))
-            {
-                <div class="nav-item dropdown">
-                    <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-users me-2"></i> Contabilidad
-                    </a>
-                    <div class="dropdown-menu bg-transparent border-0">
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuarios")'>Usuarios</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/roles")'>Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/usuariosroles")'>Usuarios Roles</a>
-                        <a class="dropdown-item" @onclick='() => Navegar("/permisos")'>Permisos</a>
-                    </div>
+            
+            <div class="nav-item dropdown">
+                <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fa fa-users me-2"></i> Contabilidad
+                </a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    @if (UserSession.TienePermiso(PermisosSistema.DetallesCentroCosto))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/detallescentrocosto")'>Detalles por centro de costo</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.LibroDiarioContabilidad))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/librodiariocontabilidad")'>Libro diario de contabilidad</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.SubDiarioControl))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/subdiariocontrol")'>Sub diario de control</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ConsultaIvaCompras))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/consultaivacompras")'>Consulta IVA compras</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ConsultaIvaVentas))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/consultaivaventas")'>Consulta IVA ventas</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.LibroIvaVentas))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/libroivaventas")'>Libro de IVA ventas</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.LibroIvaCompras))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/libroivacompras")'>Libro de IVA compras</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.RegistroComprobantesResolucion9021))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/registrocomprobantesresolucion9021")'>Reg. de comprobantes Resol. 90/21</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.CostoLoteamientos))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/costoloteamientos")'>Costo de loteamientos</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ComparativoCostoFacturaAsiento))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/comparativocostofacturaasiento")'>Comparativo de costo e/factura y asiento</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.ActualizadorMasivoLotes))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/actualizadormasivolotes")'>Actualizador masivo de lotes</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.FlujoCobranzas))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/flujocobranzas")'>Flujo de cobranzas</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.MantenimientoConceptos))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/mantenimientoconceptos")'>Mantenimiento de conceptos</a>
+                    }
+
+                    @if (UserSession.TienePermiso(PermisosSistema.LibroMayor))
+                    {
+                        <a class="dropdown-item" @onclick='() => Navegar("/libromayor")'>Libro mayor</a>
+                    }
                 </div>
-            }
+            </div>
+           
             <div class="nav-item dropdown">
                 <a NavLink="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-cogs me-2"></i>Configuraci&oacute;n

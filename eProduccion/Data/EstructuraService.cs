@@ -116,7 +116,81 @@ namespace eProduccion.Data
         new () { TableName = "EEP_PERM", Code = "01", Name = "Menú Gestión de Accesos", Descripcion = "Acceso a la gestión de Usuarios, Roles y Permisos" },
         new () { TableName = "EEP_PERM", Code = "02", Name = "Generar Estructura", Descripcion = "Generación de estructura del sistema" },
         new () { TableName = "EEP_PERM", Code = "04", Name = "Parametrización", Descripcion = "Parametrización del sistema" },
-        new () { TableName = "EEP_PERM", Code = "100", Name = "Lotes" },
+        new () { TableName = "EEP_PERM", Code = "05", Name = "Lotes / Inmueble", Descripcion = "Acceso a la gestión de lotes e inmuebles" },
+        new () { TableName = "EEP_PERM", Code = "06", Name = "Alta de clientes y proveedores", Descripcion = "Acceso al alta de clientes y proveedores" },
+        new () { TableName = "EEP_PERM", Code = "07", Name = "Seña de lote", Descripcion = "Acceso al registro de señas de lote" },
+        new () { TableName = "EEP_PERM", Code = "08", Name = "Generación de contrato", Descripcion = "Acceso a la generación de contratos" },
+        new () { TableName = "EEP_PERM", Code = "09", Name = "Comisiones a vendedores", Descripcion = "Acceso a la gestión de comisiones de vendedores" },
+        new () { TableName = "EEP_PERM", Code = "10", Name = "Planes de comisión a vendedores", Descripcion = "Acceso a la gestión de planes de comisión" },
+        new () { TableName = "EEP_PERM", Code = "11", Name = "Planes de ventas", Descripcion = "Acceso a la gestión de planes de ventas" },
+        new () { TableName = "EEP_PERM", Code = "12", Name = "Consulta de estado de contratos", Descripcion = "Consulta del estado de contratos" },
+        new () { TableName = "EEP_PERM", Code = "13", Name = "Listado de lotes libres", Descripcion = "Consulta de lotes disponibles" },
+        new () { TableName = "EEP_PERM", Code = "14", Name = "Ventas realizadas", Descripcion = "Consulta de ventas realizadas" },
+        new () { TableName = "EEP_PERM", Code = "15", Name = "Reporte de recupero y renuncias", Descripcion = "Consulta de recuperos y renuncias" },
+        new () { TableName = "EEP_PERM", Code = "16", Name = "Reporte para Sepralad", Descripcion = "Acceso al reporte para Sepralad" },
+        new () { TableName = "EEP_PERM", Code = "17", Name = "Redefinir cuotas de contrato", Descripcion = "Permite redefinir cuotas de contratos" },
+        new () { TableName = "EEP_PERM", Code = "18", Name = "Asignación de operadores a fracción", Descripcion = "Acceso a la asignación de operadores a fracciones" },
+        new () { TableName = "EEP_PERM", Code = "19", Name = "Liquidación de propietario", Descripcion = "Acceso a la liquidación de propietarios" },
+        new () { TableName = "EEP_PERM", Code = "20", Name = "Consulta de liquidación por propietario", Descripcion = "Consulta de liquidaciones por propietario" },
+        new () { TableName = "EEP_PERM", Code = "21", Name = "Reporte de rendición de propietarios", Descripcion = "Consulta de rendiciones de propietarios" },
+        new () { TableName = "EEP_PERM", Code = "22", Name = "Reporte de liquidación de propietarios", Descripcion = "Consulta de liquidaciones de propietarios" },
+        new () { TableName = "EEP_PERM", Code = "23", Name = "Consulta de facturas", Descripcion = "Consulta de facturas emitidas" },
+        new () { TableName = "EEP_PERM", Code = "24", Name = "Loteamiento de fracciones", Descripcion = "Acceso a la gestión de loteamiento de fracciones" },
+        new () { TableName = "EEP_PERM", Code = "25", Name = "Liquidación de cuotas", Descripcion = "Acceso a la liquidación de cuotas" },
+        new () { TableName = "EEP_PERM", Code = "26", Name = "Generación de planilla de reclamos", Descripcion = "Acceso a la generación de planillas de reclamos" },
+        new () { TableName = "EEP_PERM", Code = "27", Name = "Historial de llamadores", Descripcion = "Consulta del historial de llamadores" },
+        new () { TableName = "EEP_PERM", Code = "28", Name = "Gestión de reclamos", Descripcion = "Acceso a la gestión de reclamos" },
+        new () { TableName = "EEP_PERM", Code = "29", Name = "Extracto de contrato", Descripcion = "Consulta de extractos de contrato" },
+        new () { TableName = "EEP_PERM", Code = "30", Name = "Renuncia a lote", Descripcion = "Acceso al proceso de renuncia de lotes" },
+        new () { TableName = "EEP_PERM", Code = "31", Name = "Solicitud de recupero de lote", Descripcion = "Acceso a solicitudes de recupero de lotes" },
+        new () { TableName = "EEP_PERM", Code = "32", Name = "Cuotas cobradas por fracción", Descripcion = "Consulta de cuotas cobradas por fracción" },
+        new () { TableName = "EEP_PERM", Code = "33", Name = "Cartera de clientes", Descripcion = "Consulta de cartera de clientes" },
+        new () { TableName = "EEP_PERM", Code = "34", Name = "Mantenimiento de verificación de lotes", Descripcion = "Acceso al mantenimiento de verificación de lotes" },
+        new () { TableName = "EEP_PERM", Code = "35", Name = "Solicitud de bloqueo de contrato", Descripcion = "Acceso a solicitudes de bloqueo de contrato" },
+        new () { TableName = "EEP_PERM", Code = "36", Name = "Bloqueos masivos", Descripcion = "Acceso a bloqueos masivos de contratos" },
+        new () { TableName = "EEP_PERM", Code = "37", Name = "Pedido de descuento", Descripcion = "Acceso a pedidos de descuento" },
+        new () { TableName = "EEP_PERM", Code = "38", Name = "Datos de clientes", Descripcion = "Consulta y mantenimiento de datos de clientes" },
+        new () { TableName = "EEP_PERM", Code = "39", Name = "Archivo Inforcom", Descripcion = "Acceso a la gestión y consulta de archivos Inforcom" },
+        new () { TableName = "EEP_PERM", Code = "40", Name = "Cobro Ventanilla", Descripcion = "Acceso al cobro por ventanilla" },
+        new () { TableName = "EEP_PERM", Code = "41", Name = "Cobros múltiples", Descripcion = "Acceso a cobros múltiples" },
+        new () { TableName = "EEP_PERM", Code = "42", Name = "Cobro cuota escrituración", Descripcion = "Acceso al cobro de cuotas de escrituración" },
+        new () { TableName = "EEP_PERM", Code = "43", Name = "Arqueo de CAJA", Descripcion = "Acceso al arqueo de caja" },
+        new () { TableName = "EEP_PERM", Code = "44", Name = "Registro de servicio a facturar", Descripcion = "Acceso al registro de servicios a facturar" },
+        new () { TableName = "EEP_PERM", Code = "45", Name = "Registro de pago impuesto inmobiliario", Descripcion = "Acceso al registro de pago de impuesto inmobiliario" },
+        new () { TableName = "EEP_PERM", Code = "46", Name = "Estado de documentos facturación electrónica", Descripcion = "Consulta del estado de documentos de facturación electrónica" },
+        new () { TableName = "EEP_PERM", Code = "47", Name = "Reimpresión de facturas y recibos", Descripcion = "Acceso a la reimpresión de facturas y recibos" },
+        new () { TableName = "EEP_PERM", Code = "48", Name = "Devolución de venta (nota de crédito)", Descripcion = "Acceso a devoluciones de venta mediante nota de crédito" },
+        new () { TableName = "EEP_PERM", Code = "49", Name = "Mantenimiento de cotización", Descripcion = "Acceso al mantenimiento de cotizaciones" },
+        new () { TableName = "EEP_PERM", Code = "50", Name = "Libro banco", Descripcion = "Consulta del libro banco" },
+        new () { TableName = "EEP_PERM", Code = "51", Name = "Orden de pago", Descripcion = "Acceso a órdenes de pago" },
+        new () { TableName = "EEP_PERM", Code = "52", Name = "Anulación de documentos", Descripcion = "Acceso a la anulación de documentos" },
+        new () { TableName = "EEP_PERM", Code = "53", Name = "Consulta de documentos anulados", Descripcion = "Consulta de documentos anulados" },
+        new () { TableName = "EEP_PERM", Code = "54", Name = "Movimientos varios", Descripcion = "Acceso a movimientos varios" },
+        new () { TableName = "EEP_PERM", Code = "55", Name = "Operador cuenta banco", Descripcion = "Acceso a la gestión de operadores de cuentas bancarias" },
+        new () { TableName = "EEP_PERM", Code = "56", Name = "Mantenimiento de cuentas bancarias", Descripcion = "Acceso al mantenimiento de cuentas bancarias" },
+        new () { TableName = "EEP_PERM", Code = "57", Name = "Mantenimiento proveedores casuales", Descripcion = "Acceso al mantenimiento de proveedores casuales" },
+        new () { TableName = "EEP_PERM", Code = "58", Name = "Órdenes de pagos banco familiar", Descripcion = "Acceso a órdenes de pago del Banco Familiar" },
+        new () { TableName = "EEP_PERM", Code = "59", Name = "Extracto de cuentas de proveedores", Descripcion = "Consulta de extractos de cuentas de proveedores" },
+        new () { TableName = "EEP_PERM", Code = "60", Name = "Depósito/extracción", Descripcion = "Acceso a operaciones de depósito y extracción" },
+        new () { TableName = "EEP_PERM", Code = "61", Name = "Pagos/cobros", Descripcion = "Acceso a pagos y cobros" },
+        new () { TableName = "EEP_PERM", Code = "62", Name = "Cobros desde bocas de cobranzas", Descripcion = "Acceso a cobros desde bocas de cobranza" },
+        new () { TableName = "EEP_PERM", Code = "63", Name = "Cesión de derecho", Descripcion = "Acceso al proceso de cesión de derecho" },
+        new () { TableName = "EEP_PERM", Code = "64", Name = "Orden de escrituración/plan de pago", Descripcion = "Acceso a órdenes de escrituración y planes de pago" },
+        new () { TableName = "EEP_PERM", Code = "65", Name = "Consulta cuotas de escrituración", Descripcion = "Consulta de cuotas de escrituración" },
+        new () { TableName = "EEP_PERM", Code = "66", Name = "Detalles por centro de costo", Descripcion = "Consulta de detalles por centro de costo" },
+        new () { TableName = "EEP_PERM", Code = "67", Name = "Libro diario de contabilidad", Descripcion = "Consulta del libro diario de contabilidad" },
+        new () { TableName = "EEP_PERM", Code = "68", Name = "Sub diario de control", Descripcion = "Consulta del sub diario de control" },
+        new () { TableName = "EEP_PERM", Code = "69", Name = "Consulta IVA compras", Descripcion = "Consulta de IVA compras" },
+        new () { TableName = "EEP_PERM", Code = "70", Name = "Consulta IVA ventas", Descripcion = "Consulta de IVA ventas" },
+        new () { TableName = "EEP_PERM", Code = "71", Name = "Libro de IVA ventas", Descripcion = "Consulta del libro de IVA ventas" },
+        new () { TableName = "EEP_PERM", Code = "72", Name = "Libro de IVA compras", Descripcion = "Consulta del libro de IVA compras" },
+        new () { TableName = "EEP_PERM", Code = "73", Name = "Reg. de comprobantes Resol. 90/21", Descripcion = "Registro de comprobantes según Resolución 90/21" },
+        new () { TableName = "EEP_PERM", Code = "74", Name = "Costo de loteamientos", Descripcion = "Consulta de costos de loteamientos" },
+        new () { TableName = "EEP_PERM", Code = "75", Name = "Comparativo de costo e/factura y asiento", Descripcion = "Comparativo de costos entre factura y asiento contable" },
+        new () { TableName = "EEP_PERM", Code = "76", Name = "Actualizador masivo de lotes", Descripcion = "Acceso a la actualización masiva de lotes" },
+        new () { TableName = "EEP_PERM", Code = "77", Name = "Flujo de cobranzas", Descripcion = "Consulta del flujo de cobranzas" },
+        new () { TableName = "EEP_PERM", Code = "78", Name = "Mantenimiento de conceptos", Descripcion = "Acceso al mantenimiento de conceptos" },
+        new () { TableName = "EEP_PERM", Code = "79", Name = "Libro mayor", Descripcion = "Consulta del libro mayor" },
 
         // Roles
         new () { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },
@@ -124,505 +198,6 @@ namespace eProduccion.Data
     }.ForEach(AgregarDatosMaestros);
             #endregion
         }
-
-        //public async Task GenerarEstructura()
-        //{
-        //    #region Crear tablas
-        //    new List<UserTablesMD>
-        //    {
-        //        new () { TableName = "EEP_PERM", Descr = "EEP Maestro de permisos", ObjectType = 1 },
-        //        new () { TableName = "EEP_ROLU", Descr = "EEP Roles_Usuarios", ObjectType = 1 },
-        //        new () { TableName = "EEP_ROLC", Descr = "EEP Maestro de roles", ObjectType = 1 },
-        //        new () { TableName = "EEP_ROLD", Descr = "EEP Roles_Permisos", ObjectType = 2 },
-        //        //new () { TableName = "EEP_PARAM", Descr = "EEP Parametrización", ObjectType = 3 },
-        //        //new () {TableName = "EEP_PARSERIE_DET", Descr = "EEP Param. series det.", ObjectType = 4},
-        //        //new () { TableName = "EEP_PLANI_OT", Descr = "EEP Planificación OT", ObjectType = 5 },
-        //        //new () { TableName = "EEP_OT_INYEX_CAB", Descr = "EEP OT Inyección/Extrusión cab", ObjectType = 3 },
-        //        //new () {TableName = "EEP_OT_INYEX_DET", Descr = "EEP OT Inyección/Extrusión det", ObjectType = 4},
-        //        //new () { TableName = "EEP_PARADAS", Descr = "EEP Registro paradas", ObjectType = 3 },
-        //        //new () { TableName = "EEP_PARADA_DEFECTO", Descr = "Maestro mot. paradas/defectos", ObjectType = 3 },
-        //        //new () { TableName = "EEP_ENSAM_CAB", Descr = "EEP Planif. ensamblado cab.", ObjectType = 3 },
-        //        //new () {TableName = "EEP_ENSAM_DET", Descr = "EEP Planif. ensamblado det.", ObjectType = 4},
-        //        //new () { TableName = "EEP_OT_ENSAM_CAB", Descr = "EEP OT Ensamblado cab.", ObjectType = 3 },
-        //        //new () {TableName = "EEP_OT_ENSAM_DET", Descr = "EEP OT Ensamblado det.", ObjectType = 4},
-        //        //new () {TableName = "EEP_REG_ENSAM_DET", Descr = "EEP Registro Ensamblado det.", ObjectType = 4},
-        //        //new () { TableName = "EEP_PEND_MOLI_OT", Descr = "EEP OT Pendiente a molinar", ObjectType = 3 },
-        //        //new () { TableName = "EEP_OT_MOLINO", Descr = "EEP OT Molino", ObjectType = 3 },
-        //    }.ForEach(AgregarTablas);
-        //    #endregion
-
-        //    #region Crear campos
-        //    var valoresValidosVacios = new List<ValidValuesMD>();// Lista vacía
-        //    new List<UserFieldsMD>
-        //    {
-        //        // Gestión de Roles y Permisos
-        //        new () { Name = "DESC", Type = TipoCampo.Alpha, Size = 100, Description = "Descripción", SubType = SubTipoCampo.None, TableName = "@EEP_PERM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "USER", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario", SubType = SubTipoCampo.None, TableName = "@EEP_ROLU", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "ROLID", Type = TipoCampo.Alpha, Size = 10, Description = "Rol", SubType = SubTipoCampo.None, TableName = "@EEP_ROLU", LinkedTable = "EEP_ROLC", DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "ACTI", Type = TipoCampo.Alpha, Size = 1, Description = "Activo", SubType = SubTipoCampo.None, TableName = "@EEP_ROLC", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "PERM", Type = TipoCampo.Alpha, Size = 1, Description = "Código de Permiso", SubType = SubTipoCampo.None, TableName = "@EEP_ROLD", LinkedTable = "EEP_PERM", DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "TIPO", Type = TipoCampo.Alpha, Size = 2, Description = "Tipo usuario", SubType = SubTipoCampo.None, TableName = "@EEP_USUA", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // Parametrización
-        //        //new () { Name = "CTAPRODC", Type = TipoCampo.Alpha, Size = 15, Description = "Cuenta de producción en curso", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ASALIDAI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. salida inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHRECII", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados reciclables inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHNORECII", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados no reciclables inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETENIDOSI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ASALIDAE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. salida extrusión", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados extrusión", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHRECIE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados reciclables extrusión", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHNORECIE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados no reciclables extrusión", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETENIDOSE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos extrusión", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBAR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados armado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBFL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados flowpack", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBSA", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados sachetera", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBSE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados sellado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBHO", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados horneado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBEM", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBPR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AAPROBGL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. aprobados grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHAR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados armado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHFL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados flowpack", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHSA", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados sachetera", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHSE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados sellado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHHO", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados horneado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHEM", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHPR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECHGL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. rechazados grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUAR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados armado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUFL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados flowpack", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUSA", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados sachetera", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUSE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados sellado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUHO", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados horneado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUEM", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUPR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECUGL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. recuperados grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETEAR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos armado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETEFL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos flowpack", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETESA", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos sachetera", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETESE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos sellado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETEHO", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos horneado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETEEM", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETEPR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARETEGL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. retenidos grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROAR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados armado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROFL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados flowpack", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROSA", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados sachetera", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROSE", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados sellado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROHO", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados horneado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROEM", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROPR", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "AREPROGL", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reprocesados grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CINYECCION", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación inyección", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CEXTRUSION", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación extrusión", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CARMADO", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación armado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CFLOWPACK", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación flowpack", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CSACHETERA", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación sachetera", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CSELLADO", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación sellado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CHORNEADO", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación horneado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CEMPAQUE", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación empaquetado", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CPRENSA", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación prensa", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CGRABADOL", Type = TipoCampo.Alpha, Size = 50, Description = "Código estación grabado láser", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ARECIMOLI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. reciclables molino", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ANORECIMOLI", Type = TipoCampo.Alpha, Size = 8, Description = "Alm. no reciclables molino", SubType = SubTipoCampo.None, TableName = "@EEP_PARAM", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //// Parametrización - Series Det.
-        //        //new () { Name = "CODSERIE", Type = TipoCampo.Numeric, Size = 11, Description = "Código serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "SERIE", Type = TipoCampo.Alpha, Size = 8, Description = "Serie", SubType = SubTipoCampo.None, TableName = "@EEP_PARSERIE_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        //// Planificación OT
-        //        //new () { Name = "DOCENTRYOV", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DOCNUMOV", Type = TipoCampo.Numeric, Size = 11, Description = "DocNum OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODSERIE", Type = TipoCampo.Numeric, Size = 11, Description = "Código serie OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHAOV", Type = TipoCampo.Date, Size = 10, Description = "Fecha OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODARTICULO", Type = TipoCampo.Alpha, Size = 50, Description = "Código artículo", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTIDADOV", Type = TipoCampo.Float, Size = 10, Description = "Cantidad OV", SubType = SubTipoCampo.Quantity, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODCLIENTE", Type = TipoCampo.Alpha, Size = 50, Description = "Cliente OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHAOT", Type = TipoCampo.Date, Size = 10, Description = "Fecha inicio OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAOT", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio OT", SubType = SubTipoCampo.Time, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario inicio OT", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LINENUMOV", Type = TipoCampo.Numeric, Size = 11, Description = "Línea detalle OV", SubType = SubTipoCampo.None, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTSOLICITADA", Type = TipoCampo.Float, Size = 10, Description = "Cantidad solicitada", SubType = SubTipoCampo.Quantity, TableName = "@EEP_PLANI_OT", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        //// OT Inyección - Extrusión
-        //        //new () { Name = "FECHAOT", Type = TipoCampo.Date, Size = 10, Description = "Fecha OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODARTICULO", Type = TipoCampo.Alpha, Size = 50, Description = "Código artículo OV", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTIDADOT", Type = TipoCampo.Float, Size = 10, Description = "Cantidad OT", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DOCENTRYOV", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry OV", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTANTERIOR", Type = TipoCampo.Alpha, Size = 50, Description = "Estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario creador OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación actual", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //// OT Inyección - Extrusión Det.
-        //        //new () { Name = "NROCONTEN", Type = TipoCampo.Alpha, Size = 50, Description = "Nro. contenedor", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "NROMAQUI", Type = TipoCampo.Alpha, Size = 25, Description = "Nro. máquina", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHAPROC", Type = TipoCampo.Date, Size = 10, Description = "Fecha", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 8, Description = "Hora fin trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno operador", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTAPROB", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades aprobadas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTRET", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades retenidas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTMERMA", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades rechazado reciclable", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTMERMAKG", Type = TipoCampo.Float, Size = 10, Description = "Peso rechazado reciclable (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "MOTIVOMERMA", Type = TipoCampo.Alpha, Size = 100, Description = "Motivo merma", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTMERMA2", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades rechazado no reciclable", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTMERMAKG2", Type = TipoCampo.Float, Size = 10, Description = "Peso rechazado no reciclable (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "MOTIVOMERMA2", Type = TipoCampo.Alpha, Size = 100, Description = "Motivo merma 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP1", Type = TipoCampo.Float, Size = 10, Description = "Peso colada (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP2", Type = TipoCampo.Float, Size = 10, Description = "Peso masacote (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP3", Type = TipoCampo.Float, Size = 10, Description = "Peso por ajustes de máq. (KG)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP4", Type = TipoCampo.Float, Size = 10, Description = "Peso pieza (G)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP5", Type = TipoCampo.Numeric, Size = 11, Description = "Cavidades reales", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP6", Type = TipoCampo.Numeric, Size = 11, Description = "Cavidades operativas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP7", Type = TipoCampo.Float, Size = 10, Description = "Tiempo de ciclo real (S)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP8", Type = TipoCampo.Float, Size = 10, Description = "Tiempo de ciclo (S)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LIBERADO", Type = TipoCampo.Alpha, Size = 1, Description = "Liberación de producción", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DEENTRADA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry entrada", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DESALIDA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry salida", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado línea", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "NROASIENTO", Type = TipoCampo.Numeric, Size = 11, Description = "Número asiento", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP9", Type = TipoCampo.Float, Size = 10, Description = "Metros por minuto real", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP10", Type = TipoCampo.Float, Size = 10, Description = "Metros por minuto", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP11", Type = TipoCampo.Float, Size = 10, Description = "Metros por turno real", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP12", Type = TipoCampo.Float, Size = 10, Description = "Metros por turno", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_OT_INYEX_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // Registro paradas
-        //        //new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación de trabajo", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OT", Type = TipoCampo.Numeric, Size = 11, Description = "Nro. OT", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LINEIDOT", Type = TipoCampo.Numeric, Size = 11, Description = "LineId OT", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHA", Type = TipoCampo.Date, Size = 10, Description = "Fecha registro", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TIPOPARO", Type = TipoCampo.Alpha, Size = 50, Description = "Tipo parada", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERADOR1", Type = TipoCampo.Alpha, Size = 25, Description = "Operador 1", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERADOR2", Type = TipoCampo.Alpha, Size = 25, Description = "Operador 2", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio parada", SubType = SubTipoCampo.Time, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 8, Description = "Hora fin parada", SubType = SubTipoCampo.Time, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "NROMAQUI", Type = TipoCampo.Alpha, Size = 25, Description = "Nro. máquina", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado parada", SubType = SubTipoCampo.None, TableName = "@EEP_PARADAS", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // Planificación ensamble
-        //        //new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTANTERIOR", Type = TipoCampo.Alpha, Size = 50, Description = "Estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //// Planificación ensamble - Detalle
-        //        //new () { Name = "CANTPROD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad producida", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTPRODKG", Type = TipoCampo.Float, Size = 10, Description = "Cantidad producida KG", SubType = SubTipoCampo.Quantity, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTSOLICITADA", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad solicitada", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OT", Type = TipoCampo.Numeric, Size = 11, Description = "Nro. OT estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LINEIDOT", Type = TipoCampo.Numeric, Size = 11, Description = "LineId estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado OT", SubType = SubTipoCampo.None, TableName = "@EEP_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // OT Ensamble
-        //        //new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTACION", Type = TipoCampo.Alpha, Size = 50, Description = "Estación de trabajo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHAOT", Type = TipoCampo.Date, Size = 10, Description = "Fecha OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "USEROT", Type = TipoCampo.Alpha, Size = 25, Description = "Usuario creador OT", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_CAB", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        // OT Ensamble Det.
-        //        //new () { Name = "NROCONTEN", Type = TipoCampo.Alpha, Size = 50, Description = "Nro. contenedor", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "NROMAQUI", Type = TipoCampo.Alpha, Size = 25, Description = "Nro. máquina", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHAPROC", Type = TipoCampo.Date, Size = 10, Description = "Fecha", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 8, Description = "Hora inicio trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 8, Description = "Hora fin trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno operador", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTAPROB", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades aprobadas", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTPRODKG", Type = TipoCampo.Float, Size = 10, Description = "Cantidad aprobadas KG", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CCP1", Type = TipoCampo.Float, Size = 10, Description = "Peso pieza (G)", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = "0" , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTAPROBD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidades aprobadas desvio", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OBS", Type = TipoCampo.Alpha, Size = 100, Description = "Observaciones", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LIBERADO", Type = TipoCampo.Alpha, Size = 1, Description = "Liberación de producción", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DEENTRADA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry entrada", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DESALIDA", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry salida", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTADO", Type = TipoCampo.Alpha, Size = 50, Description = "Estado línea", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "NROASIENTO", Type = TipoCampo.Numeric, Size = 11, Description = "Número asiento", SubType = SubTipoCampo.None, TableName = "@EEP_OT_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        // OT Registro Ensamble Det.
-        //        //new () { Name = "CODSUBART", Type = TipoCampo.Alpha, Size = 50, Description = "Cod. sub artículo", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTIDAD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TIPO", Type = TipoCampo.Alpha, Size = 20, Description = "Tipo registro", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTREP", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad reproceso", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_REG_ENSAM_DET", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // OT Pendiente a molinar
-        //        //new () { Name = "CODEPLANIOT", Type = TipoCampo.Numeric, Size = 11, Description = "Code planificación OT", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "ESTANTERIOR", Type = TipoCampo.Alpha, Size = 50, Description = "Estación anterior", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OT", Type = TipoCampo.Numeric, Size = 11, Description = "Nro. OT", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LINEIDOT", Type = TipoCampo.Numeric, Size = 11, Description = "LineId OT", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "LOTE", Type = TipoCampo.Alpha, Size = 25, Description = "Lote", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTPROD", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad producida", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTSOLICITADA", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad solicitada", SubType = SubTipoCampo.None, TableName = "@EEP_PEND_MOLI_OT", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // OT Molino
-        //        //new () { Name = "DEPENDMOLI", Type = TipoCampo.Numeric, Size = 11, Description = "DocEntry pendiente a molinar", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "FECHAPROC", Type = TipoCampo.Date, Size = 0, Description = "Fecha", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAINI", Type = TipoCampo.Date, Size = 0, Description = "Hora inicio trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "HORAFIN", Type = TipoCampo.Date, Size = 0, Description = "Hora fin trabajo", SubType = SubTipoCampo.Time, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TURNO", Type = TipoCampo.Alpha, Size = 2, Description = "Turno operador", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO", Type = TipoCampo.Alpha, Size = 25, Description = "Operario", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "OPERARIO2", Type = TipoCampo.Alpha, Size = 25, Description = "Operario 2", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTPROC", Type = TipoCampo.Numeric, Size = 11, Description = "Cantidad a procesar", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTRECIKG", Type = TipoCampo.Float, Size = 10, Description = "Cantidad reciclable KG", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "CANTRECHKG", Type = TipoCampo.Float, Size = 10, Description = "Cantidad no conforme KG", SubType = SubTipoCampo.Quantity, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "MOTIVORECH", Type = TipoCampo.Alpha, Size = 100, Description = "Motivo rechazo", SubType = SubTipoCampo.None, TableName = "@EEP_OT_MOLINO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-
-        //        // Maestro paradas/motivos defectos
-        //        //new () { Name = "CODIGO", Type = TipoCampo.Alpha, Size = 3, Description = "Código mot. parada/defecto", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "DESCRIPCION", Type = TipoCampo.Alpha, Size = 50, Description = "Descripción mot. parada/defecto", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = null, ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        //new () { Name = "TIPO", Type = TipoCampo.Alpha, Size = 2, Description = "Tipo", SubType = SubTipoCampo.None, TableName = "@EEP_PARADA_DEFECTO", LinkedTable = null, DefaultValue = "PR",
-        //        //    ValidValuesMD =
-        //        //    [
-        //        //        new ValidValuesMD() { Value = "PR", Description = "Parada"},
-        //        //        new ValidValuesMD() { Value = "DF", Description = "Defecto"}
-        //        //    ],
-        //        //    LinkedSystemObject = null },
-
-        //        // Campos SAP
-        //        new () { Name = "OTREFE", Type = TipoCampo.Numeric, Size = 11, Description = "OT referencial", SubType = SubTipoCampo.None, TableName = "OIGE", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "LINEREFE", Type = TipoCampo.Numeric, Size = 11, Description = "LineId referencial", SubType = SubTipoCampo.None, TableName = "OIGE", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "OTREFE", Type = TipoCampo.Numeric, Size = 11, Description = "OT referencial", SubType = SubTipoCampo.None, TableName = "OIGN", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "LINEREFE", Type = TipoCampo.Numeric, Size = 11, Description = "LineId referencial", SubType = SubTipoCampo.None, TableName = "OIGN", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "CodAcabado", Type = TipoCampo.Alpha, Size = 50, Description = "Subproducto", SubType = SubTipoCampo.None, TableName = "ITT2", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "MOLIRE", Type = TipoCampo.Alpha, Size = 50, Description = "Art. molinado re.", SubType = SubTipoCampo.None, TableName = "OITM", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //        new () { Name = "MOLINORE", Type = TipoCampo.Alpha, Size = 50, Description = "Art. molinado no re.", SubType = SubTipoCampo.None, TableName = "OITM", LinkedTable = null, DefaultValue = null , ValidValuesMD = valoresValidosVacios, LinkedSystemObject = null },
-        //    }.ForEach(AgregarCampos);
-        //    #endregion
-
-        //    #region Crear UDOS
-        //    new List<UserObjectsMD>
-        //    {
-        //        new ()
-        //        {
-        //            Code = "EEP_PERM", Name = "EEP Maestro Permisos", TableName = "EEP_PERM", ObjectType = TipoObjeto.DatoMaestro, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tYES, CanDelete = BoYesNo.tYES,
-        //            CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
-        //            FindColumns =
-        //            [
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_PERM", ColumnAlias = "Code", ColumnDescription = "Código" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_PERM", ColumnAlias = "Name", ColumnDescription = "Nombre" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_PERM", ColumnAlias = "U_DESC", ColumnDescription = "Descripción" }
-        //            ],
-        //            FormColumns =
-        //            [
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_PERM", FormColumnAlias = "Code", FormColumnDescription = "Código" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_PERM", FormColumnAlias = "Name", FormColumnDescription = "Nombre" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_PERM", FormColumnAlias = "U_DESC", FormColumnDescription = "Descripción" }
-        //            ]
-        //        },
-        //        new ()
-        //        {
-        //            Code = "EEP_ROLU", Name = "EEP RolesUsuarios", TableName = "EEP_ROLU", ObjectType = TipoObjeto.DatoMaestro, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tYES, CanDelete = BoYesNo.tYES,
-        //            CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
-        //            FindColumns =
-        //            [
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "Code", ColumnDescription = "Código" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "Name", ColumnDescription = "Descripción" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "U_USER", ColumnDescription = "Usuario" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLU", ColumnAlias = "U_ROLID", ColumnDescription = "Rol" }
-        //            ],
-        //            FormColumns =
-        //            [
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "Code", FormColumnDescription = "Código" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "Name", FormColumnDescription = "Descripción" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "U_USER", FormColumnDescription = "Usuario" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLU", FormColumnAlias = "U_ROLID", FormColumnDescription = "Rol" }
-        //            ]
-        //        },
-        //        new ()
-        //        {
-        //            Code = "EEP_ROLC", Name = "EEP Maestro Roles", TableName = "EEP_ROLC", ObjectType = TipoObjeto.DatoMaestro, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tYES, CanDelete = BoYesNo.tYES,
-        //            CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
-        //            ChildTables =
-        //            [
-        //                new UserChildTablesMD() { Code = "EEP_ROLC", SonNumber = "1", TableName = "EEP_ROLD", ObjectName = "EEP_ROLD" }
-        //            ],
-        //            FindColumns =
-        //            [
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLC", ColumnAlias = "Code", ColumnDescription = "Código Rol" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLC", ColumnAlias = "Name", ColumnDescription = "Nombre Rol" },
-        //                new UserColumnsMD_FindColumns() { Code = "EEP_ROLC", ColumnAlias = "U_ACTI", ColumnDescription = "Activo" }
-        //            ],
-        //            FormColumns =
-        //            [
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "Code", FormColumnDescription = "Código Rol" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "Name", FormColumnDescription = "Nombre Rol" },
-        //                new UserColumnsMD_FormColumns() { Code = "EEP_ROLC", FormColumnAlias = "U_ACTI", FormColumnDescription = "Activo" }
-        //            ]
-        //        },
-        //        //new ()
-        //        //{
-        //        //    Code = "EEP_PARAM", Name = "EEP Parametrización", TableName = "EEP_PARAM", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
-        //        //    ChildTables =
-        //        //    [
-        //        //        new UserChildTablesMD() { Code = "EEP_PARAM", SonNumber = "1", TableName = "EEP_PARSERIE_DET", ObjectName = "EEP_PARSERIE_DET" }
-        //        //    ],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PARAM", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PARAM", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //        //new ()
-        //        //{
-        //        //    Code = "EEP_OT_INYEX_CAB", Name = "EEP OT Inyección/Extrusión", TableName = "EEP_OT_INYEX_CAB", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
-        //        //    ChildTables =
-        //        //    [
-        //        //        new UserChildTablesMD() { Code = "EEP_OT_INYEX_CAB", SonNumber = "1", TableName = "EEP_OT_INYEX_DET", ObjectName = "EEP_OT_INYEX_DET" }
-        //        //    ],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_OT_INYEX_CAB", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_OT_INYEX_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //        //new ()
-        //        //{
-        //        //    Code = "EEP_PARADAS", Name = "EEP Registro paradas", TableName = "EEP_PARADAS", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PARADAS", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PARADAS", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //        //new ()
-        //        //{
-        //        //    Code = "EEP_PARADA_DEFECTO", Name = "EEP_PARADA_DEFECTO", TableName = "EEP_PARADA_DEFECTO", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "U_CODIGO", ColumnDescription = "Código" },
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "U_DESCRIPCION", ColumnDescription = "Descripción" },
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PARADA_DEFECTO", ColumnAlias = "U_TIPO", ColumnDescription = "Tipo" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "U_CODIGO", FormColumnDescription = "Código" },
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "U_DESCRIPCION", FormColumnDescription = "Descripción" },
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PARADA_DEFECTO", FormColumnAlias = "U_TIPO", FormColumnDescription = "Tipo" },
-        //        //    ]
-        //        //},
-        //        //new ()
-        //        //{
-        //        //    Code = "EEP_ENSAM_CAB", Name = "EEP Planificación ensamblado", TableName = "EEP_ENSAM_CAB", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
-        //        //    ChildTables =
-        //        //    [
-        //        //        new UserChildTablesMD() { Code = "EEP_ENSAM_CAB", SonNumber = "1", TableName = "EEP_ENSAM_DET", ObjectName = "EEP_ENSAM_DET" }
-        //        //    ],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_ENSAM_CAB", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_ENSAM_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //        //new ()
-        //        //{
-        //        //    Code = "EEP_OT_ENSAM_CAB", Name = "EEP OT Ensamblado", TableName = "EEP_OT_ENSAM_CAB", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tNO, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO,
-        //        //    ChildTables =
-        //        //    [
-        //        //        new UserChildTablesMD() { Code = "EEP_OT_ENSAM_CAB", SonNumber = "1", TableName = "EEP_OT_ENSAM_DET", ObjectName = "EEP_OT_ENSAM_DET" },
-        //        //        new UserChildTablesMD() { Code = "EEP_OT_ENSAM_CAB", SonNumber = "2", TableName = "EEP_REG_ENSAM_DET", ObjectName = "EEP_REG_ENSAM_DET" }
-        //        //    ],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_OT_ENSAM_CAB", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_OT_ENSAM_CAB", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //        // new ()
-        //        //{
-        //        //    Code = "EEP_PEND_MOLI_OT", Name = "EEP OT Pendiente a molinar", TableName = "EEP_PEND_MOLI_OT", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_PEND_MOLI_OT", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_PEND_MOLI_OT", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //        //  new ()
-        //        //{
-        //        //    Code = "EEP_OT_MOLINO", Name = "EEP OT Molino", TableName = "EEP_OT_MOLINO", ObjectType = TipoObjeto.Documento, CanFind = BoYesNo.tYES, CanCancel = BoYesNo.tNO, CanDelete = BoYesNo.tYES,
-        //        //    CanLog = BoYesNo.tYES, CanCreateDefaultForm = BoYesNo.tYES, EnableEnhancedForm = BoYesNo.tNO, RebuildEnhancedForm = BoYesNo.tNO, ChildTables = [],
-        //        //    FindColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FindColumns() { Code = "EEP_OT_MOLINO", ColumnAlias = "DocEntry", ColumnDescription = "DocEntry" },
-        //        //    ],
-        //        //    FormColumns =
-        //        //    [
-        //        //        new UserColumnsMD_FormColumns() { Code = "EEP_OT_MOLINO", FormColumnAlias = "DocEntry", FormColumnDescription = "DocEntry" },
-        //        //    ]
-        //        //},
-        //    }.ForEach(AgregarObjetos);
-        //    #endregion
-
-        //    #region Agregar registros
-        //    new List<MasterData>
-        //    {
-        //        // Permisos
-        //        new () { TableName = "EEP_PERM", Code = "01", Name = "Menú Gestión de Accesos", Descripcion = "Acceso a la gestión de Usuarios, Roles y Permisos" },
-        //        new () { TableName = "EEP_PERM", Code = "02", Name = "Generar Estructura", Descripcion = "Generación de estructura del sistema" },
-        //        new () { TableName = "EEP_PERM", Code = "04", Name = "Parametrización", Descripcion = "Parametrización del sistema" },
-
-        //        new () { TableName = "EEP_PERM", Code = "10", Name = "Planificación OT", Descripcion = "Acceso a vista Planificación OT" },
-        //        new () { TableName = "EEP_PERM", Code = "11", Name = "Inyección", Descripcion = "Acceso a vista" },
-        //        new () { TableName = "EEP_PERM", Code = "12", Name = "Extrusión", Descripcion = "Acceso a vista" },
-        //        new () { TableName = "EEP_PERM", Code = "13", Name = "Planificación ensamble", Descripcion = "Acceso a vista" },
-        //        new () { TableName = "EEP_PERM", Code = "14", Name = "Armado", Descripcion = "Acceso a vista Armado" },
-        //        new () { TableName = "EEP_PERM", Code = "15", Name = "Flowpack", Descripcion = "Acceso a vista Flowpack" },
-        //        new () { TableName = "EEP_PERM", Code = "16", Name = "Sachetera", Descripcion = "Acceso a vista Sachetera" },
-        //        new () { TableName = "EEP_PERM", Code = "17", Name = "Sellado", Descripcion = "Acceso a vista Sellado" },
-        //        new () { TableName = "EEP_PERM", Code = "18", Name = "Horneado", Descripcion = "Acceso a vista Horneado" },
-        //        new () { TableName = "EEP_PERM", Code = "19", Name = "Empaquetado", Descripcion = "Acceso a vista Empaquetado" },
-        //        new () { TableName = "EEP_PERM", Code = "20", Name = "Prensa", Descripcion = "Acceso a vista Prensa" },
-        //        new () { TableName = "EEP_PERM", Code = "21", Name = "Grabado láser", Descripcion = "Acceso a vista Grabado láser" },
-        //        new () { TableName = "EEP_PERM", Code = "22", Name = "Pendiente a molinar", Descripcion = "Acceso a vista Pendiente a molinar" },
-        //        new () { TableName = "EEP_PERM", Code = "23", Name = "Molino", Descripcion = "Acceso a vista Molino" },
-
-        //        // Roles
-        //        new () { TableName = "EEP_ROLC", Code = "01", Name = "Administrador", Activo = YesNo.Yes },
-        //        new () { TableName = "EEP_ROLC", Code = "02", Name = "Usuario", Activo = YesNo.Yes },
-        //    }.ForEach(AgregarDatosMaestros);
-        //    #endregion
-
-        //    #region Crear SP
-        //    new List<UserQuerysMD>
-        //    {
-        //        new () { Procedure = "SP_INSERT_PLANIFICACION_OT" },
-        //    }.ForEach(AgregarProcedimientos);
-        //    #endregion
-        //}
 
         public void AgregarTablas(UserTablesMD userTablesMD)
         {
