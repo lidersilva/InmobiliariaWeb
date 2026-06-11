@@ -13,32 +13,27 @@
 
     @if (!sesionVerificada)
     {
-        <!-- Spinner Start -->
+        <!-- Spinner -->
         <div id="spinner"
              class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Cargando...</span>
-            </div>
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+            <MudText Typo="Typo.subtitle1">Cargando...</MudText>
         </div>
-        <!-- Spinner End -->
     }
     else
     {
-        @* Required *@
+        <!-- MudBlazor Providers -->
         <MudThemeProvider />
         <MudPopoverProvider />
-
-        @* Needed for dialogs *@
         <MudDialogProvider />
-
-        @* Needed for snackbars *@
         <MudSnackbarProvider />
 
+        <!-- Sidebar -->
         <NavMenu />
 
-        <!-- Content Start -->
+        <!-- Content -->
         <div class="content">
-            <!-- Navbar Start -->
+            <!-- Navbar -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
@@ -47,43 +42,38 @@
                     <i class="fa fa-bars"></i>
                 </a>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <span class="d-none d-lg-inline-flex fw-bold">@UserSession.UserName</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item" @onclick="CerrarSesion">Cerrar sesi&oacute;n</a>
-                        </div>
-                    </div>
+                    <MudMenu Label="@UserSession.UserName" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight">
+                        <MudMenuItem OnClick="CerrarSesion">Cerrar sesión</MudMenuItem>
+                    </MudMenu>
                 </div>
             </nav>
-            <!-- Navbar End -->
+
             <!-- Contenido dinámico -->
             <div class="container-fluid pt-4 px-4">
-                <div class="row bg-light rounded mx-0" style="min-height: calc(100vh - 200px);">
+                <div class="row bg-light rounded mx-0 content-container">
                     @Body
                 </div>
             </div>
-            <!-- Contenido dinámico -->
-            <!-- Footer Start -->
+
+            <!-- Footer -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            @UserSession.DataBase
+                            <MudText Typo="Typo.caption">@UserSession.DataBase</MudText>
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Powered by EXXIS PY | @Assembly.GetExecutingAssembly().GetName().Version.ToString()
+                            <MudText Typo="Typo.caption">
+                                Powered by EXXIS PY | @Assembly.GetExecutingAssembly().GetName().Version
+                            </MudText>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Footer End -->
         </div>
-        <!-- Content End -->
-        <!-- Sidebar -->
     }
 </div>
+
 
 @code {
     private bool _initialized = false;
